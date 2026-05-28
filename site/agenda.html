@@ -1859,6 +1859,8 @@
                 <ul class="output-sublist">
                   <li><a href="#" onclick="event.preventDefault();document.getElementById('mentorCheckin2Modal').style.display='flex';" style="color:var(--gsk-orange);text-decoration:underline;cursor:pointer;">My Mentor Twin 2-week Check-in</a></li>
                   <li><a href="#" onclick="event.preventDefault();document.getElementById('mentorCheckin4Modal').style.display='flex';" style="color:var(--gsk-orange);text-decoration:underline;cursor:pointer;">My Mentor Twin 4-week check-in</a></li>
+                  <li><a href="#" onclick="event.preventDefault();document.getElementById('psCheckin2Modal').style.display='flex';" style="color:var(--gsk-orange);text-decoration:underline;cursor:pointer;">My Problem Solving Twin 2-week Check-in</a></li>
+                  <li><a href="#" onclick="event.preventDefault();document.getElementById('psCheckin4Modal').style.display='flex';" style="color:var(--gsk-orange);text-decoration:underline;cursor:pointer;">My Problem Solving Twin 4-week Check-in</a></li>
                 </ul>
               </li>
             </ul>
@@ -2108,7 +2110,7 @@
   // Close modals with Escape
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
-      ['dmaicModal','adoptionPlanModal','mentorUatModal','psUatModal','mentorCheckin4Modal','mentorCheckin2Modal','twinnyModal','roadmapModal','rapidUatModal'].forEach(function(id){
+      ['dmaicModal','adoptionPlanModal','mentorUatModal','psUatModal','mentorCheckin4Modal','mentorCheckin2Modal','psCheckin2Modal','psCheckin4Modal','twinnyModal','roadmapModal','rapidUatModal'].forEach(function(id){
         var m = document.getElementById(id);
         if (m) m.style.display = 'none';
       });
@@ -2529,7 +2531,7 @@
   <div class="sv-card">
     <button class="sv-close" onclick="document.getElementById('mentorCheckin2Modal').style.display='none'" aria-label="Close">×</button>
     <div class="sv-title">My Mentor Twin — 2-week Check-in</div>
-    <div class="sv-subtitle">4 responses</div>
+    <div class="sv-subtitle">5 responses</div>
     <div class="sv-divider"></div>
 
     <div class="dash-grid">
@@ -2539,17 +2541,17 @@
       <div class="dash-card-q"><span class="num">1.</span> Have you used the Leadership Coach in the past two weeks?</div>
       <div class="dash-card-body">
         <div class="dash-legend">
-          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, multiple times</span><span class="dash-legend-count">3</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, multiple times</span><span class="dash-legend-count">4</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Yes, once or twice</span><span class="dash-legend-count">1</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">No, I haven't tried it yet</span><span class="dash-legend-count">0</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">No, I tried but couldn't get it to work</span><span class="dash-legend-count">0</span></div>
         </div>
         <div class="dash-donut-wrap">
-          <span class="dash-donut-pct-l">75%</span>
-          <span class="dash-donut-pct-r">25%</span>
+          <span class="dash-donut-pct-l">80%</span>
+          <span class="dash-donut-pct-r">20%</span>
           <svg class="dash-donut" viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="48" stroke="#D14E1F" stroke-dasharray="226.2 301.6" stroke-dashoffset="0"></circle>
-            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="75.4 301.6" stroke-dashoffset="-226.2"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#D14E1F" stroke-dasharray="241.3 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="60.3 301.6" stroke-dashoffset="-241.3"></circle>
           </svg>
         </div>
       </div>
@@ -2559,13 +2561,13 @@
     <div class="dash-card">
       <div class="dash-card-q"><span class="num">2.</span> Which Leadership Coach capabilities have you tried? (Select all that apply)</div>
       <div class="dash-aligned-bars">
-        <span class="ab-dot" style="background:#D14E1F"></span><span class="ab-label">Task Prioritisation (sorting tasks by impact, urgency and strategic alignment)</span><span class="ab-count">3</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#D14E1F"></div></div>
-        <span class="ab-dot" style="background:#F36633"></span><span class="ab-label">Communication Insights (adapting communication style per stakeholder)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:33%;background:#F36633"></div></div>
-        <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">1:1 Prep (preparing agendas and question banks for 1:1 conversations)</span><span class="ab-count">3</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F49B6E"></div></div>
-        <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">Pulse Report (post-1:1 reflection on how you led the conversation)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:33%;background:#B85829"></div></div>
-        <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Weekly Insights (summary of your week's activity and themes)</span><span class="ab-count">3</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#8B5A3C"></div></div>
-        <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">Time Allocation (analysis of how you spend your time)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:67%;background:#C9A07C"></div></div>
-        <span class="ab-dot" style="background:#4A5568"></span><span class="ab-label">Ahead Together Objectives (drafting your IPTC objectives)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:33%;background:#4A5568"></div></div>
+        <span class="ab-dot" style="background:#D14E1F"></span><span class="ab-label">Task Prioritisation (sorting tasks by impact, urgency and strategic alignment)</span><span class="ab-count">4</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#D14E1F"></div></div>
+        <span class="ab-dot" style="background:#F36633"></span><span class="ab-label">Communication Insights (adapting communication style per stakeholder)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:50%;background:#F36633"></div></div>
+        <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">1:1 Prep (preparing agendas and question banks for 1:1 conversations)</span><span class="ab-count">4</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F49B6E"></div></div>
+        <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">Pulse Report (post-1:1 reflection on how you led the conversation)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:25%;background:#B85829"></div></div>
+        <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Weekly Insights (summary of your week's activity and themes)</span><span class="ab-count">4</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#8B5A3C"></div></div>
+        <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">Time Allocation (analysis of how you spend your time)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:50%;background:#C9A07C"></div></div>
+        <span class="ab-dot" style="background:#4A5568"></span><span class="ab-label">Ahead Together Objectives (drafting your IPTC objectives)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:25%;background:#4A5568"></div></div>
         <span class="ab-dot" style="background:#6E8B8E"></span><span class="ab-label">Interview Guide (pre and post interview support)</span><span class="ab-count">0</span><div class="ab-bar"></div>
       </div>
     </div>
@@ -2575,14 +2577,14 @@
       <div class="dash-card-q"><span class="num">3.</span> How easy was it to start using the Leadership Coach?</div>
       <div class="dash-rating-body">
         <div class="dash-rating-avg-wrap">
-          <div class="dash-rating-avg">4.25</div>
+          <div class="dash-rating-avg">4.40</div>
           <div class="dash-rating-label">Average Rating</div>
           <div class="dash-rating-stars">★★★★<span class="empty">☆</span></div>
         </div>
         <div class="dash-rating-levels">
-          <div class="dash-level-row"><span>Level 5</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:100%"></div></div><span>2</span></div>
-          <div class="dash-level-row"><span>Level 4</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:50%"></div></div><span>1</span></div>
-          <div class="dash-level-row"><span>Level 3</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:50%"></div></div><span>1</span></div>
+          <div class="dash-level-row"><span>Level 5</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:100%"></div></div><span>3</span></div>
+          <div class="dash-level-row"><span>Level 4</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:33%"></div></div><span>1</span></div>
+          <div class="dash-level-row"><span>Level 3</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:33%"></div></div><span>1</span></div>
           <div class="dash-level-row"><span>Level 2</span><div class="dash-level-bar"></div><span></span></div>
           <div class="dash-level-row"><span>Level 1</span><div class="dash-level-bar"></div><span></span></div>
         </div>
@@ -2609,6 +2611,10 @@
           <div class="dash-quote-label">Respondent 4</div>
           <div class="dash-quote-text">It feels clunky having to access and remember which chat you need to return to where there is no links between conversations.</div>
         </div>
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 5</div>
+          <div class="dash-quote-text">I need to understand a bit more about the Agent wiring</div>
+        </div>
       </div>
     </div>
 
@@ -2632,6 +2638,10 @@
           <div class="dash-quote-label">Respondent 4</div>
           <div class="dash-quote-text">Think it will require some pre work to adapt ways of working to facilitate optimal use in a site setting as lots of interactions are face to face not virtual.</div>
         </div>
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 5</div>
+          <div class="dash-quote-text">It will be good to point the agent to a config file, think about lit like a claude.md file (for persona etc.) - might be a copilot limitation here</div>
+        </div>
       </div>
     </div>
 
@@ -2644,7 +2654,7 @@
   <div class="sv-card">
     <button class="sv-close" onclick="document.getElementById('mentorCheckin4Modal').style.display='none'" aria-label="Close">×</button>
     <div class="sv-title">My Mentor Twin — 4-week Check-in</div>
-    <div class="sv-subtitle">2 responses</div>
+    <div class="sv-subtitle">3 responses</div>
     <div class="sv-divider"></div>
 
     <div class="dash-grid">
@@ -2653,18 +2663,19 @@
       <div class="dash-card-q"><span class="num">1.</span> How often are you using the Leadership Coach now?</div>
       <div class="dash-card-body">
         <div class="dash-legend">
-          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Daily or almost daily</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Daily or almost daily</span><span class="dash-legend-count">1</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">A few times per week</span><span class="dash-legend-count">1</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">Weekly</span><span class="dash-legend-count">1</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">Occasionally</span><span class="dash-legend-count">0</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#8B5A3C"></span><span class="dash-legend-label">Rarely or never</span><span class="dash-legend-count">0</span></div>
         </div>
         <div class="dash-donut-wrap">
-          <span class="dash-donut-pct-l">50%</span>
-          <span class="dash-donut-pct-r">50%</span>
+          <span class="dash-donut-pct-l">33%</span>
+          <span class="dash-donut-pct-r">33%</span>
           <svg class="dash-donut" viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="150.8 301.6" stroke-dashoffset="0"></circle>
-            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="150.8 301.6" stroke-dashoffset="-150.8"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#D14E1F" stroke-dasharray="100.5 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="100.5 301.6" stroke-dashoffset="-100.5"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="100.5 301.6" stroke-dashoffset="-201.0"></circle>
           </svg>
         </div>
       </div>
@@ -2674,13 +2685,13 @@
     <div class="dash-card">
       <div class="dash-card-q"><span class="num">2.</span> Which capabilities are you using regularly (at least weekly)?</div>
       <div class="dash-aligned-bars">
-        <span class="ab-dot" style="background:#D14E1F"></span><span class="ab-label">Task Prioritisation (sorting tasks by impact, urgency and strategic alignment)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#D14E1F"></div></div>
-        <span class="ab-dot" style="background:#F36633"></span><span class="ab-label">Communication Insights (adapting communication style per stakeholder)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:50%;background:#F36633"></div></div>
-        <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">1:1 Prep (preparing agendas and question banks for 1:1 conversations)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F49B6E"></div></div>
-        <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">Pulse Report (post-1:1 reflection on how you led the conversation)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:50%;background:#B85829"></div></div>
-        <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Weekly Insights (summary of your week's activity and themes)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#8B5A3C"></div></div>
-        <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">Time Allocation (analysis of how you spend your time)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#C9A07C"></div></div>
-        <span class="ab-dot" style="background:#4A5568"></span><span class="ab-label">Ahead Together Objectives (drafting your IPTC objectives)</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#D14E1F"></span><span class="ab-label">Task Prioritisation (sorting tasks by impact, urgency and strategic alignment)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:67%;background:#D14E1F"></div></div>
+        <span class="ab-dot" style="background:#F36633"></span><span class="ab-label">Communication Insights (adapting communication style per stakeholder)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:67%;background:#F36633"></div></div>
+        <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">1:1 Prep (preparing agendas and question banks for 1:1 conversations)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:67%;background:#F49B6E"></div></div>
+        <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">Pulse Report (post-1:1 reflection on how you led the conversation)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:67%;background:#B85829"></div></div>
+        <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Weekly Insights (summary of your week's activity and themes)</span><span class="ab-count">3</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#8B5A3C"></div></div>
+        <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">Time Allocation (analysis of how you spend your time)</span><span class="ab-count">3</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#C9A07C"></div></div>
+        <span class="ab-dot" style="background:#4A5568"></span><span class="ab-label">Ahead Together Objectives (drafting your IPTC objectives)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:33%;background:#4A5568"></div></div>
         <span class="ab-dot" style="background:#6E8B8E"></span><span class="ab-label">Interview Guide (pre and post interview support)</span><span class="ab-count">0</span><div class="ab-bar"></div>
       </div>
     </div>
@@ -2690,12 +2701,12 @@
       <div class="dash-card-q"><span class="num">3.</span> Has the agent improved the quality of your leadership?</div>
       <div class="dash-rating-body">
         <div class="dash-rating-avg-wrap">
-          <div class="dash-rating-avg">3.50</div>
+          <div class="dash-rating-avg">4.00</div>
           <div class="dash-rating-label">Average Rating</div>
-          <div class="dash-rating-stars">★★★<span style="opacity:0.6">★</span><span class="empty">☆</span></div>
+          <div class="dash-rating-stars">★★★★<span class="empty">☆</span></div>
         </div>
         <div class="dash-rating-levels">
-          <div class="dash-level-row"><span>Level 5</span><div class="dash-level-bar"></div><span></span></div>
+          <div class="dash-level-row"><span>Level 5</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:100%"></div></div><span>1</span></div>
           <div class="dash-level-row"><span>Level 4</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:100%"></div></div><span>1</span></div>
           <div class="dash-level-row"><span>Level 3</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:100%"></div></div><span>1</span></div>
           <div class="dash-level-row"><span>Level 2</span><div class="dash-level-bar"></div><span></span></div>
@@ -2710,17 +2721,18 @@
       <div class="dash-card-body">
         <div class="dash-legend">
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, significantly — they are more structured and meaningful</span><span class="dash-legend-count">1</span></div>
-          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat</span><span class="dash-legend-count">1</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">About the same</span><span class="dash-legend-count">1</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">Worsened</span><span class="dash-legend-count">0</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#8B5A3C"></span><span class="dash-legend-label">I don't run regular 1:1s</span><span class="dash-legend-count">0</span></div>
         </div>
         <div class="dash-donut-wrap">
-          <span class="dash-donut-pct-l">50%</span>
-          <span class="dash-donut-pct-r">50%</span>
+          <span class="dash-donut-pct-l">33%</span>
+          <span class="dash-donut-pct-r">33%</span>
           <svg class="dash-donut" viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="48" stroke="#D14E1F" stroke-dasharray="150.8 301.6" stroke-dashoffset="0"></circle>
-            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="150.8 301.6" stroke-dashoffset="-150.8"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#D14E1F" stroke-dasharray="100.5 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="100.5 301.6" stroke-dashoffset="-100.5"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="100.5 301.6" stroke-dashoffset="-201.0"></circle>
           </svg>
         </div>
       </div>
@@ -2732,16 +2744,16 @@
       <div class="dash-card-body">
         <div class="dash-legend">
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, considerably</span><span class="dash-legend-count">1</span></div>
-          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat</span><span class="dash-legend-count">2</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">Not really</span><span class="dash-legend-count">0</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">I haven't used the relevant features</span><span class="dash-legend-count">0</span></div>
         </div>
         <div class="dash-donut-wrap">
-          <span class="dash-donut-pct-l">50%</span>
-          <span class="dash-donut-pct-r">50%</span>
+          <span class="dash-donut-pct-l">33%</span>
+          <span class="dash-donut-pct-r">67%</span>
           <svg class="dash-donut" viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="48" stroke="#D14E1F" stroke-dasharray="150.8 301.6" stroke-dashoffset="0"></circle>
-            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="150.8 301.6" stroke-dashoffset="-150.8"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#D14E1F" stroke-dasharray="100.5 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="201.1 301.6" stroke-dashoffset="-100.5"></circle>
           </svg>
         </div>
       </div>
@@ -2754,15 +2766,15 @@
         <div class="dash-legend">
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, noticeably</span><span class="dash-legend-count">0</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat</span><span class="dash-legend-count">1</span></div>
-          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">About the same</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">About the same</span><span class="dash-legend-count">2</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">Not sure</span><span class="dash-legend-count">0</span></div>
         </div>
         <div class="dash-donut-wrap">
-          <span class="dash-donut-pct-l">50%</span>
-          <span class="dash-donut-pct-r">50%</span>
+          <span class="dash-donut-pct-l">33%</span>
+          <span class="dash-donut-pct-r">67%</span>
           <svg class="dash-donut" viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="150.8 301.6" stroke-dashoffset="0"></circle>
-            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="150.8 301.6" stroke-dashoffset="-150.8"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="100.5 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="201.1 301.6" stroke-dashoffset="-100.5"></circle>
           </svg>
         </div>
       </div>
@@ -2776,7 +2788,7 @@
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, significantly — they are more structured and consistent</span><span class="dash-legend-count">0</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat</span><span class="dash-legend-count">0</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">About the same</span><span class="dash-legend-count">0</span></div>
-          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">I haven't conducted interviews in this period</span><span class="dash-legend-count">2</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">I haven't conducted interviews in this period</span><span class="dash-legend-count">3</span></div>
         </div>
         <div class="dash-donut-wrap">
           <span class="dash-donut-pct-l" style="left:50%;transform:translate(-50%,calc(-50% + 100px));">100%</span>
@@ -2795,14 +2807,15 @@
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, significantly — I work differently now</span><span class="dash-legend-count">0</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat — I have adopted some new habits</span><span class="dash-legend-count">1</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">Not really</span><span class="dash-legend-count">1</span></div>
-          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">I haven't used it enough to say</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">I haven't used it enough to say</span><span class="dash-legend-count">1</span></div>
         </div>
         <div class="dash-donut-wrap">
-          <span class="dash-donut-pct-l">50%</span>
-          <span class="dash-donut-pct-r">50%</span>
+          <span class="dash-donut-pct-l">33%</span>
+          <span class="dash-donut-pct-r">33%</span>
           <svg class="dash-donut" viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="150.8 301.6" stroke-dashoffset="0"></circle>
-            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="150.8 301.6" stroke-dashoffset="-150.8"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="100.5 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="100.5 301.6" stroke-dashoffset="-100.5"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#B85829" stroke-dasharray="100.5 301.6" stroke-dashoffset="-201.0"></circle>
           </svg>
         </div>
       </div>
@@ -2814,16 +2827,17 @@
       <div class="dash-card-body">
         <div class="dash-legend">
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, noticeably</span><span class="dash-legend-count">1</span></div>
-          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat</span><span class="dash-legend-count">1</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">About the same</span><span class="dash-legend-count">1</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">Not sure</span><span class="dash-legend-count">0</span></div>
         </div>
         <div class="dash-donut-wrap">
-          <span class="dash-donut-pct-l">50%</span>
-          <span class="dash-donut-pct-r">50%</span>
+          <span class="dash-donut-pct-l">33%</span>
+          <span class="dash-donut-pct-r">33%</span>
           <svg class="dash-donut" viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="48" stroke="#D14E1F" stroke-dasharray="150.8 301.6" stroke-dashoffset="0"></circle>
-            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="150.8 301.6" stroke-dashoffset="-150.8"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#D14E1F" stroke-dasharray="100.5 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="100.5 301.6" stroke-dashoffset="-100.5"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="100.5 301.6" stroke-dashoffset="-201.0"></circle>
           </svg>
         </div>
       </div>
@@ -2836,7 +2850,7 @@
         <div class="dash-legend">
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes — clear signals</span><span class="dash-legend-count">0</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Some signals</span><span class="dash-legend-count">0</span></div>
-          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">Too early to say</span><span class="dash-legend-count">2</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">Too early to say</span><span class="dash-legend-count">3</span></div>
           <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">No signals</span><span class="dash-legend-count">0</span></div>
         </div>
         <div class="dash-donut-wrap">
@@ -2855,7 +2869,7 @@
         <span class="ab-dot" style="background:#D14E1F"></span><span class="ab-label">Reduced significantly (more than 50%)</span><span class="ab-count">0</span><div class="ab-bar"></div>
         <span class="ab-dot" style="background:#F36633"></span><span class="ab-label">Reduced moderately (25-50%)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F36633"></div></div>
         <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">Reduced slightly (less than 25%)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F49B6E"></div></div>
-        <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">About the same</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">About the same</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#B85829"></div></div>
         <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Increased</span><span class="ab-count">0</span><div class="ab-bar"></div>
         <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">I haven't used the agent for this</span><span class="ab-count">0</span><div class="ab-bar"></div>
       </div>
@@ -2870,7 +2884,7 @@
         <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">Reduced slightly (less than 25%)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F49B6E"></div></div>
         <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">About the same</span><span class="ab-count">0</span><div class="ab-bar"></div>
         <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Increased</span><span class="ab-count">0</span><div class="ab-bar"></div>
-        <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">I haven't used the agent for this</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">I haven't used the agent for this</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#C9A07C"></div></div>
       </div>
     </div>
 
@@ -2883,7 +2897,7 @@
         <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">Reduced slightly (less than 25%)</span><span class="ab-count">0</span><div class="ab-bar"></div>
         <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">About the same</span><span class="ab-count">0</span><div class="ab-bar"></div>
         <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Increased</span><span class="ab-count">0</span><div class="ab-bar"></div>
-        <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">I haven't used the agent for this</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#C9A07C"></div></div>
+        <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">I haven't used the agent for this</span><span class="ab-count">3</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#C9A07C"></div></div>
       </div>
     </div>
 
@@ -2892,14 +2906,14 @@
       <div class="dash-card-q"><span class="num">14.</span> Would you recommend the Leadership Coach to a colleague?</div>
       <div class="dash-rating-body">
         <div class="dash-rating-avg-wrap">
-          <div class="dash-rating-avg">4.00</div>
+          <div class="dash-rating-avg">4.33</div>
           <div class="dash-rating-label">Average Rating</div>
           <div class="dash-rating-stars">★★★★<span class="empty">☆</span></div>
         </div>
         <div class="dash-rating-levels">
-          <div class="dash-level-row"><span>Level 5</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:100%"></div></div><span>1</span></div>
+          <div class="dash-level-row"><span>Level 5</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:100%"></div></div><span>2</span></div>
           <div class="dash-level-row"><span>Level 4</span><div class="dash-level-bar"></div><span></span></div>
-          <div class="dash-level-row"><span>Level 3</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:100%"></div></div><span>1</span></div>
+          <div class="dash-level-row"><span>Level 3</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:50%"></div></div><span>1</span></div>
           <div class="dash-level-row"><span>Level 2</span><div class="dash-level-bar"></div><span></span></div>
           <div class="dash-level-row"><span>Level 1</span><div class="dash-level-bar"></div><span></span></div>
         </div>
@@ -2918,6 +2932,10 @@
           <div class="dash-quote-label">Respondent 2</div>
           <div class="dash-quote-text">As a tool for self reflection to pull out blind spots and give focus to my leadership capability.</div>
         </div>
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 3</div>
+          <div class="dash-quote-text">Personal development and coaching approach regarding my leadership skills</div>
+        </div>
       </div>
     </div>
 
@@ -2932,8 +2950,410 @@
           <div class="dash-quote-label">Respondent 2</div>
           <div class="dash-quote-text">Have the agent constantly alongside as opposed to accessing.</div>
         </div>
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 3</div>
+          <div class="dash-quote-text">n/a</div>
+        </div>
       </div>
     </div>
+    </div><!-- /dash-grid -->
+  </div>
+</div>
+
+<!-- ===== MY PROBLEM SOLVING TWIN — 2-WEEK CHECK-IN DASHBOARD ===== -->
+<div id="psCheckin2Modal" class="dmaic-modal-overlay" style="display:none;" onclick="if(event.target===this)this.style.display='none'">
+  <div class="sv-card">
+    <button class="sv-close" onclick="document.getElementById('psCheckin2Modal').style.display='none'" aria-label="Close">×</button>
+    <div class="sv-title">My Problem Solving Twin — 2-week Check-in</div>
+    <div class="sv-subtitle">2 responses</div>
+    <div class="sv-divider"></div>
+
+    <div class="dash-grid">
+
+    <!-- Q1: DMAIC experience (donut) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">1.</span> How would you describe your DMAIC experience?</div>
+      <div class="dash-card-body">
+        <div class="dash-legend">
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">New to DMAICs (1–2 completed before this period)</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Some experience (3–10 completed)</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">Experienced (more than 10 completed)</span><span class="dash-legend-count">1</span></div>
+        </div>
+        <div class="dash-donut-wrap">
+          <span class="dash-donut-pct-l">50%</span>
+          <span class="dash-donut-pct-r">50%</span>
+          <svg class="dash-donut" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" stroke="#D14E1F" stroke-dasharray="150.8 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="150.8 301.6" stroke-dashoffset="-150.8"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2: Have you used the DMAIC Coach (single segment 100%) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">2.</span> Have you used the DMAIC Coach since you got access?</div>
+      <div class="dash-card-body">
+        <div class="dash-legend">
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, on a live DMAIC investigation</span><span class="dash-legend-count">2</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Yes, to explore the agent</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">No, I haven't tried it yet</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">No, I haven't had a DMAIC to apply it to</span><span class="dash-legend-count">0</span></div>
+        </div>
+        <div class="dash-donut-wrap">
+          <span class="dash-donut-pct-l" style="left:50%;transform:translate(-50%,calc(-50% + 100px));">100%</span>
+          <svg class="dash-donut" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" stroke="#D14E1F" stroke-dasharray="301.6 0"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3: DMAIC phases used (bars, multi-select) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">3.</span> Which DMAIC phases have you used the agent for so far?</div>
+      <div class="dash-aligned-bars">
+        <span class="ab-dot" style="background:#D14E1F"></span><span class="ab-label">Define (5W2H, problem statement, process map)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#D14E1F"></div></div>
+        <span class="ab-dot" style="background:#F36633"></span><span class="ab-label">Measure (data collection, charts, baseline)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:50%;background:#F36633"></div></div>
+        <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">Analyse (fishbone, 5 Whys, root cause confirmation)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F49B6E"></div></div>
+        <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">Improve (corrective actions, impact–effort prioritisation)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#B85829"></div></div>
+        <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Control (effectiveness checks, summary, sign-off)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:50%;background:#8B5A3C"></div></div>
+      </div>
+    </div>
+
+    <!-- Q4: How easy to start (rating) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">4.</span> How easy was it to start using the agent?</div>
+      <div class="dash-rating-body">
+        <div class="dash-rating-avg-wrap">
+          <div class="dash-rating-avg">4.50</div>
+          <div class="dash-rating-label">Average Rating</div>
+          <div class="dash-rating-stars">★★★★<span style="opacity:0.6">★</span></div>
+        </div>
+        <div class="dash-rating-levels">
+          <div class="dash-level-row"><span>Level 5</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:100%"></div></div><span>1</span></div>
+          <div class="dash-level-row"><span>Level 4</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:100%"></div></div><span>1</span></div>
+          <div class="dash-level-row"><span>Level 3</span><div class="dash-level-bar"></div><span></span></div>
+          <div class="dash-level-row"><span>Level 2</span><div class="dash-level-bar"></div><span></span></div>
+          <div class="dash-level-row"><span>Level 1</span><div class="dash-level-bar"></div><span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q5: Biggest blocker (free-text) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">5.</span> What is the single biggest blocker preventing you from using it more?</div>
+      <div class="dash-quotes">
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 1</div>
+          <div class="dash-quote-text">Appropriate DMAIC opportunities</div>
+        </div>
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 2</div>
+          <div class="dash-quote-text">nothing in flight, just not on DMAIC now</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q6: Any other comments (free-text) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">6.</span> Any other comments, first impressions or feedback you'd like to share at this stage?</div>
+      <div class="dash-quotes">
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 1</div>
+          <div class="dash-quote-text">Very useful but I do guide it sometimes using my experience of successful DMAICs</div>
+        </div>
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 2</div>
+          <div class="dash-quote-text">Firstly, I do find the agent quite useful—it's providing helpful prompts and suggestions for next steps, which definitely supports the DMAIC process. That said, I've noticed it's still important for us to pause and reflect at each stage, and occasionally revisit or redo certain steps as we progress. Specifically, during the 5 Whys analysis, I observed that the confirmed causes listed are not always identical to those in the fishbone diagram, and the naming conventions sometimes differ as well. These discrepancies tend to appear at different stages, and the agent occasionally re-words the causes, which can be a bit confusing. When it comes to root cause analysis, I noticed that the table proposed by Copilot is missing a column for "actions to confirm or reject potential root cause." This is a key element for us to validate findings before moving forward. Lastly, I ran into an issue with file generation—the agent indicates that files are ready for download, but in reality, they aren't being generated properly. For reference, the standard Copilot typically handles file downloads smoothly. I've attached a screenshot below to illustrate what I'm seeing.</div>
+        </div>
+      </div>
+    </div>
+
+    </div><!-- /dash-grid -->
+  </div>
+</div>
+
+<!-- ===== MY PROBLEM SOLVING TWIN — 4-WEEK CHECK-IN DASHBOARD ===== -->
+<div id="psCheckin4Modal" class="dmaic-modal-overlay" style="display:none;" onclick="if(event.target===this)this.style.display='none'">
+  <div class="sv-card">
+    <button class="sv-close" onclick="document.getElementById('psCheckin4Modal').style.display='none'" aria-label="Close">×</button>
+    <div class="sv-title">My Problem Solving Twin — 4-week Check-in</div>
+    <div class="sv-subtitle">2 responses</div>
+    <div class="sv-divider"></div>
+
+    <div class="dash-grid">
+
+    <!-- Q1: DMAIC frequency (donut) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">1.</span> Approximately how often do you typically run DMAICs?</div>
+      <div class="dash-card-body">
+        <div class="dash-legend">
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Multiple per month</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">About one per month</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">A few per quarter</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">Less frequently</span><span class="dash-legend-count">1</span></div>
+        </div>
+        <div class="dash-donut-wrap">
+          <span class="dash-donut-pct-l">50%</span>
+          <span class="dash-donut-pct-r">50%</span>
+          <svg class="dash-donut" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="150.8 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#B85829" stroke-dasharray="150.8 301.6" stroke-dashoffset="-150.8"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2: DMAICs used on (donut) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">2.</span> How many DMAICs have you used the agent on?</div>
+      <div class="dash-card-body">
+        <div class="dash-legend">
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">None yet</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">1</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">2 or 3</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">More than 3</span><span class="dash-legend-count">0</span></div>
+        </div>
+        <div class="dash-donut-wrap">
+          <span class="dash-donut-pct-l">50%</span>
+          <span class="dash-donut-pct-r">50%</span>
+          <svg class="dash-donut" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="150.8 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="150.8 301.6" stroke-dashoffset="-150.8"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3: DMAIC phases used (bars, multi-select) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">3.</span> Which DMAIC phases have you used the agent for?</div>
+      <div class="dash-aligned-bars">
+        <span class="ab-dot" style="background:#D14E1F"></span><span class="ab-label">Define (5W2H, problem statement, process map)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#D14E1F"></div></div>
+        <span class="ab-dot" style="background:#F36633"></span><span class="ab-label">Measure (data collection, charts, baseline)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:50%;background:#F36633"></div></div>
+        <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">Analyse (fishbone, 5 Whys, root cause confirmation)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F49B6E"></div></div>
+        <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">Improve (corrective actions, impact–effort prioritisation)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#B85829"></div></div>
+        <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Control (effectiveness checks, summary, sign-off)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:50%;background:#8B5A3C"></div></div>
+      </div>
+    </div>
+
+    <!-- Q4: Time spent in Define (bars) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">4.</span> Compared to your previous DMAICs, time spent in the Define phase is:</div>
+      <div class="dash-aligned-bars">
+        <span class="ab-dot" style="background:#D14E1F"></span><span class="ab-label">Reduced significantly (more than 50%)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#D14E1F"></div></div>
+        <span class="ab-dot" style="background:#F36633"></span><span class="ab-label">Reduced moderately (25–50%)</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">Reduced slightly (less than 25%)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F49B6E"></div></div>
+        <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">About the same</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Increased</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">I haven't used the agent for this</span><span class="ab-count">0</span><div class="ab-bar"></div>
+      </div>
+    </div>
+
+    <!-- Q5: Time spent in Measure (bars) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">5.</span> Time spent in the Measure phase (data collection, charts):</div>
+      <div class="dash-aligned-bars">
+        <span class="ab-dot" style="background:#D14E1F"></span><span class="ab-label">Reduced significantly (more than 50%)</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#F36633"></span><span class="ab-label">Reduced moderately (25–50%)</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">Reduced slightly (less than 25%)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F49B6E"></div></div>
+        <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">About the same</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Increased</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">I haven't used the agent for this</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#C9A07C"></div></div>
+      </div>
+    </div>
+
+    <!-- Q6: Time spent in Analyse (bars) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">6.</span> Time spent in the Analyse phase (fishbone, 5 Whys, root cause):</div>
+      <div class="dash-aligned-bars">
+        <span class="ab-dot" style="background:#D14E1F"></span><span class="ab-label">Reduced significantly (more than 50%)</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#F36633"></span><span class="ab-label">Reduced moderately (25–50%)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F36633"></div></div>
+        <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">Reduced slightly (less than 25%)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F49B6E"></div></div>
+        <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">About the same</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Increased</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">I haven't used the agent for this</span><span class="ab-count">0</span><div class="ab-bar"></div>
+      </div>
+    </div>
+
+    <!-- Q7: Time spent in Improve (bars) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">7.</span> Time spent in the Improve phase (corrective action design):</div>
+      <div class="dash-aligned-bars">
+        <span class="ab-dot" style="background:#D14E1F"></span><span class="ab-label">Reduced significantly (more than 50%)</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#F36633"></span><span class="ab-label">Reduced moderately (25–50%)</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">Reduced slightly (less than 25%)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F49B6E"></div></div>
+        <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">About the same</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Increased</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">I haven't used the agent for this</span><span class="ab-count">0</span><div class="ab-bar"></div>
+      </div>
+    </div>
+
+    <!-- Q8: Time spent in Control (bars) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">8.</span> Time spent in the Control phase (effectiveness checks, sign-off):</div>
+      <div class="dash-aligned-bars">
+        <span class="ab-dot" style="background:#D14E1F"></span><span class="ab-label">Reduced significantly (more than 50%)</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#F36633"></span><span class="ab-label">Reduced moderately (25–50%)</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">Reduced slightly (less than 25%)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F49B6E"></div></div>
+        <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">About the same</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Increased</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">I haven't used the agent for this</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#C9A07C"></div></div>
+      </div>
+    </div>
+
+    <!-- Q9: Hours saved (donut) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">9.</span> Roughly, how many hours has the agent saved you on your most recent complete DMAIC?</div>
+      <div class="dash-card-body">
+        <div class="dash-legend">
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">More than 4 hours</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">2–4 hours</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">Less than 2 hours</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">No time saved</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#8B5A3C"></span><span class="dash-legend-label">I haven't completed a DMAIC yet</span><span class="dash-legend-count">1</span></div>
+        </div>
+        <div class="dash-donut-wrap">
+          <span class="dash-donut-pct-l">50%</span>
+          <span class="dash-donut-pct-r">50%</span>
+          <svg class="dash-donut" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" stroke="#D14E1F" stroke-dasharray="150.8 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#8B5A3C" stroke-dasharray="150.8 301.6" stroke-dashoffset="-150.8"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q10: Quality of output (single segment) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">10.</span> Has the quality of your DMAIC output improved?</div>
+      <div class="dash-card-body">
+        <div class="dash-legend">
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, noticeably more thorough and consistent</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat</span><span class="dash-legend-count">2</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">About the same</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">Worsened</span><span class="dash-legend-count">0</span></div>
+        </div>
+        <div class="dash-donut-wrap">
+          <span class="dash-donut-pct-l" style="left:50%;transform:translate(-50%,calc(-50% + 100px));">100%</span>
+          <svg class="dash-donut" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="301.6 0"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q11: Team standardisation (donut 50/50) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">11.</span> Has problem-solving become more standardised in your team?</div>
+      <div class="dash-card-body">
+        <div class="dash-legend">
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, noticeably</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">Not really</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">Too early to say</span><span class="dash-legend-count">1</span></div>
+        </div>
+        <div class="dash-donut-wrap">
+          <span class="dash-donut-pct-l">50%</span>
+          <span class="dash-donut-pct-r">50%</span>
+          <svg class="dash-donut" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="150.8 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#B85829" stroke-dasharray="150.8 301.6" stroke-dashoffset="-150.8"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q12: Past DMAICs knowledge (donut 50/50) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">12.</span> Has knowledge from past DMAICs helped your investigations?</div>
+      <div class="dash-card-body">
+        <div class="dash-legend">
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, significantly</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">Not really</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">I haven't drawn on past DMAICs</span><span class="dash-legend-count">0</span></div>
+        </div>
+        <div class="dash-donut-wrap">
+          <span class="dash-donut-pct-l">50%</span>
+          <span class="dash-donut-pct-r">50%</span>
+          <svg class="dash-donut" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" stroke="#D14E1F" stroke-dasharray="150.8 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="150.8 301.6" stroke-dashoffset="-150.8"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q13: Approach changed (single segment) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">13.</span> Has the agent changed how you approach a DMAIC investigation?</div>
+      <div class="dash-card-body">
+        <div class="dash-legend">
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, significantly — I follow a more structured process now</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat — it helps me get started faster</span><span class="dash-legend-count">2</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">Not really — I still work the same way</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">I haven't used it enough to say</span><span class="dash-legend-count">0</span></div>
+        </div>
+        <div class="dash-donut-wrap">
+          <span class="dash-donut-pct-l" style="left:50%;transform:translate(-50%,calc(-50% + 100px));">100%</span>
+          <svg class="dash-donut" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="301.6 0"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q14: Recommendation (rating) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">14.</span> Would you recommend the DMAIC Coach to a colleague?</div>
+      <div class="dash-rating-body">
+        <div class="dash-rating-avg-wrap">
+          <div class="dash-rating-avg">5.00</div>
+          <div class="dash-rating-label">Average Rating</div>
+          <div class="dash-rating-stars">★★★★★</div>
+        </div>
+        <div class="dash-rating-levels">
+          <div class="dash-level-row"><span>Level 5</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:100%"></div></div><span>2</span></div>
+          <div class="dash-level-row"><span>Level 4</span><div class="dash-level-bar"></div><span></span></div>
+          <div class="dash-level-row"><span>Level 3</span><div class="dash-level-bar"></div><span></span></div>
+          <div class="dash-level-row"><span>Level 2</span><div class="dash-level-bar"></div><span></span></div>
+          <div class="dash-level-row"><span>Level 1</span><div class="dash-level-bar"></div><span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q15: Most valuable capability (free-text) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">15.</span> What is the single most valuable capability for you?</div>
+      <div class="dash-quotes">
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 1</div>
+          <div class="dash-quote-text">I am able to focus on the discussion on calls related to the DMAIC as I know I can use the agent with the transcript to format the detail.</div>
+        </div>
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 2</div>
+          <div class="dash-quote-text">structured approach, following the process well</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q16: What would you change or add (free-text) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">16.</span> What would you change or add?</div>
+      <div class="dash-quotes">
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 1</div>
+          <div class="dash-quote-text">I have to tell the agent to use all of the documents I upload in one go. If not, sometimes it only refers to one of the documents I upload. I also would like for it to make the problem statement more concise as I find it adds far too much detail to the problem statement. It should be max two sentences - preferably 1.</div>
+        </div>
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 2</div>
+          <div class="dash-quote-text">I need to practice more to have opinion</div>
+        </div>
+      </div>
+    </div>
+
     </div><!-- /dash-grid -->
   </div>
 </div>
