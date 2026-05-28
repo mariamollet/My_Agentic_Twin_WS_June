@@ -1,0 +1,2702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DMAIC Copilot — V1 / V2 / V3 Status & Value</title>
+<style>
+  :root {
+    --ink: #1F2937;
+    --paper: #FAFAF9;
+    --paper-2: #F4F1ED;
+    --muted: #475569;
+    --line: #E5E7EB;
+    --green: #1f6b3a;
+    --amber: #b07c00;
+    --red:   #a32626;
+    --blue:  #1f4a73;
+    --accent: #F36633;
+    --accent-soft: #FEF2EC;
+    --gsk-orange: #F36633;
+    --gsk-orange-dark: #D14E1F;
+    --gsk-orange-tint: #FEF2EC;
+    --charcoal: #1F2937;
+    --slate: #475569;
+    --white: #FFFFFF;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 15.5px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    padding: 48px 72px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  header {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 22px;
+    margin-bottom: 0;
+  }
+  .eyebrow {
+    font-family: "JetBrains Mono", "IBM Plex Mono", "SF Mono", Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  h1 {
+    font-family: "Charter", Georgia, serif;
+    font-size: 36px;
+    line-height: 1.15;
+    margin: 8px 0 6px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 15px;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin: 32px 0 0;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  .tab {
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 14px 24px 12px;
+    font-family: "Charter", Georgia, serif;
+    font-size: 15.5px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    margin-bottom: -1px;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active {
+    color: var(--ink);
+    border-bottom-color: var(--accent);
+  }
+  .tab .tab-num {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-right: 8px;
+    letter-spacing: 0.1em;
+  }
+  .tab-panel { display: none; padding-top: 36px; }
+  .tab-panel.active { display: block; }
+
+  /* Shared */
+  .toc-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin: 0 0 40px;
+    border: 1px solid var(--line);
+  }
+  .toc-cell {
+    padding: 18px 20px;
+    border-right: 1px solid var(--line);
+    background: #fff;
+  }
+  .toc-cell:last-child { border-right: none; }
+  .toc-cell .label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .toc-cell .count {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    font-family: "Charter", Georgia, serif;
+  }
+  .toc-cell .of {
+    font-size: 14px;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+  .toc-cell .caption {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+  .toc-cell.cat1 .count { color: var(--green); }
+  .toc-cell.cat2 .count { color: var(--blue); }
+  .toc-cell.cat3 .count { color: var(--red); }
+  .toc-cell.cat4 .count { color: var(--amber); }
+  .section { margin-bottom: 56px; }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+  }
+  .section-num {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+  h2 {
+    font-family: "Charter", Georgia, serif;
+    font-size: 22px;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .pill {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-left: auto;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .pill.green { background: #e6f0e8; color: var(--green); }
+  .pill.blue  { background: #e3ecf3; color: var(--blue); }
+  .pill.red   { background: #f3e0e0; color: var(--red); }
+  .pill.amber { background: #f3ebd6; color: var(--amber); }
+  .lede { font-size: 15.5px; margin: 0 0 20px; color: #2a2a2a; }
+  .lede strong { font-weight: 700; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    background: #fff;
+    border: 1px solid var(--line);
+  }
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    background: #f0efea;
+    border-bottom: 1px solid var(--line);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #4a4a4a;
+    font-weight: 600;
+  }
+  td {
+    padding: 11px 14px;
+    border-bottom: 1px solid #eeece5;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  td.id { font-family: "JetBrains Mono", monospace; font-size: 12px; color: #444; white-space: nowrap; width: 80px; }
+  td.group { color: var(--muted); font-size: 12.5px; white-space: nowrap; }
+  td.status { font-family: "JetBrains Mono", monospace; font-size: 11.5px; white-space: nowrap; }
+  td.status .dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .dot.cmp { background: var(--green); }
+  .dot.prog { background: var(--blue); }
+  .dot.ns { background: #999; }
+  .dot.blk { background: var(--red); }
+  .callout {
+    background: #f3ebd6;
+    border-left: 4px solid var(--amber);
+    padding: 16px 20px;
+    margin: 16px 0 20px;
+    font-size: 14.5px;
+    line-height: 1.6;
+  }
+  .callout.blue { background: #e3ecf3; border-left-color: var(--blue); }
+  .callout strong { font-weight: 700; }
+  .answer {
+    background: #fff;
+    border-left: 4px solid var(--ink);
+    padding: 14px 20px;
+    margin: 14px 0 20px;
+    font-size: 14.5px;
+  }
+  .answer .q { color: var(--muted); font-style: italic; font-size: 13px; margin-bottom: 6px; }
+  .compact-row { font-family: "JetBrains Mono", monospace; font-size: 12.5px; padding: 4px 0; color: var(--muted); }
+  .compact-row strong { color: var(--ink); font-weight: 600; }
+  .badge-v3 {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    background: #f3ebd6;
+    color: var(--amber);
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-left: 6px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .badge-blocked {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    background: #f3e0e0;
+    color: var(--red);
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-left: 6px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .badge-unify {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    background: #e3ecf3;
+    color: var(--blue);
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-left: 6px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  /* TAB 1 — Group bracket cells (visual feature-grouping in req tables) */
+  .group-cell {
+    width: 96px;
+    padding: 10px 12px;
+    background: transparent;
+    vertical-align: middle;
+    text-align: left;
+    border-right: 1px solid var(--line);
+  }
+  .group-cell.chart {
+    background: #e3ecf3;
+    border-left: 4px solid var(--blue);
+  }
+  .group-cell.beltix {
+    background: #f3e0e0;
+    border-left: 4px solid var(--red);
+  }
+  .group-cell.empty {
+    background: transparent;
+    border-left: none;
+  }
+  .group-cell .glabel {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .group-cell.chart .glabel { color: var(--blue); }
+  .group-cell.beltix .glabel { color: var(--red); }
+  .group-cell .gcount {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+  th.group-th {
+    width: 96px;
+    background: transparent;
+    border-bottom: none;
+  }
+
+  /* TAB 02 — PHASE BREAKDOWN */
+  .phase-intro {
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 22px 26px;
+    margin-bottom: 28px;
+    border-left: 4px solid var(--accent);
+  }
+  .phase-intro h3 {
+    font-family: "Charter", Georgia, serif;
+    font-size: 18px;
+    margin: 0 0 8px;
+    font-weight: 700;
+  }
+  .phase-intro p { margin: 0 0 8px; font-size: 14.5px; color: #2a2a2a; }
+  .phase-intro p:last-child { margin-bottom: 0; }
+  .phase-intro .totals {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-top: 18px;
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+  }
+  .phase-intro .totals .tcell {
+    text-align: center;
+    padding: 6px 8px;
+    border-right: 1px solid var(--line);
+  }
+  .phase-intro .totals .tcell:last-child { border-right: none; }
+  .phase-intro .totals .tcell .tlabel {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .phase-intro .totals .tcell .tvalue {
+    font-family: "Charter", Georgia, serif;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--accent);
+  }
+  .phase-intro .totals .tcell .tsub {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .phase-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    margin-bottom: 22px;
+  }
+  .phase-card-head {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 22px;
+    background: #fdfcf8;
+    border-bottom: 1px solid var(--line);
+  }
+  .phase-num-pill {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 4px 9px;
+    border-radius: 100px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+  .phase-name {
+    font-family: "Charter", Georgia, serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    flex: 1;
+  }
+  .phase-stats {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .phase-stats .stat-val {
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .phase-stats .stat-saved {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .phase-stats .sep { color: var(--line); }
+  .phase-card-body {
+    padding: 0;
+  }
+  .sub-table {
+    width: 100%;
+    border: none;
+  }
+  .sub-table th {
+    background: #f7f6f0;
+    font-size: 10.5px;
+    padding: 9px 22px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--line);
+  }
+  .sub-table th.r, .sub-table td.r {
+    text-align: right;
+    font-family: "JetBrains Mono", monospace;
+  }
+  .sub-table td {
+    padding: 10px 22px;
+    border-bottom: 1px solid #eeece5;
+    font-family: "Inter", sans-serif;
+    font-size: 13.5px;
+  }
+  .sub-table tr:last-child td { border-bottom: none; }
+  .sub-table tr.total td {
+    background: #fdfcf8;
+    border-top: 2px solid var(--ink);
+    font-weight: 700;
+    font-family: "Charter", Georgia, serif;
+    font-size: 14.5px;
+  }
+  .sub-table tr.total td.r {
+    font-family: "JetBrains Mono", monospace;
+    color: var(--accent);
+  }
+  .sub-table tr.v3-row td {
+    background: #fdfaf2;
+    font-style: italic;
+  }
+  .sub-table tr.v3-row td.r {
+    color: var(--amber);
+    font-weight: 600;
+  }
+  .feat-link {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--muted);
+    background: #f0efea;
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-left: 4px;
+  }
+  .feat-link.delivered { background: #e6f0e8; color: var(--green); }
+  .feat-link.atrisk { background: #f3e0e0; color: var(--red); }
+  .feat-link.v3 { background: #f3ebd6; color: var(--amber); }
+  .feat-link.ontrack { background: #e3ecf3; color: var(--blue); }
+  .status-mini {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+    margin-left: 4px;
+  }
+  .status-mini.delivered { background: #e6f0e8; color: var(--green); }
+  .status-mini.atrisk { background: #f3e0e0; color: var(--red); }
+  .status-mini.v3 { background: #f3ebd6; color: var(--amber); }
+  .status-mini.ontrack { background: #e3ecf3; color: var(--blue); }
+  .status-mini.core { background: #f0efea; color: var(--muted); }
+
+  .analyse-split {
+    background: #fdfaf2;
+    border: 1px dashed var(--amber);
+    padding: 14px 22px;
+    margin: 0;
+    font-size: 13.5px;
+    color: #5a4500;
+    font-family: "Inter", sans-serif;
+  }
+  .analyse-split strong { font-weight: 700; }
+
+  .grand-total-card {
+    background: #fff;
+    border: 1px solid var(--ink);
+    margin-top: 30px;
+    padding: 22px 26px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .gt-label {
+    font-family: "Charter", Georgia, serif;
+    font-size: 17px;
+    font-weight: 700;
+    flex: 1;
+  }
+  .gt-eq {
+    font-family: "JetBrains Mono", monospace;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .gt-formula {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .gt-result {
+    font-family: "Charter", Georgia, serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.01em;
+  }
+
+  /* TAB 03 — FILTER + FEATURE CARDS */
+  .filter-bar {
+    position: sticky;
+    top: 0;
+    background: var(--paper);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0 18px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  .filter-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .chip {
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 7px 14px;
+    font-family: "Charter", Georgia, serif;
+    font-size: 14px;
+    color: var(--ink);
+    cursor: pointer;
+    border-radius: 100px;
+    transition: all 0.15s ease;
+    font-weight: 500;
+  }
+  .chip:hover { background: #f3f1ea; }
+  .chip.active {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+  .chip .count {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: 6px;
+  }
+  .chip.active .count { color: rgba(255,255,255,0.65); }
+  .filter-summary {
+    margin-left: auto;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .filter-summary strong {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .feat-intro {
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 22px 26px;
+    margin-bottom: 24px;
+    border-left: 4px solid var(--accent);
+  }
+  .feat-intro h3 {
+    font-family: "Charter", Georgia, serif;
+    font-size: 18px;
+    margin: 0 0 8px;
+    font-weight: 700;
+  }
+  .feat-intro p { margin: 0 0 8px; font-size: 14.5px; color: #2a2a2a; }
+  .feat-intro p:last-child { margin-bottom: 0; }
+
+  .feature {
+    background: #fff;
+    border: 1px solid var(--line);
+    margin-bottom: 24px;
+    overflow: hidden;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .feature.hidden { display: none; }
+  .feature-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--line);
+    background: #fdfcf8;
+  }
+  .feature-num {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 600;
+    background: var(--accent-soft);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .feature-titles { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .feature-title {
+    font-family: "Charter", Georgia, serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  .feature-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .status-chip {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .status-chip.delivered { background: #e6f0e8; color: var(--green); }
+  .status-chip.on-track { background: #e3ecf3; color: var(--blue); }
+  .status-chip.at-risk { background: #f3e0e0; color: var(--red); }
+  .status-chip.blocked { background: #f3e0e0; color: var(--red); border: 1px dashed var(--red); }
+  .status-chip.v3 { background: #f3ebd6; color: var(--amber); }
+  .feature-reqs {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .feature-reqs .rid { background: #f0efea; padding: 1px 6px; border-radius: 3px; margin-left: 3px; }
+  .value-badge {
+    flex-shrink: 0;
+    text-align: right;
+    padding: 8px 16px;
+    border-radius: 6px;
+    background: #fff;
+    border: 1px solid var(--line);
+    min-width: 130px;
+  }
+  .value-badge .vb-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .value-badge .vb-amount {
+    font-family: "Charter", Georgia, serif;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .value-badge .vb-sub {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 4px;
+    line-height: 1.3;
+  }
+  .value-badge.high { background: #fbe9df; border-color: var(--accent); }
+  .value-badge.high .vb-amount { color: var(--accent); }
+  .value-badge.med { background: #f3ebd6; border-color: var(--amber); }
+  .value-badge.med .vb-amount { color: var(--amber); }
+  .value-badge.low { background: #fdf6e8; border-color: #d4b76a; }
+  .value-badge.low .vb-amount { color: #8a5e00; }
+  .value-badge.delivered { background: #e6f0e8; border-color: var(--green); }
+  .value-badge.delivered .vb-amount { color: var(--green); font-size: 16px; }
+
+  .feature-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .feature-block {
+    padding: 18px 24px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .feature-block:nth-child(even) { border-right: none; }
+  .feature-block.full { grid-column: 1 / -1; border-right: none; }
+  .feature-block.last { border-bottom: none; }
+  .block-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .block-label .tag {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9.5px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+  }
+  .tag.chosen { background: #e6f0e8; color: var(--green); }
+  .tag.fallback { background: #f0efea; color: var(--muted); }
+  .tag.risk { background: #f3e0e0; color: var(--red); }
+  .tag.v3 { background: #f3ebd6; color: var(--amber); }
+  .tag.owner { background: #e3ecf3; color: var(--blue); }
+  .block-body {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #2a2a2a;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  .block-body em.placeholder { color: var(--muted); font-style: italic; }
+  .time-tag {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11.5px;
+    background: #fbf2e0;
+    color: #8a5e00;
+    padding: 1px 7px;
+    border-radius: 3px;
+    font-weight: 600;
+    margin: 0 2px;
+  }
+  .money-tag {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11.5px;
+    background: #fbe9df;
+    color: var(--accent);
+    padding: 1px 7px;
+    border-radius: 3px;
+    font-weight: 700;
+    margin: 0 2px;
+  }
+  .feature-block.v3-block { background: #fdfaf2; }
+  .feature-block.risk-block { background: #fdf6f6; }
+  .feature-block.delivered-block { background: #f5faf6; }
+  .feature-block.tbd {
+    background: repeating-linear-gradient(
+      45deg,
+      #fefdfa,
+      #fefdfa 8px,
+      #f7f5ee 8px,
+      #f7f5ee 9px
+    );
+  }
+
+  /* TAB 04 — VALUE CASE LOGIC */
+  .headline-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 36px 40px 28px;
+    margin-bottom: 36px;
+    border-left: 5px solid var(--accent);
+    position: relative;
+  }
+  .headline-eyebrow {
+    font-family: "Charter", Georgia, serif;
+    font-size: 19px;
+    color: var(--accent);
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.005em;
+  }
+  .headline-sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .headline-num {
+    font-family: "Charter", Georgia, serif;
+    font-size: 64px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-top: 18px;
+  }
+  .headline-units {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 8px;
+    font-family: "JetBrains Mono", monospace;
+  }
+  .headline-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 36px; align-items: end; }
+  .headline-right {
+    background: #fafaf7;
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+  .headline-right .hr-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .hr-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 13.5px;
+    border-bottom: 1px dashed var(--line);
+    font-family: "Inter", sans-serif;
+  }
+  .hr-row:last-child { border-bottom: none; padding-top: 10px; font-weight: 700; }
+  .hr-row .v { font-family: "JetBrains Mono", monospace; font-weight: 600; }
+
+  .calc-step {
+    background: #fff;
+    border: 1px solid var(--line);
+    margin-bottom: 24px;
+    padding: 24px 28px;
+  }
+  .calc-step-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .calc-step-num {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+  }
+  .calc-step-title {
+    font-family: "Charter", Georgia, serif;
+    font-size: 19px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .calc-step-prose { font-size: 14.5px; color: #2a2a2a; margin: 0 0 14px; }
+
+  .phase-table { width: 100%; border-collapse: collapse; font-family: "Inter", sans-serif; font-size: 13.5px; }
+  .phase-table th {
+    padding: 10px 12px;
+    background: #f0efea;
+    text-align: left;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #4a4a4a;
+    border-bottom: 1px solid var(--line);
+  }
+  .phase-table th.r, .phase-table td.r { text-align: right; }
+  .phase-table td {
+    padding: 11px 12px;
+    border-bottom: 1px solid #eeece5;
+    background: #fff;
+  }
+  .phase-table td.r { font-family: "JetBrains Mono", monospace; font-weight: 500; }
+  .phase-table tr.total td {
+    background: #fdfcf8;
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    font-weight: 700;
+    font-family: "Charter", Georgia, serif;
+    font-size: 15px;
+  }
+  .phase-table tr.total td.r { font-family: "JetBrains Mono", monospace; color: var(--accent); }
+
+  .bridge-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: "Charter", Georgia, serif;
+    font-size: 17px;
+    padding: 14px 0;
+    flex-wrap: wrap;
+  }
+  .bridge-num { font-weight: 700; color: var(--accent); font-size: 22px; }
+  .bridge-op { color: var(--muted); font-size: 18px; }
+  .bridge-eq { color: var(--accent); font-weight: 700; font-size: 22px; }
+  .bridge-unit { color: var(--muted); font-size: 12px; font-family: "JetBrains Mono", monospace; margin-left: -8px; }
+  .bridge-result { font-weight: 700; color: var(--accent); font-size: 26px; }
+
+  .multiplier {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    padding: 20px 24px;
+    margin-top: 16px;
+    border-radius: 4px;
+  }
+  .multiplier-eq { font-family: "Charter", Georgia, serif; font-size: 22px; font-weight: 700; color: var(--ink); margin: 0; }
+  .multiplier-eq .key {
+    color: var(--accent);
+    background: #fff;
+    padding: 2px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--accent);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 18px;
+  }
+  .multiplier-sub { margin: 8px 0 0; font-size: 13px; color: #2a2a2a; font-family: "Inter", sans-serif; }
+
+  .caveat {
+    background: #f3ebd6;
+    border-left: 4px solid var(--amber);
+    padding: 14px 20px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    margin-top: 16px;
+  }
+  .caveat strong { font-weight: 700; }
+
+  .exposure-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    margin-top: 18px;
+    border: 1px solid var(--line);
+  }
+  .exposure-cell {
+    padding: 18px 20px;
+    border-right: 1px solid var(--line);
+    background: #fff;
+  }
+  .exposure-cell:last-child { border-right: none; }
+  .exposure-cell .label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .exposure-cell .amount {
+    font-family: "Charter", Georgia, serif;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .exposure-cell .caption { font-size: 12.5px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+  .exposure-cell.captured .amount { color: var(--green); }
+  .exposure-cell.atrisk .amount { color: var(--red); }
+  .exposure-cell.v3 .amount { color: var(--amber); }
+
+  .breakdown-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: "Inter", sans-serif;
+    font-size: 13.5px;
+    margin-top: 16px;
+  }
+  .breakdown-table th, .breakdown-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #eeece5;
+    text-align: left;
+  }
+  .breakdown-table th {
+    background: #f0efea;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #4a4a4a;
+    border-bottom: 1px solid var(--line);
+  }
+  .breakdown-table td.r, .breakdown-table th.r {
+    text-align: right;
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 500;
+  }
+  .breakdown-table tr.atrisk-row td.r { color: var(--red); font-weight: 600; }
+  .breakdown-table tr.v3-row td.r { color: var(--amber); font-weight: 600; }
+
+  .footer {
+    margin-top: 64px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ===== NEW STYLES ===== */
+  .phases-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin-bottom: 36px;
+  }
+  .phase-tile {
+    background: #1f4a73;
+    border-radius: 12px;
+    padding: 20px 16px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .phase-tile-name {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    font-weight: 600;
+  }
+  .phase-tile-hours {
+    font-family: "Charter", Georgia, serif;
+    font-size: 15px;
+    font-weight: 700;
+    opacity: 0.9;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 10px;
+    margin-bottom: 2px;
+  }
+  .phase-tile-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+  }
+  .phase-tile-label { opacity: 0.6; }
+  .phase-tile-val { font-weight: 700; font-size: 14px; }
+  .phase-tile-val.v2 { color: #7dd4fc; }
+  .phase-tile-val.v3 { color: #fcd34d; }
+  .phase-tile-val.dash { opacity: 0.35; }
+  /* ===== PHASE GRID — white boxes (RCA Belt Twin phases) ===== */
+  .phase-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-bottom: 36px;
+  }
+  .phase-box {
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .phase-box .phase-num-pill {
+    align-self: flex-start;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 4px 9px;
+    border-radius: 100px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+  .phase-box .phase-name {
+    font-family: "Charter", Georgia, serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0;
+  }
+  .phase-baseline {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .phase-baseline .bl-val {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .phase-baseline .bl-lbl {
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .phase-versions {
+    display: flex;
+    gap: 10px;
+  }
+  .phase-versions > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .phase-versions .ver-lbl {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .phase-versions .ver-pct {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .phase-versions .ver-v2 .ver-lbl,
+  .phase-versions .ver-v2 .ver-pct { color: var(--blue); }
+  .phase-versions .ver-v3 .ver-lbl,
+  .phase-versions .ver-v3 .ver-pct { color: var(--accent); }
+  @media (max-width: 1100px) {
+    .phase-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 700px) {
+    .phase-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .phase-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Version blocks */
+  .version-blocks {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-bottom: 40px;
+    border: 1px solid var(--line);
+  }
+  .version-block {
+    background: #fff;
+    padding: 24px 26px;
+    border-right: 1px solid var(--line);
+    position: relative;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .version-block:last-child { border-right: none; }
+  .version-block:hover { background: #fafaf4; }
+  .version-block .vb-eyebrow {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .version-block .vb-count {
+    font-family: "Charter", Georgia, serif;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .version-block .vb-of { font-size: 16px; color: var(--muted); margin-left: 4px; }
+  .version-block .vb-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+  .version-block .vb-pct {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 12px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    display: inline-block;
+  }
+  .version-block .click-hint {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: var(--muted);
+    opacity: 0.6;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .vb-v1 .vb-count { color: var(--green); }
+  .vb-v1 .vb-pct { background: #e6f0e8; color: var(--green); }
+  .vb-v2 .vb-count { color: var(--blue); }
+  .vb-v2 .vb-pct { background: #e3ecf3; color: var(--blue); }
+  .vb-v3 .vb-count { color: var(--amber); }
+  .vb-v3 .vb-pct { background: #f3ebd6; color: var(--amber); }
+
+  /* Savings popup */
+  .savings-popup {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+    padding: 20px 22px;
+    border-radius: 4px;
+  }
+  .savings-popup.open { display: block; }
+  .savings-popup h4 {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 12px;
+  }
+  .savings-popup ul {
+    margin: 0; padding: 0; list-style: none;
+    font-family: "Inter", sans-serif;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: #2a2a2a;
+  }
+  .savings-popup li {
+    padding: 5px 0;
+    border-bottom: 1px solid #f0efea;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .savings-popup li:last-child { border-bottom: none; }
+  .savings-popup .sp-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    flex-shrink: 0; margin-top: 6px;
+  }
+  .savings-popup .sp-h {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+    margin-left: auto;
+    padding-left: 12px;
+  }
+
+  /* Unified req table */
+  .req-section-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 14px;
+    background: #f7f6f0;
+    border-bottom: 1px solid var(--line);
+    font-weight: 700;
+  }
+  .req-section-label.ip { color: var(--blue); background: #eef4f9; }
+  .req-section-label.done { color: var(--green); background: #eef7f0; }
+  .req-section-label.v3 { color: var(--amber); background: #fdf8ee; }
+  .feat-badge {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: #e3ecf3;
+    color: var(--blue);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .feat-badge.core { background: #f0efea; color: #555; }
+  .feat-badge.amber { background: #f3ebd6; color: var(--amber); }
+  .feat-badge.red { background: #f3e0e0; color: var(--red); }
+
+  /* V3 timeline table */
+  .v3-timeline-section {
+    margin-top: 48px;
+    padding-top: 36px;
+    border-top: 2px solid var(--ink);
+  }
+  .v3-tl-head {
+    margin-bottom: 20px;
+  }
+  .v3-tl-head h3 {
+    font-family: "Charter", Georgia, serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .v3-tl-head p {
+    font-size: 14.5px;
+    color: var(--muted);
+    margin: 0;
+    font-family: "Inter", sans-serif;
+  }
+  .tl-table { width: 100%; border-collapse: collapse; font-family: "Inter", sans-serif; font-size: 13.5px; background: #fff; border: 1px solid var(--line); }
+  .tl-table th {
+    padding: 10px 14px;
+    background: #f0efea;
+    text-align: left;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #4a4a4a;
+    border-bottom: 1px solid var(--line);
+  }
+  .tl-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #eeece5;
+    vertical-align: top;
+    font-size: 13.5px;
+  }
+  .tl-table tr:last-child td { border-bottom: none; }
+  .tl-est {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    color: var(--blue);
+    white-space: nowrap;
+    font-size: 12.5px;
+  }
+  .blocker-tag {
+    display: inline-block;
+    background: #f3e0e0;
+    color: var(--red);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .dep-tag {
+    display: inline-block;
+    background: #f3ebd6;
+    color: var(--amber);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  /* ===== SITE HEADER + NAV (matching other pages) ===== */
+  .site-header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 8px 0 0;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .site-header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 14px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-logo {
+    width: 34px; height: 34px;
+    background: var(--gsk-orange);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    font-family: 'Inter', sans-serif;
+  }
+  .brand-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--charcoal);
+    font-family: 'Inter', sans-serif;
+  }
+  .brand-name span { opacity: 0.6; font-weight: 400; margin-left: 6px; }
+  .nav { display: flex; gap: 28px; }
+  .nav a {
+    font-size: 13px;
+    color: var(--slate);
+    font-weight: 500;
+    padding: 6px 2px;
+    border-bottom: 2px solid transparent;
+    text-decoration: none;
+    transition: color 0.2s, border-color 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+  .nav a:hover { color: var(--gsk-orange); }
+  .nav a.active { color: var(--gsk-orange); border-bottom-color: var(--gsk-orange); }
+
+  /* Match container padding to other pages */
+  .wrap {
+    max-width: 1280px;
+    padding: 36px 48px 80px;
+  }
+
+  /* ===== UNIVERSAL FONT OVERRIDE: force Inter everywhere ===== */
+  .wrap, .wrap * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif !important; }
+
+  /* ===== Document title bar (eyebrow + h1 + subtitle) — match kirk-title-bar ===== */
+  .wrap > header {
+    border-bottom: none !important;
+    padding-bottom: 8px !important;
+    margin-bottom: 12px !important;
+  }
+  .eyebrow {
+    color: var(--gsk-orange) !important;
+    font-weight: 800 !important;
+    font-size: 11px !important;
+    letter-spacing: 0.18em !important;
+  }
+  h1 {
+    color: var(--charcoal) !important;
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.5px !important;
+    line-height: 1.15 !important;
+    margin: 6px 0 4px !important;
+  }
+  .subtitle {
+    color: var(--slate) !important;
+    font-style: normal !important;
+    font-size: 14px !important;
+    margin-top: 4px !important;
+  }
+  h2, h3 { letter-spacing: -0.005em; }
+
+  /* ===== Tabs restyled in GSK look ===== */
+  .tabs {
+    border-bottom: 1px solid var(--line) !important;
+    margin-top: 28px !important;
+  }
+  .tab {
+    color: var(--slate) !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    padding: 12px 22px 10px !important;
+  }
+  .tab:hover { color: var(--gsk-orange) !important; }
+  .tab.active {
+    color: var(--gsk-orange) !important;
+    border-bottom-color: var(--gsk-orange) !important;
+  }
+  .tab .tab-num { color: var(--gsk-orange) !important; font-weight: 700 !important; }
+
+  /* ===== Round corners + soft shadows on all card-like elements (match other pages) ===== */
+  .toc-bar {
+    border-radius: 14px !important;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04) !important;
+    border-color: var(--line) !important;
+  }
+  .toc-cell { background: #fff !important; }
+  .phase-intro, .feat-intro, .answer, .callout, .grand-total-card {
+    border-radius: 12px !important;
+    border-color: var(--line) !important;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  table {
+    border-radius: 12px !important;
+    overflow: hidden;
+    border-color: var(--line) !important;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  th { background: var(--gsk-orange-tint) !important; color: var(--gsk-orange-dark) !important; border-bottom-color: var(--line) !important; }
+  .phase-box {
+    border-radius: 12px !important;
+    border-color: var(--line) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    background: #fff;
+  }
+  .pill { border-radius: 100px !important; }
+  .chip { border-radius: 100px !important; border-color: var(--line) !important; }
+  .chip.active { background: var(--gsk-orange) !important; border-color: var(--gsk-orange) !important; }
+  .filter-summary strong { color: var(--gsk-orange) !important; }
+  .badge-v3, .badge-blocked, .badge-unify { border-radius: 100px !important; padding: 2px 10px !important; }
+
+  /* Section heads (h2 + pill rows) */
+  .section-head {
+    border-bottom-color: var(--line) !important;
+  }
+  h2 {
+    color: var(--charcoal);
+    font-size: 18px !important;
+    font-weight: 700 !important;
+  }
+
+  /* Big number / accents in orange */
+  .toc-cell .count { font-weight: 700 !important; }
+  .gt-result { color: var(--gsk-orange) !important; }
+  .phase-intro { border-left-color: var(--gsk-orange) !important; }
+  .answer { border-left-color: var(--gsk-orange) !important; }
+  .callout { background: var(--gsk-orange-tint) !important; border-left-color: var(--gsk-orange) !important; }
+  .callout.blue { background: #E6F1FB !important; border-left-color: #1f4a73 !important; }
+</style>
+</head>
+<body>
+
+<header class="site-header" id="header">
+  <div class="site-header-inner">
+    <div class="brand">
+      <div class="brand-logo">GSK</div>
+      <div class="brand-name">My Agentic Twin <span>· GSC Programme</span></div>
+    </div>
+    <nav class="nav">
+      <a href="../index.html">Home</a>
+      <a href="agenda.html">Agenda</a>
+      <a href="../from_ambition_to_delivery.html">Programme Summary</a>
+      <a href="../kirk.html">Executive Briefing</a>
+      <a href="sara_dmaic_summary_14%201.html" class="active">DMAIC</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">DMAIC Copilot · Requirements &amp; Value · May 2026</div>
+  <h1>Value Assessment for RCA Belt Twin</h1>
+  <div class="subtitle">Status against the four categories, phase-by-phase breakdown of where the 7.3 h saving comes from, feature view with value-at-risk, and the value-case logic.</div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" data-tab="tab1"><span class="tab-num">01</span>Status by category</button>
+  <button class="tab" data-tab="tab2"><span class="tab-num">02</span>Phase breakdown</button>
+  <button class="tab" data-tab="tab3"><span class="tab-num">03</span>Features &amp; value at risk</button>
+  <button class="tab" data-tab="tab4"><span class="tab-num">04</span>Value case logic</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- ============== TAB 01 — STATUS BY CATEGORY ================= -->
+<!-- ============================================================ -->
+
+<!-- ============================================================ -->
+<!-- ============== TAB 01 — STATUS BY CATEGORY ================= -->
+<!-- ============================================================ -->
+<div class="tab-panel active" id="tab1">
+
+<!-- ====== SECTION A: MY RCA BELT TWIN PHASES ====== -->
+<h3 style="font-family:'Charter',Georgia,serif;font-size:22px;font-weight:700;margin:0 0 18px;letter-spacing:-0.01em;">My RCA Belt Twin Phases</h3>
+<div class="phase-grid">
+
+  <div class="phase-box">
+    <span class="phase-num-pill">PHASE 01</span>
+    <div class="phase-name">Pre-DMAIC</div>
+    <div class="phase-baseline"><span class="bl-val">1.50 h</span><span class="bl-lbl">baseline</span></div>
+    <div class="phase-versions">
+      <div class="ver-v2"><span class="ver-lbl">V2</span><span class="ver-pct">30 %</span></div>
+      <div class="ver-v3"><span class="ver-lbl">V3</span><span class="ver-pct">—</span></div>
+    </div>
+  </div>
+
+  <div class="phase-box">
+    <span class="phase-num-pill">PHASE 02</span>
+    <div class="phase-name">Define</div>
+    <div class="phase-baseline"><span class="bl-val">2.30 h</span><span class="bl-lbl">baseline</span></div>
+    <div class="phase-versions">
+      <div class="ver-v2"><span class="ver-lbl">V2</span><span class="ver-pct">35 %</span></div>
+      <div class="ver-v3"><span class="ver-lbl">V3</span><span class="ver-pct">—</span></div>
+    </div>
+  </div>
+
+  <div class="phase-box">
+    <span class="phase-num-pill">PHASE 03</span>
+    <div class="phase-name">Measure</div>
+    <div class="phase-baseline"><span class="bl-val">3.63 h</span><span class="bl-lbl">baseline</span></div>
+    <div class="phase-versions">
+      <div class="ver-v2"><span class="ver-lbl">V2</span><span class="ver-pct">60 %</span></div>
+      <div class="ver-v3"><span class="ver-lbl">V3</span><span class="ver-pct">—</span></div>
+    </div>
+  </div>
+
+  <div class="phase-box">
+    <span class="phase-num-pill">PHASE 04</span>
+    <div class="phase-name">Analyse</div>
+    <div class="phase-baseline"><span class="bl-val">2.57 h</span><span class="bl-lbl">baseline</span></div>
+    <div class="phase-versions">
+      <div class="ver-v2"><span class="ver-lbl">V2</span><span class="ver-pct">35 %</span></div>
+      <div class="ver-v3"><span class="ver-lbl">V3</span><span class="ver-pct">55 %</span></div>
+    </div>
+  </div>
+
+  <div class="phase-box">
+    <span class="phase-num-pill">PHASE 05</span>
+    <div class="phase-name">Improve</div>
+    <div class="phase-baseline"><span class="bl-val">2.63 h</span><span class="bl-lbl">baseline</span></div>
+    <div class="phase-versions">
+      <div class="ver-v2"><span class="ver-lbl">V2</span><span class="ver-pct">15 %</span></div>
+      <div class="ver-v3"><span class="ver-lbl">V3</span><span class="ver-pct">—</span></div>
+    </div>
+  </div>
+
+  <div class="phase-box">
+    <span class="phase-num-pill">PHASE 06</span>
+    <div class="phase-name">Control</div>
+    <div class="phase-baseline"><span class="bl-val">3.43 h</span><span class="bl-lbl">baseline</span></div>
+    <div class="phase-versions">
+      <div class="ver-v2"><span class="ver-lbl">V2</span><span class="ver-pct">60 %</span></div>
+      <div class="ver-v3"><span class="ver-lbl">V3</span><span class="ver-pct">—</span></div>
+    </div>
+  </div>
+
+</div>
+<!-- ====== SECTION B: VERSION BLOCKS ====== -->
+<h3 style="font-family:'Charter',Georgia,serif;font-size:19px;font-weight:700;margin:0 0 16px;letter-spacing:-0.01em;">Requirements coverage by version</h3>
+<div class="version-blocks" id="version-blocks">
+
+  <!-- V1 block -->
+  <div class="version-block vb-v1">
+    <div class="vb-eyebrow">1 · Covered in V1</div>
+    <div><span class="vb-count">73</span><span class="vb-of">/97</span></div>
+    <div class="vb-sub">V1 = Complete</div>
+  </div>
+
+  <!-- V2 block -->
+  <div class="version-block vb-v2" onclick="togglePopup('popup-v2', event)">
+    <div class="vb-eyebrow">2 · New in V2</div>
+    <div><span class="vb-count">21</span><span class="vb-of">/97</span></div>
+    <div class="vb-sub">V1 OoS/Blocked → V2 Complete (treating In Progress as Complete by EoW)</div>
+    <div class="vb-pct">V2 total: 40.6% time saved</div>
+    <div class="click-hint">▾ Click to see where savings come from</div>
+    <div class="savings-popup" id="popup-v2">
+      <h4>Where V2 savings come from — 6.52 h/DMAIC</h4>
+      <ul>
+        <li><span class="sp-dot" style="background:var(--blue)"></span><div><strong>Process map drafting</strong> — BPMN export to ARIS, replaces manual mapping in Define</div></li>
+        <li><span class="sp-dot" style="background:var(--blue)"></span><div><strong>Charts Creator companion agent</strong> — chart-type recommendation, spec generation & rendering for Measure & Control</div></li>
+        <li><span class="sp-dot" style="background:var(--blue)"></span><div><strong>Historical DMAICs retrieval</strong> — surfaces prior investigations from BELTIX SharePoint</div></li>
+        <li><span class="sp-dot" style="background:var(--blue)"></span><div><strong>Statistical analysis (written)</strong> — distributions, trends, before/after in plain language</div></li>
+        <li><span class="sp-dot" style="background:var(--red)"></span><div><strong>Word template auto-fill</strong> — populates OB Problem Solving Form from section variables <em style="color:var(--red)">[at risk]</em></div></li>
+        <li><span class="sp-dot" style="background:var(--blue)"></span><div><strong>Web search with guardrails</strong> — supplier recalls, regulatory changes, external context</div></li>
+        <li><span class="sp-dot" style="background:var(--blue)"></span><div><strong>Session resume from Dataverse</strong> — picks up multi-session DMAICs where user left off</div></li>
+        <li><span class="sp-dot" style="background:var(--blue)"></span><div><strong>Studio migration & quality validation</strong> — topic/instruction architecture, output quality gates</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- V3 block -->
+  <div class="version-block vb-v3" onclick="togglePopup('popup-v3', event)">
+    <div class="vb-eyebrow">3 · V3 — Blocked + Improvements</div>
+    <div><span class="vb-count">6</span><span class="vb-of">/97</span></div>
+    <div class="vb-sub">3 blocked (deferred) · 3 improvements on top of V2</div>
+    <div class="vb-pct">V3 total: 45.5% time saved</div>
+    <div class="click-hint">▾ Click to see where savings come from</div>
+    <div class="savings-popup" id="popup-v3">
+      <h4>Where V3 savings come from — +0.78 h additional</h4>
+      <ul>
+        <li><span class="sp-dot" style="background:var(--amber)"></span><div><strong>SOP Gap Analysis (ARIS/VQD)</strong> — agent compares actual practice vs SOPs in Analyse. Lifts Analyse from 35% → 55% <em style="color:var(--red)">[blocked: ARIS/VQD access pending]</em></div><span class="sp-h">+0.51 h</span></li>
+        <li><span class="sp-dot" style="background:var(--amber)"></span><div><strong>BELTIX direct write-back</strong> — agent files completed DMAIC + project form automatically, closes ~10 min manual upload <em style="color:var(--red)">[blocked: BELTIX SQL DB access pending]</em></div><span class="sp-h">+0.17 h</span></li>
+        <li><span class="sp-dot" style="background:var(--amber)"></span><div><strong>Charts Creator integration</strong> — folds Charts Creator into main Copilot via Dipendra connector, eliminates copy-paste handoff</div><span class="sp-h">+0.10 h</span></li>
+        <li><span class="sp-dot" style="background:var(--amber)"></span><div><strong>Statistical analysis as charts</strong> — Cp/Cpk, t-tests, control limits overlaid on charts (quality improvement, same connector)</div><span class="sp-h">quality</span></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- ====== SECTION C: UNIFIED REQUIREMENTS TABLE ====== -->
+<div style="margin-bottom:48px;">
+  <h3 style="font-family:'Charter',Georgia,serif;font-size:19px;font-weight:700;margin:0 0 6px;letter-spacing:-0.01em;">All requirements — V2 scope (unified view)</h3>
+  <p style="font-size:14px;color:var(--muted);margin:0 0 16px;font-family:'Inter',sans-serif;">Showing 24 requirements addressed in V2 and V3 (the 73 V1-Complete reqs are confirmed and not re-listed). Ordered: In Progress → Complete → V3/Blocked.</p>
+
+  <div style="background:#fff;border:1px solid var(--line);overflow:hidden;">
+
+    <!-- IN PROGRESS -->
+    <div class="req-section-label ip">🔵 In Progress — completing end of week (8 reqs)</div>
+    <table style="width:100%;border-collapse:collapse;font-size:13.5px;font-family:'Inter',sans-serif;">
+      <thead>
+        <tr style="background:#eef4f9;border-bottom:1px solid var(--line);">
+          <th style="padding:9px 14px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#4a4a4a;font-weight:600;">Feature</th>
+          <th style="padding:9px 14px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#4a4a4a;font-weight:600;">Req</th>
+          <th style="padding:9px 14px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#4a4a4a;font-weight:600;">Group</th>
+          <th style="padding:9px 14px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#4a4a4a;font-weight:600;">Name</th>
+          <th style="padding:9px 14px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#4a4a4a;font-weight:600;">V2 Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge">#2 Chart Generation</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_5.11</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">Measure</td><td style="padding:10px 14px;">Charts Creator Agent <span style="font-family:'JetBrains Mono',monospace;font-size:10px;background:#f3ebd6;color:var(--amber);padding:2px 6px;border-radius:3px;font-weight:600;margin-left:4px;">V3 improvement</span></td><td style="padding:10px 14px;"><span class="dot prog" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">In Progress · EoW</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge">#2 Chart Generation</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_5.12</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">Measure</td><td style="padding:10px 14px;">Measure Charts Images</td><td style="padding:10px 14px;"><span class="dot prog" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">In Progress · EoW</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge">#2 Chart Generation</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_8.11</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">Control</td><td style="padding:10px 14px;">Charts Creator Agent (Control) <span style="font-family:'JetBrains Mono',monospace;font-size:10px;background:#f3ebd6;color:var(--amber);padding:2px 6px;border-radius:3px;font-weight:600;margin-left:4px;">V3 improvement</span></td><td style="padding:10px 14px;"><span class="dot prog" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">In Progress · EoW</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge">#2 Chart Generation</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_8.12</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">Control</td><td style="padding:10px 14px;">Control Charts Images</td><td style="padding:10px 14px;"><span class="dot prog" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">In Progress · EoW</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge red">#7 Word Template</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_10.1</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">Template Output</td><td style="padding:10px 14px;">Word Tool Template Population <span style="font-family:'JetBrains Mono',monospace;font-size:10px;background:#f3e0e0;color:var(--red);padding:2px 6px;border-radius:3px;font-weight:600;margin-left:4px;">at risk</span></td><td style="padding:10px 14px;"><span class="dot prog" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">In Progress · EoW</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge">#8 Web Search</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_13</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">External Data</td><td style="padding:10px 14px;">Web Search</td><td style="padding:10px 14px;"><span class="dot prog" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">In Progress · EoW</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge">#8 Web Search</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_13.1</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">External Data</td><td style="padding:10px 14px;">External Source Guardrails</td><td style="padding:10px 14px;"><span class="dot prog" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">In Progress · EoW</span></td></tr>
+        <tr><td style="padding:10px 14px;"><span class="feat-badge">#5 Stats Analysis</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_14</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">Statistical Analysis</td><td style="padding:10px 14px;">Statistical Analysis (written form) <span style="font-family:'JetBrains Mono',monospace;font-size:10px;background:#f3ebd6;color:var(--amber);padding:2px 6px;border-radius:3px;font-weight:600;margin-left:4px;">V3 improvement</span></td><td style="padding:10px 14px;"><span class="dot prog" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">In Progress · EoW</span></td></tr>
+      </tbody>
+    </table>
+
+    <!-- COMPLETE -->
+    <div class="req-section-label done">✅ Complete (13 reqs)</div>
+    <table style="width:100%;border-collapse:collapse;font-size:13.5px;font-family:'Inter',sans-serif;">
+      <tbody>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge core">Core Copilot</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_6.10</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">Analyse</td><td style="padding:10px 14px;">Analyse Confirmation Gates</td><td style="padding:10px 14px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Complete</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge core">Core Copilot</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_7.4</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">Improve</td><td style="padding:10px 14px;">Improve Root Cause Confirmation Gate</td><td style="padding:10px 14px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Complete</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge core">Knowledge Sources</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_9</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">Knowledge</td><td style="padding:10px 14px;">Knowledge Source — SharePoint</td><td style="padding:10px 14px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Complete</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge core">Knowledge Sources</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_9.1</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">Knowledge</td><td style="padding:10px 14px;">Knowledge Source — OneDrive</td><td style="padding:10px 14px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Complete</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge">#3 Historical DMAICs</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_9.5</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">Knowledge</td><td style="padding:10px 14px;">Knowledge DMAICs</td><td style="padding:10px 14px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Complete</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge red">#7 Word Template</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_10</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">Template Output</td><td style="padding:10px 14px;">Section Variable Capture</td><td style="padding:10px 14px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Complete</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge">#3 Historical DMAICs</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_11.2</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">BELTIX Integration</td><td style="padding:10px 14px;">Historical DMAICs — BELTIX Connection</td><td style="padding:10px 14px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Complete</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge core">Platform Architecture</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_15</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">Platform Architecture</td><td style="padding:10px 14px;">Agent Builder to Studio Migration</td><td style="padding:10px 14px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Complete</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge core">Platform Architecture</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_15.1</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">Platform Architecture</td><td style="padding:10px 14px;">Output Quality Validation</td><td style="padding:10px 14px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Complete</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge core">Platform Architecture</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_15.2</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">Platform Architecture</td><td style="padding:10px 14px;">Topic vs Instruction Architecture</td><td style="padding:10px 14px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Complete</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge core">Platform Architecture</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_15.3</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">Platform Architecture</td><td style="padding:10px 14px;">Dataverse Schema Design</td><td style="padding:10px 14px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Complete</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;"><span class="feat-badge">#9 Session Resume</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_16.1</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">Session Intake</td><td style="padding:10px 14px;">Resume from Dataverse</td><td style="padding:10px 14px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Complete</span></td></tr>
+        <tr><td style="padding:10px 14px;"><span class="feat-badge">#9 Session Resume</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_16.2</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">Session Intake</td><td style="padding:10px 14px;">Resume State Summary to User</td><td style="padding:10px 14px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Complete</span></td></tr>
+      </tbody>
+    </table>
+
+    <!-- V3/BLOCKED -->
+    <div class="req-section-label v3">🟡 V3 — Blocked in V2 / Deferred (3 reqs)</div>
+    <table style="width:100%;border-collapse:collapse;font-size:13.5px;font-family:'Inter',sans-serif;">
+      <tbody>
+        <tr style="border-bottom:1px solid #eeece5;background:#fdfaf2;"><td style="padding:10px 14px;"><span class="feat-badge amber">#4 BELTIX Storage</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_11</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">BELTIX</td><td style="padding:10px 14px;">BELTIX SharePoint Storage<br><span style="font-size:12px;color:var(--muted);">Pending DM_11.1 — storage cannot proceed until metadata/record layer is defined</span></td><td style="padding:10px 14px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--red);">Blocked → V3</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;background:#fdfaf2;"><td style="padding:10px 14px;"><span class="feat-badge amber">#4 BELTIX Metadata</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_11.1</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">BELTIX</td><td style="padding:10px 14px;">BELTIX Metadata Tagging<br><span style="font-size:12px;color:var(--muted);">Conversations with BELTIX team for SQL DB access (uploads, tagging, metadata)</span></td><td style="padding:10px 14px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--red);">Blocked → V3</span></td></tr>
+        <tr style="background:#fdfaf2;"><td style="padding:10px 14px;"><span class="feat-badge amber">#6 ARIS/VQD SOP Gap</span></td><td style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_12.2</td><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;">ARIS/VQD SOPs</td><td style="padding:10px 14px;">SOP Gap Analysis<br><span style="font-size:12px;color:var(--muted);">Dipendra conversations ongoing; ARIS/VQD access feasibility being assessed in parallel</span></td><td style="padding:10px 14px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--red);">Blocked → V3</span></td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+</div>
+
+
+<div class="tab-panel" id="tab2">
+
+<!-- TOP SUMMARY — the client story -->
+<div style="margin-bottom: 40px;">
+  <h3 style="font-family: 'Charter', Georgia, serif; font-size: 22px; margin: 0 0 18px; font-weight: 700; letter-spacing: -0.01em;">Where the time savings come from</h3>
+
+  <!-- V2 CARD -->
+  <div style="background: #fff; border: 1px solid var(--line); border-left: 5px solid var(--blue); padding: 26px 30px; margin-bottom: 20px;">
+    <div style="display: flex; align-items: baseline; gap: 18px; margin-bottom: 14px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--blue); font-weight: 700;">By end of this week — V2</div>
+      <div style="flex: 1; height: 1px; background: var(--line);"></div>
+      <div style="font-family: 'Charter', Georgia, serif; font-size: 32px; font-weight: 700; color: var(--blue); line-height: 1;">6.52 h</div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--blue); font-weight: 700;">40.6 %</div>
+    </div>
+    <p style="font-size: 14.5px; line-height: 1.6; color: #2a2a2a; margin: 0 0 14px; font-family: 'Inter', sans-serif;">
+      V2 saves <strong>6.52 hours per DMAIC (40.6 %)</strong> compared to doing it without the agent. The savings come from capabilities shipped since V1:
+    </p>
+    <ul style="margin: 0; padding-left: 0; list-style: none; font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.65; color: #2a2a2a;">
+      <li style="padding: 4px 0;"><span style="display: inline-block; width: 10px; height: 10px; background: var(--blue); border-radius: 50%; margin-right: 10px; vertical-align: middle;"></span><strong>Process map drafting</strong> with BPMN export to ARIS — replaces manual mapping in the Define phase.</li>
+      <li style="padding: 4px 0;"><span style="display: inline-block; width: 10px; height: 10px; background: var(--blue); border-radius: 50%; margin-right: 10px; vertical-align: middle;"></span><strong>Charts Creator companion agent</strong> — recommends chart types, generates specs, renders charts for Measure &amp; Control phases.</li>
+      <li style="padding: 4px 0;"><span style="display: inline-block; width: 10px; height: 10px; background: var(--blue); border-radius: 50%; margin-right: 10px; vertical-align: middle;"></span><strong>Historical DMAICs retrieval</strong> from BELTIX SharePoint — surfaces prior similar investigations.</li>
+      <li style="padding: 4px 0;"><span style="display: inline-block; width: 10px; height: 10px; background: var(--blue); border-radius: 50%; margin-right: 10px; vertical-align: middle;"></span><strong>Statistical analysis in written form</strong> — describes distributions, trends, before/after differences in plain language.</li>
+      <li style="padding: 4px 0;"><span style="display: inline-block; width: 10px; height: 10px; background: var(--blue); border-radius: 50%; margin-right: 10px; vertical-align: middle;"></span><strong>Word template auto-fill</strong> — populates the OB Problem Solving Form from captured section variables.</li>
+      <li style="padding: 4px 0;"><span style="display: inline-block; width: 10px; height: 10px; background: var(--blue); border-radius: 50%; margin-right: 10px; vertical-align: middle;"></span><strong>Web search</strong> with source-hierarchy guardrails — surfaces supplier recalls, regulatory changes, external context.</li>
+      <li style="padding: 4px 0;"><span style="display: inline-block; width: 10px; height: 10px; background: var(--blue); border-radius: 50%; margin-right: 10px; vertical-align: middle;"></span><strong>Session resume from Dataverse</strong> — picks up multi-session DMAICs where the user left off.</li>
+      <li style="padding: 4px 0;"><span style="display: inline-block; width: 10px; height: 10px; background: var(--blue); border-radius: 50%; margin-right: 10px; vertical-align: middle;"></span><strong>Studio migration</strong> with confirmation gates &amp; quality validation in Analyse / Improve / Control phases.</li>
+    </ul>
+  </div>
+
+  <!-- V3 CARD -->
+  <div style="background: #fff; border: 1px solid var(--line); border-left: 5px solid var(--accent); padding: 26px 30px; margin-bottom: 20px;">
+    <div style="display: flex; align-items: baseline; gap: 18px; margin-bottom: 14px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 700;">If we go for V3 — additional unlock</div>
+      <div style="flex: 1; height: 1px; background: var(--line);"></div>
+      <div style="font-family: 'Charter', Georgia, serif; font-size: 32px; font-weight: 700; color: var(--accent); line-height: 1;">+0.78 h</div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent); font-weight: 700;">+4.9 pts</div>
+    </div>
+    <p style="font-size: 14.5px; line-height: 1.6; color: #2a2a2a; margin: 0 0 14px; font-family: 'Inter', sans-serif;">
+      V3 adds four items on top of V2, totalling <strong>+0.78 hours saved per DMAIC</strong>:
+    </p>
+    <table style="width: 100%; border-collapse: collapse; font-family: 'Inter', sans-serif; font-size: 14px;">
+      <tbody>
+        <tr>
+          <td style="padding: 10px 0; border-bottom: 1px solid var(--line); width: 60%;">
+            <strong>SOP Gap Analysis</strong> — ARIS/VQD connector enables the agent to compare actual practice vs SOPs in the Analyse phase. Lifts Analyse reduction from 35 % to 55 %.
+          </td>
+          <td style="padding: 10px 0; border-bottom: 1px solid var(--line); text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--accent); white-space: nowrap; padding-left: 16px;">+0.51 h</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px 0; border-bottom: 1px solid var(--line);">
+            <strong>BELTIX direct write-back</strong> — agent files the completed DMAIC + project form into BELTIX automatically. Closes the ~10 min/DMAIC manual upload step the user does today.
+          </td>
+          <td style="padding: 10px 0; border-bottom: 1px solid var(--line); text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--accent); white-space: nowrap; padding-left: 16px;">+0.17 h</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px 0; border-bottom: 1px solid var(--line);">
+            <strong>Charts Creator integration</strong> — Dipendra's code-execution agent folds the Charts Creator into the main Copilot. Removes the copy-paste handoff and reduces chart-spec re-prompts.
+          </td>
+          <td style="padding: 10px 0; border-bottom: 1px solid var(--line); text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--accent); white-space: nowrap; padding-left: 16px;">+0.10 h</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px 0;">
+            <strong>Statistical analysis as charts</strong> — same Dipendra connector unlocks proper computation (Cp/Cpk, t-tests, control limits) overlaid on charts rather than written below. Quality &amp; UX improvement, no separate h figure.
+          </td>
+          <td style="padding: 10px 0; text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--muted); white-space: nowrap; padding-left: 16px; font-style: italic;">quality</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TOTAL CARD -->
+  <div style="background: var(--ink); color: #fff; padding: 22px 30px; display: flex; align-items: center; gap: 24px;">
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; opacity: 0.7;">Total per DMAIC — V2 + V3</div>
+    <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.2);"></div>
+    <div style="font-family: 'Charter', Georgia, serif; font-size: 40px; font-weight: 700; line-height: 1; color: #fff;">7.30 h</div>
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: var(--accent-soft);">45.5 %</div>
+  </div>
+</div>
+
+<!-- BOTTOM — DETAILED OUTLINE -->
+<div style="border-top: 1px solid var(--line); padding-top: 36px;">
+  <h3 style="font-family: 'Charter', Georgia, serif; font-size: 22px; margin: 0 0 8px; font-weight: 700; letter-spacing: -0.01em;">Detailed outline — phase by phase</h3>
+  <p style="font-size: 14.5px; color: var(--muted); margin: 0 0 28px; font-family: 'Inter', sans-serif;">
+    A DMAIC takes <strong>16.07 h per owner on average</strong> (weighted across two user groups: site Simon 16.5 h × 800 users, others 16.0 h × 5,250 users). The phase tables below show what V2 captures today, and what V3 would add. Numbers add up to the totals above.
+  </p>
+
+<!-- PHASE: Pre-DMAIC -->
+<div class="phase-card">
+  <div class="phase-card-head">
+    <span class="phase-num-pill">PHASE 01</span>
+    <span class="phase-name">Pre-DMAIC</span>
+    <span class="phase-stats">
+      <span><span class="stat-val">1.50 h</span> baseline</span>
+      <span class="sep">·</span>
+      <span><span class="stat-val">30 %</span></span>
+      <span class="sep">·</span>
+      <span><span class="stat-saved">0.45 h saved</span></span>
+    </span>
+  </div>
+  <div class="phase-card-body">
+    <table class="sub-table">
+      <thead>
+        <tr><th>Sub-activity</th><th class="r">h saved</th><th>Delivered by</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Preparation work (supplier context, regulatory checks)</td><td class="r">0.10</td><td>Feature #8 Web Search <span class="status-mini ontrack">V2</span></td></tr>
+        <tr><td>SME identification, scheduling, context prep drafting</td><td class="r">0.35</td><td>Core Copilot <span class="status-mini core">V2</span></td></tr>
+        <tr class="total"><td>Total Pre-DMAIC</td><td class="r">0.45</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- PHASE: Define -->
+<div class="phase-card">
+  <div class="phase-card-head">
+    <span class="phase-num-pill">PHASE 02</span>
+    <span class="phase-name">Define</span>
+    <span class="phase-stats">
+      <span><span class="stat-val">2.30 h</span> baseline</span>
+      <span class="sep">·</span>
+      <span><span class="stat-val">35 %</span></span>
+      <span class="sep">·</span>
+      <span><span class="stat-saved">0.81 h saved</span></span>
+    </span>
+  </div>
+  <div class="phase-card-body">
+    <table class="sub-table">
+      <thead>
+        <tr><th>Sub-activity</th><th class="r">h saved</th><th>Delivered by</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Process Mapping</td><td class="r">0.23</td><td>Feature #1 Process Map <span class="status-mini delivered">V2</span></td></tr>
+        <tr><td>Document Define section in template</td><td class="r">0.37</td><td>Feature #7 Word Template <span class="status-mini atrisk">V2</span></td></tr>
+        <tr><td>Conduct session (with external context lookups)</td><td class="r">0.05</td><td>Feature #8 Web Search <span class="status-mini ontrack">V2</span></td></tr>
+        <tr><td>5W2H drafting, objective, team list, observations</td><td class="r">0.16</td><td>Core Copilot <span class="status-mini core">V2</span></td></tr>
+        <tr class="total"><td>Total Define</td><td class="r">0.81</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- PHASE: Measure -->
+<div class="phase-card">
+  <div class="phase-card-head">
+    <span class="phase-num-pill">PHASE 03</span>
+    <span class="phase-name">Measure</span>
+    <span class="phase-stats">
+      <span><span class="stat-val">3.63 h</span> baseline</span>
+      <span class="sep">·</span>
+      <span><span class="stat-val">60 %</span></span>
+      <span class="sep">·</span>
+      <span><span class="stat-saved">2.18 h saved (V2) → 2.23 h (V3)</span></span>
+    </span>
+  </div>
+  <div class="phase-card-body">
+    <table class="sub-table">
+      <thead>
+        <tr><th>Sub-activity</th><th class="r">h saved</th><th>Delivered by</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Identify measurement requirements (past DMAICs lookup)</td><td class="r">0.16</td><td>Feature #3 Historical DMAICs <span class="status-mini delivered">V2</span></td></tr>
+        <tr><td>Analyse data — chart building &amp; interpretation</td><td class="r">1.55</td><td>Feature #2 Chart Generation + Feature #5 Stats <span class="status-mini delivered">V2</span></td></tr>
+        <tr class="v3-row"><td>Chart Creator integration — removes copy-paste handoff &amp; re-prompts <em>(V3 only)</em></td><td class="r">+0.05</td><td>Feature #2 Chart Generation integration <span class="status-mini v3">V3</span></td></tr>
+        <tr><td>Document Measure conclusion in template</td><td class="r">0.37</td><td>Feature #7 Word Template <span class="status-mini atrisk">V2</span></td></tr>
+        <tr><td>Timeline drafting, data needs list, revised problem statement</td><td class="r">0.10</td><td>Core Copilot <span class="status-mini core">V2</span></td></tr>
+        <tr class="total"><td>Total Measure (V2)</td><td class="r">2.18</td><td></td></tr>
+        <tr class="total"><td>Total Measure (V3 complete)</td><td class="r">2.23</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- PHASE: Analyse — V2/V3 split + SOPs unlock -->
+<div class="phase-card">
+  <div class="phase-card-head">
+    <span class="phase-num-pill">PHASE 04</span>
+    <span class="phase-name">Analyse</span>
+    <span class="phase-stats">
+      <span><span class="stat-val">2.57 h</span> baseline</span>
+      <span class="sep">·</span>
+      <span><span class="stat-val">35 % → 55 %</span></span>
+      <span class="sep">·</span>
+      <span><span class="stat-saved">0.90 h (V2) → 1.41 h (V3)</span></span>
+    </span>
+  </div>
+  <div class="phase-card-body">
+    <div class="analyse-split">
+      <strong>Analyse is where the biggest V3 unlock lives.</strong> V2 saves 0.90 h via fishbone, 5 Whys and root-cause structuring (35 %). V3 adds SOP gap analysis — the agent compares actual practice to ARIS/VQD SOPs — lifting Analyse to 55 % and adding +0.51 h.
+    </div>
+    <table class="sub-table">
+      <thead>
+        <tr><th>Sub-activity</th><th class="r">h saved</th><th>Delivered by</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Fishbone, 5 Whys, RCA drafting &amp; structuring</td><td class="r">0.90</td><td>Core Copilot <span class="status-mini core">V2</span></td></tr>
+        <tr class="v3-row"><td>Procedures / Controls gap analysis vs SOPs <em>(V3 only — Analyse 35 % → 55 %)</em></td><td class="r">+0.51</td><td>Feature #6 ARIS/VQD SOP Gap <span class="status-mini v3">V3</span></td></tr>
+        <tr class="total"><td>Total Analyse (V2)</td><td class="r">0.90</td><td></td></tr>
+        <tr class="total"><td>Total Analyse (V3 complete)</td><td class="r">1.41</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- PHASE: Improve -->
+<div class="phase-card">
+  <div class="phase-card-head">
+    <span class="phase-num-pill">PHASE 05</span>
+    <span class="phase-name">Improve</span>
+    <span class="phase-stats">
+      <span><span class="stat-val">2.63 h</span> baseline</span>
+      <span class="sep">·</span>
+      <span><span class="stat-val">15 %</span></span>
+      <span class="sep">·</span>
+      <span><span class="stat-saved">0.39 h saved</span></span>
+    </span>
+  </div>
+  <div class="phase-card-body">
+    <table class="sub-table">
+      <thead>
+        <tr><th>Sub-activity</th><th class="r">h saved</th><th>Delivered by</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Action table drafting (CA/PA, risk &amp; mitigation, prioritisation)</td><td class="r">0.39</td><td>Core Copilot <span class="status-mini core">V2</span></td></tr>
+        <tr><td>Stakeholder meetings, weekly follow-ups</td><td class="r">0.00</td><td>Human-driven — no agent contribution</td></tr>
+        <tr class="total"><td>Total Improve</td><td class="r">0.39</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- PHASE: Control -->
+<div class="phase-card">
+  <div class="phase-card-head">
+    <span class="phase-num-pill">PHASE 06</span>
+    <span class="phase-name">Control</span>
+    <span class="phase-stats">
+      <span><span class="stat-val">3.43 h</span> baseline</span>
+      <span class="sep">·</span>
+      <span><span class="stat-val">60 %</span></span>
+      <span class="sep">·</span>
+      <span><span class="stat-saved">2.06 h saved (V2) → 2.28 h (V3)</span></span>
+    </span>
+  </div>
+  <div class="phase-card-body">
+    <table class="sub-table">
+      <thead>
+        <tr><th>Sub-activity</th><th class="r">h saved</th><th>Delivered by</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Collect &amp; chart post-improvement data (effectiveness checks)</td><td class="r">0.98</td><td>Feature #2 Chart Generation <span class="status-mini delivered">V2</span></td></tr>
+        <tr class="v3-row"><td>Chart Creator integration — same fix as Measure phase <em>(V3 only)</em></td><td class="r">+0.05</td><td>Feature #2 Chart Generation integration <span class="status-mini v3">V3</span></td></tr>
+        <tr><td>Sustainability validation (statistical follow-up)</td><td class="r">0.15</td><td>Feature #5 Stats Analysis <span class="status-mini delivered">V2</span></td></tr>
+        <tr><td>Document final conclusions in template</td><td class="r">0.88</td><td>Feature #7 Word Template <span class="status-mini atrisk">V2</span></td></tr>
+        <tr class="v3-row"><td>BELTIX direct write-back — replaces manual upload &amp; project form <em>(V3 only)</em></td><td class="r">+0.17</td><td>Feature #4 BELTIX Storage + Metadata <span class="status-mini v3">V3</span></td></tr>
+        <tr><td>Standardisation &amp; sharing drafts</td><td class="r">0.05</td><td>Core Copilot <span class="status-mini core">V2</span></td></tr>
+        <tr class="total"><td>Total Control (V2)</td><td class="r">2.06</td><td></td></tr>
+        <tr class="total"><td>Total Control (V3 complete)</td><td class="r">2.28</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Grand totals -->
+<div class="grand-total-card">
+  <span class="gt-label">Total per DMAIC — V2 (end of this week)</span>
+  <span class="gt-formula">0.45 + 0.81 + 2.18 + 0.90 + 0.39 + 2.06 − 0.27 friction</span>
+  <span class="gt-eq">=</span>
+  <span class="gt-result">6.52 h</span>
+</div>
+<div class="grand-total-card" style="border-color: var(--accent);">
+  <span class="gt-label" style="color: var(--accent);">Total per DMAIC — V2 + V3</span>
+  <span class="gt-formula">6.52 + 0.51 SOPs + 0.10 Charts + 0.17 BELTIX</span>
+  <span class="gt-eq">=</span>
+  <span class="gt-result" style="color: var(--accent);">7.30 h</span>
+</div>
+
+</div>
+</div>
+
+
+<!-- V3 TIMELINE — added per req 7 -->
+<div class="v3-timeline-section">
+  <div class="v3-tl-head">
+    <h3>V3 development timeline and blockers</h3>
+    <p>Requirements scoped for V3 — estimated development effort, dependencies, and current blockers.</p>
+  </div>
+  <table class="tl-table">
+    <thead>
+      <tr>
+        <th style="width:110px;">Feature</th>
+        <th style="width:90px;">Req</th>
+        <th>Name</th>
+        <th style="width:100px;">Est. effort</th>
+        <th>Dependencies</th>
+        <th>Current blocker</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="feat-badge amber">#4 BELTIX</span></td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_11.1</td>
+        <td><strong>BELTIX Metadata Tagging</strong><br><span style="font-size:12.5px;color:var(--muted);">SQL DB rows for uploads, tagging &amp; metadata</span></td>
+        <td><span class="tl-est">1–2 weeks</span></td>
+        <td>BELTIX team must grant SQL DB access and agree on schema</td>
+        <td>Conversations in progress with BELTIX team. No access granted yet.</td>
+      </tr>
+      <tr>
+        <td><span class="feat-badge amber">#4 BELTIX</span></td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_11</td>
+        <td><strong>BELTIX SharePoint Storage</strong><br><span style="font-size:12.5px;color:var(--muted);">Agent files completed DMAIC + project form automatically</span></td>
+        <td><span class="tl-est">1 week</span></td>
+        <td><span class="dep-tag">DEPENDS ON DM_11.1</span> Metadata layer must be completed first</td>
+        <td>Cannot start until DM_11.1 is resolved and metadata schema is defined.</td>
+      </tr>
+      <tr>
+        <td><span class="feat-badge amber">#6 ARIS/VQD</span></td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_12.2</td>
+        <td><strong>SOP Gap Analysis (ARIS/VQD)</strong><br><span style="font-size:12.5px;color:var(--muted);">Agent compares actual practice vs SOPs — lifts Analyse 35%→55%</span></td>
+        <td><span class="tl-est">2–3 weeks</span></td>
+        <td>ARIS/VQD system access required; independent of Process Map work</td>
+        <td>ARIS/VQD access feasibility assessment ongoing. Dipendra conversations active. No timeline confirmed.</td>
+      </tr>
+      <tr>
+        <td><span class="feat-badge">#2 Charts</span></td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_5.11<br>DM_8.11</td>
+        <td><strong>Charts Creator Integration (Measure + Control)</strong><br><span style="font-size:12.5px;color:var(--muted);">Folds Charts Creator into main Copilot — eliminates copy-paste handoff</span></td>
+        <td><span class="tl-est">1 week</span><br><span style="font-size:11.5px;color:var(--muted);">(shared connector)</span></td>
+        <td><span class="dep-tag">DEPENDS ON DIPENDRA CONNECTOR</span> Code-execution agent must be made available</td>
+        <td><span class="blocker-tag">PENDING</span><br>Dipendra's connector not yet available. Both reqs unlock together once the integration is live.</td>
+      </tr>
+      <tr>
+        <td><span class="feat-badge">#5 Stats</span></td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#444;">DM_14</td>
+        <td><strong>Statistical Analysis as Charts</strong><br><span style="font-size:12.5px;color:var(--muted);">Cp/Cpk, t-tests, control limits overlaid on charts — quality &amp; UX improvement</span></td>
+        <td><span class="tl-est">1 week</span><br><span style="font-size:11.5px;color:var(--muted);">(same connector)</span></td>
+        <td><span class="dep-tag">DEPENDS ON DIPENDRA CONNECTOR</span> Same connector as DM_5.11/8.11</td>
+        <td><span class="blocker-tag">PENDING</span><br>Same dependency as Charts integration. V2 already delivers written-form stats; V3 adds proper computation.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+</div>
+
+<!-- ============== TAB 03 — FEATURES & VALUE AT RISK =========== -->
+<!-- ============================================================ -->
+<div class="tab-panel" id="tab3">
+
+<div class="feat-intro">
+  <h3>Ten features grouped from requirements, with value at risk per feature</h3>
+  <p>Each card shows Plan A (chosen), Plan B (fallback), owner, risk, and V3 direction. The <strong>value-at-risk badge</strong> in the header is the annual £ exposure if that feature doesn't fully land — calculated as <em>hours at risk per DMAIC × £0.487M per hour-saved-per-DMAIC</em> (see Tab 04).</p>
+  <p>The hours mapping for each feature reconciles to the phase sub-activity totals in Tab 02.</p>
+</div>
+
+<div class="filter-bar">
+  <span class="filter-label">View</span>
+  <button class="chip active" data-filter="all">All <span class="count">10</span></button>
+  <button class="chip" data-filter="at-risk">At risk <span class="count">3</span></button>
+  <button class="chip" data-filter="blocked">Blocked <span class="count">1</span></button>
+  <button class="chip" data-filter="v3">Deferred to V3 <span class="count">3</span></button>
+  <button class="chip" data-filter="delivered">Delivered / On track <span class="count">5</span></button>
+  <div class="filter-summary">Showing <strong id="visible-count">10</strong> of 10 · total value shown: <strong id="visible-value">~£1.17M</strong></div>
+</div>
+
+<!-- FEATURE 1 — Process Map -->
+<div class="feature" data-status="delivered" data-value="0">
+  <div class="feature-head">
+    <span class="feature-num">1</span>
+    <div class="feature-titles">
+      <div class="feature-title">Process Map</div>
+      <div class="feature-meta">
+        <span class="status-chip delivered">Delivered</span>
+        <span class="feature-reqs">Reqs:<span class="rid">DM_4.6</span><span class="rid">4.7</span><span class="rid">4.8</span><span class="rid">4.10</span><span class="rid">4.11</span></span>
+      </div>
+    </div>
+    <div class="value-badge delivered">
+      <div class="vb-label">Status</div>
+      <div class="vb-amount">Delivered</div>
+      <div class="vb-sub">0.25 h/DMAIC preserved</div>
+    </div>
+  </div>
+  <div class="feature-body">
+    <div class="feature-block delivered-block"><div class="block-label">Plan A <span class="tag chosen">CHOSEN</span></div><div class="block-body">ARIS sandbox environment + BPMN code generated by the agent, imported into ARIS for editing and export. Working as designed.</div></div>
+    <div class="feature-block"><div class="block-label">Plan B <span class="tag fallback">FALLBACK</span></div><div class="block-body">Mermaid rendering agent (PNG output) — no longer needed for V2 since Plan A is delivered.</div></div>
+    <div class="feature-block delivered-block full last"><div class="block-label">V3 direction <span class="tag v3">V3</span></div><div class="block-body">No V3 work currently planned for the process-map workflow itself. The ARIS access feasibility discussion is now scoped under feature #6 (ARIS/VQD SOP Gap Analysis) as a single ARIS integration workstream.</div></div>
+  </div>
+</div>
+
+<!-- FEATURE 2 — Chart Generation -->
+<div class="feature" data-status="v3" data-value="0.05">
+  <div class="feature-head">
+    <span class="feature-num">2</span>
+    <div class="feature-titles">
+      <div class="feature-title">Chart Generation</div>
+      <div class="feature-meta">
+        <span class="status-chip v3">V3 candidate</span>
+        <span class="feature-reqs">Reqs:<span class="rid">DM_5.11</span><span class="rid">5.12</span><span class="rid">8.11</span><span class="rid">8.12</span></span>
+      </div>
+    </div>
+    <div class="value-badge low">
+      <div class="vb-label">Unlocked by V3</div>
+      <div class="vb-amount">+£0.05M</div>
+      <div class="vb-sub">+0.10 h/DMAIC V3 unlock</div>
+    </div>
+  </div>
+  <div class="feature-body">
+    <div class="feature-block"><div class="block-label">Scope <span class="tag chosen">4 REQS UNIFIED</span></div><div class="block-body">Four requirements form this single feature: <strong>DM_5.11 / DM_8.11</strong> = Charts Creator Agent (the companion agent itself, one per phase), <strong>DM_5.12 / DM_8.12</strong> = Charts Images (the rendered output going into the DMAIC). All four are In Progress in V2 and closing this week.</div></div>
+    <div class="feature-block"><div class="block-label">Plan A in V2 <span class="tag chosen">CHOSEN</span></div><div class="block-body">Companion Charts Generator agent — main DMAIC Copilot generates a specification prompt, user pastes it into the companion agent with the data file, charts come back. End-to-end working flow.</div></div>
+    <div class="feature-block delivered-block"><div class="block-label">V2 Outcome <span class="tag chosen">DELIVERED</span></div><div class="block-body">Almost all the chart-related value is captured. The recommendation flow, the prompt generation, and the spec-and-data handoff are smooth enough that user friction is minimal.</div></div>
+    <div class="feature-block risk-block"><div class="block-label">What's at risk in V2 <span class="tag risk">RISK</span></div><div class="block-body">Small efficiency loss from the copy-paste handoff vs full integration — estimated <span class="time-tag">~0.10 h/DMAIC</span> ≈ <span class="money-tag">~£0.05M</span> — depends on user-flow measurements.</div></div>
+    <div class="feature-block v3-block full last"><div class="block-label">V3 resolution proposal <span class="tag v3">V3</span></div><div class="block-body">Integration with Dipendra's team's code-execution agent. Once that connector is in place, the Charts Creator folds into the main Copilot rather than living as a separate handoff agent — eliminates the copy-paste step entirely. <strong>Note:</strong> DM_5.12 has "No V3 action" in column P even though it belongs to this feature — tagging inconsistency to fix.</div></div>
+  </div>
+</div>
+
+<!-- FEATURE 3 — Historical DMAICs -->
+<div class="feature" data-status="delivered" data-value="0">
+  <div class="feature-head">
+    <span class="feature-num">3</span>
+    <div class="feature-titles">
+      <div class="feature-title">Historical DMAICs Agent</div>
+      <div class="feature-meta">
+        <span class="status-chip delivered">Delivered &amp; Integrated</span>
+        <span class="feature-reqs">Reqs:<span class="rid">DM_9.5</span><span class="rid">11.2</span></span>
+      </div>
+    </div>
+    <div class="value-badge delivered">
+      <div class="vb-label">Status</div>
+      <div class="vb-amount">Delivered</div>
+      <div class="vb-sub">0.16 h preserved · +£0.08M</div>
+    </div>
+  </div>
+  <div class="feature-body">
+    <div class="feature-block delivered-block"><div class="block-label">Plan A <span class="tag chosen">CHOSEN</span></div><div class="block-body">Studio agent connecting to BELTIX SharePoint to retrieve past DMAICs for "Has the problem occurred before?" and Understanding Check. Integrated into the main Copilot flow.</div></div>
+    <div class="feature-block delivered-block"><div class="block-label">V2 Outcome <span class="tag chosen">DELIVERED</span></div><div class="block-body">Retrieval works against the 500-DMAIC sample (Ana's testing). Cross-DMAIC learning capability is live.</div></div>
+    <div class="feature-block full last"><div class="block-label">V3 direction <span class="tag v3">V3</span></div><div class="block-body">No V3 work currently planned. Future improvements could include smarter ranking and richer query patterns. (DM_11.2 dropped off the V3 list this sprint.)</div></div>
+  </div>
+</div>
+
+<!-- FEATURE 4 — BELTIX Metadata + Storage -->
+<div class="feature" data-status="v3 blocked" data-value="0.08">
+  <div class="feature-head">
+    <span class="feature-num">4</span>
+    <div class="feature-titles">
+      <div class="feature-title">BELTIX Metadata &amp; Storage</div>
+      <div class="feature-meta">
+        <span class="status-chip blocked">Blocked</span>
+        <span class="status-chip at-risk">At Risk</span>
+        <span class="feature-reqs">Reqs:<span class="rid">DM_11</span><span class="rid">11.1</span></span>
+      </div>
+    </div>
+    <div class="value-badge med">
+      <div class="vb-label">Value at risk</div>
+      <div class="vb-amount">+£0.08M</div>
+      <div class="vb-sub">+0.17 h/DMAIC V3 unlock</div>
+    </div>
+  </div>
+  <div class="feature-body">
+    <div class="feature-block"><div class="block-label">Plan A <span class="tag chosen">CHOSEN</span></div><div class="block-body">Auto-tag each completed DMAIC with structured metadata (area, product, line, defect type, OB Leader, dates, status) at storage time, with a SQL/Dataverse record-keeping layer feeding the SharePoint storage step.</div></div>
+    <div class="feature-block"><div class="block-label">Plan B <span class="tag fallback">FALLBACK</span></div><div class="block-body">Manual upload &amp; tagging by the user when filing the DMAIC to BELTIX (current behaviour). Functionally fine — users will continue to do this manually if Plan A doesn't land.</div></div>
+    <div class="feature-block"><div class="block-label">Owner / next action <span class="tag owner">ACTION</span></div><div class="block-body">Sandeep — schema sign-off (required vs optional fields). DM_11 (Storage) is In Progress in V2 but cannot complete until DM_11.1 (Metadata) lands, since storage needs the SQL record layer to be defined first.</div></div>
+    <div class="feature-block risk-block"><div class="block-label">Risk &amp; value lost <span class="tag risk">RISK</span></div><div class="block-body">Without auto-tagging, the user does the upload + tagging manually — estimated <span class="time-tag">~0.17 h/DMAIC</span> ≈ <span class="money-tag">~£0.08M</span>. No cascade risk: users will tag manually, so the Historical DMAICs agent (#3) continues to work over time, just fed by manually-curated metadata rather than auto-generated.</div></div>
+    <div class="feature-block v3-block full last"><div class="block-label">V3 resolution proposal <span class="tag v3">V3</span></div><div class="block-body">Once Sandeep confirms the schema, push for direct write-back from DMAIC Copilot to BELTIX via the agreed SQL/Dataverse layer. Same Dataverse layer already serves #7 (Word Template) and #9 (Session Resume) — keep that architectural investment compounding.</div></div>
+  </div>
+</div>
+
+<!-- FEATURE 5 — Statistical Analysis -->
+<div class="feature" data-status="v3" data-value="0.00">
+  <div class="feature-head">
+    <span class="feature-num">5</span>
+    <div class="feature-titles">
+      <div class="feature-title">Statistical Analysis</div>
+      <div class="feature-meta">
+        <span class="status-chip at-risk">Partial V2</span>
+        <span class="status-chip v3">V3 candidate</span>
+        <span class="feature-reqs">Reqs:<span class="rid">DM_14</span></span>
+      </div>
+    </div>
+    <div class="value-badge med">
+      <div class="vb-label">Unlocked by V3</div>
+      <div class="vb-amount">Quality</div>
+      <div class="vb-sub">UX improvement, no h figure</div>
+    </div>
+  </div>
+  <div class="feature-body">
+    <div class="feature-block"><div class="block-label">Plan A in V2 <span class="tag chosen">CHOSEN</span></div><div class="block-body">Statistical analysis delivered in written form. The agent describes what the data shows in plain English — distribution shape, apparent trends, before/after differences — but does <strong>not</strong> compute Cp/Cpk, run t-tests, or calculate control limits. Limitation of Copilot Studio (no native code execution).</div></div>
+    <div class="feature-block"><div class="block-label">Plan B <span class="tag fallback">FALLBACK</span></div><div class="block-body">Direct user to Excel / Minitab manually for any quantitative analysis.</div></div>
+    <div class="feature-block delivered-block"><div class="block-label">V2 captured value <span class="tag chosen">CAPTURED</span></div><div class="block-body">Roughly half of the statistical-work slice is captured in V2 — the descriptive/qualitative portion. Estimated <span class="time-tag">~0.3 h/DMAIC</span> captured.</div></div>
+    <div class="feature-block risk-block"><div class="block-label">Gap vs full charts-based stats <span class="tag risk">RISK</span></div><div class="block-body">The remaining ~0.5 h/DMAIC sits on the table until V3 — the part that requires actually computing numbers (Cp/Cpk, t-tests, normality tests, control limits). Estimated <span class="time-tag">~0.5 h/DMAIC</span> ≈ <span class="money-tag">~£0.77M</span> unlocked by V3.</div></div>
+    <div class="feature-block v3-block full last"><div class="block-label">V3 resolution proposal <span class="tag v3">V3</span></div><div class="block-body">Integration with Dipendra's team's code-execution agent — same connector that resolves #2 (Chart Generation). Stats moves from "describe what's there" to "compute it directly". Shares infrastructure with #2.</div></div>
+  </div>
+</div>
+
+<!-- FEATURE 6 — ARIS/VQD SOP Gap Analysis -->
+<div class="feature" data-status="v3" data-value="0.25">
+  <div class="feature-head">
+    <span class="feature-num">6</span>
+    <div class="feature-titles">
+      <div class="feature-title">ARIS/VQD SOP Gap Analysis</div>
+      <div class="feature-meta">
+        <span class="status-chip v3">Deferred to V3</span>
+        <span class="feature-reqs">Reqs:<span class="rid">DM_12.2</span></span>
+      </div>
+    </div>
+    <div class="value-badge med">
+      <div class="vb-label">Unlocked by V3</div>
+      <div class="vb-amount">+£0.25M</div>
+      <div class="vb-sub">+0.51 h V3 unlock · Analyse 35→55%</div>
+    </div>
+  </div>
+  <div class="feature-body">
+    <div class="feature-block"><div class="block-label">Plan A in V2 <span class="tag chosen">CHOSEN</span></div><div class="block-body">Out of scope for V2 — formally deferred to V3.</div></div>
+    <div class="feature-block"><div class="block-label">Plan B <span class="tag fallback">FALLBACK</span></div><div class="block-body">User supplies SOPs as document upload (current behaviour).</div></div>
+    <div class="feature-block"><div class="block-label">Owner / next action <span class="tag owner">ACTION</span></div><div class="block-body">Antonino — ARIS access feasibility meeting planned (covers both process maps and SOPs as a single workstream).</div></div>
+    <div class="feature-block risk-block"><div class="block-label">Value lost in V2 <span class="tag risk">RISK</span></div><div class="block-body">SOPs unlock the Analyse-phase reduction from <strong>35% → 55%</strong> — the extra 20% of 2.57 h is <span class="time-tag">0.51 h/DMAIC</span> ≈ <span class="money-tag">~£0.25M</span>. Without SOPs in the agent, Procedures/Controls Analysis depends entirely on the user uploading SOPs each time.</div></div>
+    <div class="feature-block v3-block full last"><div class="block-label">V3 resolution proposal <span class="tag v3">V3</span></div><div class="block-body">Direct connector to ARIS or VQD once access feasibility, permissions, content structure, and approvals are validated. Both ARIS and VQD are in scope — not just VQD. Single ARIS integration workstream in V3 covers process maps + SOPs.</div></div>
+  </div>
+</div>
+
+<!-- FEATURE 7 — Word Template Auto-Fill -->
+<div class="feature" data-status="at-risk high-value" data-value="0.79">
+  <div class="feature-head">
+    <span class="feature-num">7</span>
+    <div class="feature-titles">
+      <div class="feature-title">Word Template Auto-Fill</div>
+      <div class="feature-meta">
+        <span class="status-chip at-risk">At Risk</span>
+        <span class="feature-reqs">Reqs:<span class="rid">DM_10</span><span class="rid">10.1</span></span>
+      </div>
+    </div>
+    <div class="value-badge high">
+      <div class="vb-label">Value at risk</div>
+      <div class="vb-amount">£0.79M</div>
+      <div class="vb-sub">1.62 h/DMAIC at risk</div>
+    </div>
+  </div>
+  <div class="feature-body">
+    <div class="feature-block"><div class="block-label">Plan A <span class="tag chosen">CHOSEN</span></div><div class="block-body">Copilot Studio Word tool populating the official OB Problem Solving Form .docx from captured section variables / Dataverse records. DM_10 (Section Variable Capture, Complete) feeds DM_10.1 (Word Tool Template Population, In Progress · EoW).</div></div>
+    <div class="feature-block"><div class="block-label">Plan B <span class="tag fallback">FALLBACK</span></div><div class="block-body">User copy-pastes each section manually into the .docx (current MVP behaviour).</div></div>
+    <div class="feature-block"><div class="block-label">Owner / next action <span class="tag owner">ACTION</span></div><div class="block-body">Antonino — Dataverse schema (DM_15.3) now complete, so the Word tool work can move forward.</div></div>
+    <div class="feature-block risk-block"><div class="block-label">Risk &amp; value lost <span class="tag risk">RISK</span></div><div class="block-body">Flagged in original requirements as the "<strong>largest user pain point</strong>". Without it, the user still copies section-by-section. Hits <span class="time-tag">1.62 h/DMAIC</span> ≈ <span class="money-tag">£0.79M</span> directly: Define → Document Define <span class="time-tag">0.37 h</span> + Measure → Conclusion <span class="time-tag">0.37 h</span> + Control → Document final conclusions <span class="time-tag">0.88 h</span>. <strong>By far the biggest single exposure.</strong></div></div>
+    <div class="feature-block v3-block full last"><div class="block-label">V3 resolution proposal <span class="tag v3">V3</span></div><div class="block-body">Complete the JSON-based section capture (already implemented per 22/04 note) → push to Dataverse → Word tool populates from Dataverse records. If Word tool proves unreliable, fall back to PowerApps form rendering of the same Dataverse data.</div></div>
+  </div>
+</div>
+
+<!-- FEATURE 8 — Web Search -->
+<div class="feature" data-status="delivered" data-value="0">
+  <div class="feature-head">
+    <span class="feature-num">8</span>
+    <div class="feature-titles">
+      <div class="feature-title">Web Search for External Context</div>
+      <div class="feature-meta">
+        <span class="status-chip on-track">On Track</span>
+        <span class="feature-reqs">Reqs:<span class="rid">DM_13</span><span class="rid">13.1</span></span>
+      </div>
+    </div>
+    <div class="value-badge delivered">
+      <div class="vb-label">Status</div>
+      <div class="vb-amount">On Track</div>
+      <div class="vb-sub">0.15 h preserved · +£0.07M</div>
+    </div>
+  </div>
+  <div class="feature-body">
+    <div class="feature-block"><div class="block-label">Plan A <span class="tag chosen">CHOSEN</span></div><div class="block-body">Web search enabled in Studio for supplier recalls, regulatory changes, weather, etc., with source-hierarchy guardrails (playbooks &gt; uploads &gt; web).</div></div>
+    <div class="feature-block delivered-block"><div class="block-label">V2 Outcome <span class="tag chosen">IN PROGRESS</span></div><div class="block-body">Both DM_13 (web search) and DM_13.1 (guardrails) are In Progress in V2 and expected to land on time. Marginal impact across Pre-DMAIC (~0.10 h) and Define Conduct Session (~0.05 h).</div></div>
+    <div class="feature-block risk-block"><div class="block-label">Watch-outs <span class="tag risk">RISK</span></div><div class="block-body">Guardrails must be tested fail-fast. If the web overrides uploaded evidence, the agent's behaviour degrades materially — that's why DM_13.1 is paired with DM_13.</div></div>
+    <div class="feature-block v3-block full last"><div class="block-label">V3 direction <span class="tag v3">V3</span></div><div class="block-body">No V3 work currently planned. Could be staged later: enable read-only first, then expand to specific use-cases.</div></div>
+  </div>
+</div>
+
+<!-- FEATURE 9 — Session Resume -->
+<div class="feature" data-status="delivered" data-value="0">
+  <div class="feature-head">
+    <span class="feature-num">9</span>
+    <div class="feature-titles">
+      <div class="feature-title">Session Resume from Dataverse</div>
+      <div class="feature-meta">
+        <span class="status-chip delivered">Delivered</span>
+        <span class="feature-reqs">Reqs:<span class="rid">DM_16.1</span><span class="rid">16.2</span></span>
+      </div>
+    </div>
+    <div class="value-badge delivered">
+      <div class="vb-label">Status</div>
+      <div class="vb-amount">Delivered</div>
+      <div class="vb-sub">UX gap closed</div>
+    </div>
+  </div>
+  <div class="feature-body">
+    <div class="feature-block delivered-block"><div class="block-label">Plan A <span class="tag chosen">CHOSEN</span></div><div class="block-body">User can resume a previous DMAIC session — agent loads stored record from Dataverse, presents progress summary per phase, asks where to resume. Live in V2.</div></div>
+    <div class="feature-block delivered-block"><div class="block-label">V2 Outcome <span class="tag chosen">DELIVERED</span></div><div class="block-body">DM_16.1 (Resume from Dataverse) and DM_16.2 (Resume State Summary) both complete. Closes one of the most cited user frustrations from V1.</div></div>
+    <div class="feature-block full last"><div class="block-label">V3 direction <span class="tag v3">V3</span></div><div class="block-body">No V3 work currently planned. Same Dataverse layer continues to serve #4 (BELTIX), #5 (Stats Analysis), and #7 (Word Template) — keeps that architectural investment compounding.</div></div>
+  </div>
+</div>
+
+<!-- FEATURE 10 — BPMN -->
+<div class="feature" data-status="delivered" data-value="0">
+  <div class="feature-head">
+    <span class="feature-num">10</span>
+    <div class="feature-titles">
+      <div class="feature-title">BPMN Code Validity</div>
+      <div class="feature-meta">
+        <span class="status-chip delivered">Delivered</span>
+        <span class="feature-reqs">Reqs:<span class="rid">DM_4.6</span> <span style="color:var(--muted);">(sub-issue of #1)</span></span>
+      </div>
+    </div>
+    <div class="value-badge delivered">
+      <div class="vb-label">Status</div>
+      <div class="vb-amount">Delivered</div>
+      <div class="vb-sub">ARIS import stable</div>
+    </div>
+  </div>
+  <div class="feature-body">
+    <div class="feature-block delivered-block"><div class="block-label">Plan A <span class="tag chosen">CHOSEN</span></div><div class="block-body">Generates consistently valid BPMN code from Studio that imports into ARIS without errors. Working reliably.</div></div>
+    <div class="feature-block"><div class="block-label">Plan B <span class="tag fallback">FALLBACK</span></div><div class="block-body">User uploads import-error screenshot, agent corrects iteratively (current playbook fallback — rarely needed in practice).</div></div>
+    <div class="feature-block full last"><div class="block-label">V3 direction <span class="tag v3">V3</span></div><div class="block-body">No V3 work currently planned. Could later move BPMN generation to a deterministic template-based approach.</div></div>
+  </div>
+</div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- ============== TAB 04 — VALUE CASE LOGIC =================== -->
+<!-- ============================================================ -->
+<div class="tab-panel" id="tab4">
+
+<div class="headline-card">
+  <div class="headline-grid">
+    <div>
+      <h3 class="headline-eyebrow">DMAIC Coach — estimated annual savings</h3>
+      <div class="headline-sub">My Problem Solving Twin — role-based model on the <em>applicable</em> population (Managers + Operators in scope)</div>
+      <div class="headline-num">£3.55M</div>
+      <div class="headline-units">per year &nbsp;·&nbsp; 71,064 hours saved &nbsp;·&nbsp; V3 complete (Analyse @ 55%)</div>
+    </div>
+    <div class="headline-right">
+      <div class="hr-label">Key inputs</div>
+      <div class="hr-row"><span>Target population</span><span class="v">3,600</span></div>
+      <div class="hr-row"><span>Applicable users</span><span class="v">2,160</span></div>
+      <div class="hr-row"><span>Saved h/wk per user</span><span class="v">0.7 h</span></div>
+      <div class="hr-row"><span>Cost per hour</span><span class="v">£50</span></div>
+      <div class="hr-row"><span>Working weeks/year</span><span class="v">47</span></div>
+      <div class="hr-row"><span>Annual value</span><span class="v">£3.55M</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="calc-step">
+  <div class="calc-step-head">
+    <span class="calc-step-num">STEP 01</span>
+    <h3 class="calc-step-title">Per-DMAIC time savings — the 7.3 h building block</h3>
+  </div>
+  <p class="calc-step-prose">
+    A DMAIC takes <strong>16.07 h per owner</strong> on average (weighted across user populations — see Tab 02). The agent reduces time differently per phase. Two scenarios:
+  </p>
+  <table class="phase-table">
+    <thead>
+      <tr>
+        <th>Phase</th>
+        <th>What the agent does</th>
+        <th class="r">h/DMAIC</th>
+        <th class="r">V2 EoW %</th>
+        <th class="r">V3 %</th>
+        <th class="r">V3 h saved</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Pre-DMAIC</strong></td><td>Context prep — coordination remains human</td><td class="r">1.50</td><td class="r">30%</td><td class="r">30%</td><td class="r">0.45</td></tr>
+      <tr><td><strong>Define</strong></td><td>Drafts problem statement, fields, process map</td><td class="r">2.30</td><td class="r">35%</td><td class="r">35%</td><td class="r">0.81</td></tr>
+      <tr><td><strong>Measure</strong></td><td>Recommends charts, drafts conclusions</td><td class="r">3.63</td><td class="r">58.6%</td><td class="r">60%</td><td class="r">2.18</td></tr>
+      <tr style="background:#fdfaf2;"><td><strong>Analyse</strong></td><td>Fishbone, 5 Whys, RCA — V3 adds SOP gap analysis</td><td class="r">2.57</td><td class="r">35%</td><td class="r" style="color:var(--accent); font-weight:700;">55%</td><td class="r">1.41</td></tr>
+      <tr><td><strong>Improve</strong></td><td>Drafts action table — meetings stay human</td><td class="r">2.63</td><td class="r">15%</td><td class="r">15%</td><td class="r">0.39</td></tr>
+      <tr><td><strong>Control</strong></td><td>Effectiveness checks + V3 adds BELTIX write-back</td><td class="r">3.43</td><td class="r">53.6%</td><td class="r">60%</td><td class="r">2.06</td></tr>
+      <tr class="total"><td colspan="2">Total per DMAIC — V2 EoW</td><td class="r">16.07</td><td class="r">40.6%</td><td class="r"></td><td class="r">6.52</td></tr>
+      <tr class="total" style="background:#fdfaf2;"><td colspan="2" style="color:var(--accent);">Total per DMAIC — V3 complete</td><td class="r">16.07</td><td class="r"></td><td class="r" style="color:var(--accent);">45.5%</td><td class="r" style="color:var(--accent);">7.30</td></tr>
+    </tbody>
+  </table>
+  <div class="caveat">
+    <strong>V3 unlock = +0.78 h / +4.9 pts.</strong> Mostly from SOPs in Analyse (+0.51 h), plus BELTIX direct write-back (+0.17 h) and Charts Creator integration (+0.10 h). Full per-phase breakdown in Tab 02.
+  </div>
+</div>
+
+<div class="calc-step">
+  <div class="calc-step-head">
+    <span class="calc-step-num">STEP 02</span>
+    <h3 class="calc-step-title">Apply role-based adoption — who actually uses the agent</h3>
+  </div>
+  <p class="calc-step-prose">
+    The 3,600-person target population is split across four roles. Each role has different adoption (% of People) and applicability (% Applicable Case). Only Managers and Operators run DMAICs. The <strong>applicable user count is 2,160</strong> (144 Managers + 2,016 Operators), and each saves <strong>0.7 h/week</strong>.
+  </p>
+  <table class="phase-table">
+    <thead>
+      <tr>
+        <th>Role</th>
+        <th class="r">Saved h/wk (per applicable user)</th>
+        <th class="r">% of People</th>
+        <th class="r">% Applicable</th>
+        <th class="r">Applicable count</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Directors</td><td class="r">0.0</td><td class="r">3%</td><td class="r">0%</td><td class="r">0</td></tr>
+      <tr><td>Team Leaders</td><td class="r">0.0</td><td class="r">7%</td><td class="r">0%</td><td class="r">0</td></tr>
+      <tr><td>Managers</td><td class="r">0.7</td><td class="r">20%</td><td class="r">20%</td><td class="r">144</td></tr>
+      <tr><td>Operators</td><td class="r">0.7</td><td class="r">70%</td><td class="r">80%</td><td class="r">2,016</td></tr>
+      <tr class="total"><td>Weighted average (per applicable user)</td><td class="r">0.7</td><td class="r"></td><td class="r"></td><td class="r">2,160 total</td></tr>
+    </tbody>
+  </table>
+  <div class="caveat">
+    <strong>The 2,160 number is what the £ figures are built on, not 3,600.</strong> Directors and Team Leaders aren't in scope (0% applicable). Managers contribute 144 users (3,600 × 20% × 20%). Operators are the bulk: 2,016 users (3,600 × 70% × 80%). Each applicable user saves 0.7 h/week.
+  </div>
+</div>
+
+<div class="calc-step">
+  <div class="calc-step-head">
+    <span class="calc-step-num">STEP 03</span>
+    <h3 class="calc-step-title">Scale to annual hours</h3>
+  </div>
+  <p class="calc-step-prose">
+    Multiply applicable users by per-user weekly saving by working weeks (47, accounting for PTO).
+  </p>
+  <div class="bridge-row">
+    <span class="bridge-num">2,160</span><span class="bridge-unit">applicable users</span>
+    <span class="bridge-op">×</span>
+    <span class="bridge-num">0.7</span><span class="bridge-unit">h/wk per user</span>
+    <span class="bridge-eq">=</span>
+    <span class="bridge-result">1,512</span><span class="bridge-unit">h/week total</span>
+  </div>
+  <div class="bridge-row">
+    <span class="bridge-num">1,512</span><span class="bridge-unit">h/week</span>
+    <span class="bridge-op">×</span>
+    <span class="bridge-num">47</span><span class="bridge-unit">weeks</span>
+    <span class="bridge-eq">=</span>
+    <span class="bridge-result">71,064</span><span class="bridge-unit">h/year</span>
+  </div>
+</div>
+
+<div class="calc-step">
+  <div class="calc-step-head">
+    <span class="calc-step-num">STEP 04</span>
+    <h3 class="calc-step-title">Convert to money — at £50/h fully-loaded</h3>
+  </div>
+  <div class="bridge-row">
+    <span class="bridge-num">71,064</span><span class="bridge-unit">h/year</span>
+    <span class="bridge-op">×</span>
+    <span class="bridge-num">£50</span><span class="bridge-unit">per hour</span>
+    <span class="bridge-eq">=</span>
+    <span class="bridge-result">£3.55M</span><span class="bridge-unit">per year</span>
+  </div>
+</div>
+
+<div class="calc-step">
+  <div class="calc-step-head">
+    <span class="calc-step-num">STEP 05</span>
+    <h3 class="calc-step-title">The conversion factor — used in Tab 03</h3>
+  </div>
+  <p class="calc-step-prose">
+    Working backwards, each hour saved per DMAIC translates into an annual £ figure at the applicable-population scale. This is what Tab 03 uses to convert per-feature hours-at-risk into £ exposure.
+  </p>
+  <div class="multiplier">
+    <p class="multiplier-eq">
+      <span class="key">1 h saved / DMAIC</span> &nbsp; = &nbsp; £0.487M per year
+    </p>
+    <p class="multiplier-sub">
+      Derived: <strong>£3.55M ÷ 7.30 h/DMAIC = £0.487M per hour-of-saving-per-DMAIC.</strong> Sense-check: V2 EoW = 6.52 × £0.487M = £3.17M ✓
+    </p>
+  </div>
+</div>
+
+<div class="calc-step">
+  <div class="calc-step-head">
+    <span class="calc-step-num">STEP 06</span>
+    <h3 class="calc-step-title">V2 vs V3 value split</h3>
+  </div>
+  <p class="calc-step-prose">
+    Applying the £0.487M/h factor to the per-feature hours gives the V2-realised vs V3-unlock split.
+  </p>
+
+  <div class="exposure-summary">
+    <div class="exposure-cell captured">
+      <div class="label">V2 EoW value<br>(realised end of week)</div>
+      <div class="amount">£3.17M</div>
+      <div class="caption">6.52 h/DMAIC · 40.6% reduction</div>
+    </div>
+    <div class="exposure-cell v3">
+      <div class="label">V3 unlock<br>(additional on top)</div>
+      <div class="amount">+£0.38M</div>
+      <div class="caption">+0.78 h/DMAIC · +4.9 pts</div>
+    </div>
+    <div class="exposure-cell" style="background: var(--ink); color: #fff;">
+      <div class="label" style="color: rgba(255,255,255,0.7);">V2 + V3 total<br>(full state)</div>
+      <div class="amount" style="color: #fff;">£3.55M</div>
+      <div class="caption" style="color: rgba(255,255,255,0.7);">7.30 h/DMAIC · 45.5% reduction</div>
+    </div>
+  </div>
+
+  <table class="breakdown-table">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Status</th>
+        <th class="r">h/DMAIC</th>
+        <th class="r">£/year</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1 · Process Map</td><td>V2 delivered</td><td class="r">0.23</td><td class="r" style="color:var(--green); font-weight:600;">+£0.11M</td></tr>
+      <tr><td>3 · Historical DMAICs</td><td>V2 delivered</td><td class="r">0.16</td><td class="r" style="color:var(--green); font-weight:600;">+£0.08M</td></tr>
+      <tr><td>7 · Word Template Auto-Fill</td><td>V2 at risk</td><td class="r">1.62</td><td class="r" style="color:var(--red); font-weight:600;">£0.79M</td></tr>
+      <tr><td>8 · Web Search</td><td>V2 on track</td><td class="r">0.15</td><td class="r" style="color:var(--green); font-weight:600;">+£0.07M</td></tr>
+      <tr><td>2 + 5 · Charts &amp; Stats (V2 form)</td><td>V2 delivered</td><td class="r">1.55</td><td class="r" style="color:var(--green); font-weight:600;">+£0.75M</td></tr>
+      <tr><td>Core Copilot drafting, gates, sessions</td><td>V2 delivered</td><td class="r">2.81</td><td class="r" style="color:var(--green); font-weight:600;">+£1.37M</td></tr>
+      <tr style="border-top: 2px solid var(--ink); background:#fafaf5;"><td><strong>V2 EoW subtotal</strong></td><td>—</td><td class="r"><strong>6.52</strong></td><td class="r"><strong>£3.17M</strong></td></tr>
+      <tr class="v3-row"><td>6 · ARIS/VQD SOP Gap (Analyse 35→55%)</td><td>V3 unlock</td><td class="r">0.51</td><td class="r">+£0.25M</td></tr>
+      <tr class="v3-row"><td>4 · BELTIX direct write-back</td><td>V3 unlock</td><td class="r">0.17</td><td class="r">+£0.08M</td></tr>
+      <tr class="v3-row"><td>2 · Charts Creator integration</td><td>V3 unlock</td><td class="r">0.10</td><td class="r">+£0.05M</td></tr>
+      <tr style="border-top: 2px solid var(--ink); background:#fafaf5;"><td><strong>V3 unlock subtotal</strong></td><td>—</td><td class="r"><strong>0.78</strong></td><td class="r"><strong>£0.38M</strong></td></tr>
+      <tr style="border-top: 2px solid var(--accent); background:#fbe9df;"><td><strong>V2 + V3 total</strong></td><td>—</td><td class="r"><strong>7.30</strong></td><td class="r" style="color:var(--accent);"><strong>£3.55M</strong></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="calc-step">
+  <div class="calc-step-head">
+    <span class="calc-step-num">CAVEATS</span>
+    <h3 class="calc-step-title">Model assumptions to keep visible</h3>
+  </div>
+  <table class="phase-table">
+    <thead>
+      <tr><th>Assumption</th><th>Current value</th><th>Why it matters</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Target population</strong></td><td class="r">3,600 people</td><td>Defined upstream in My Problem Solving Twin model. Replaces the earlier 2,550 DMAICs/month assumption.</td></tr>
+      <tr><td><strong>Applicable users</strong></td><td class="r">2,160</td><td>144 Managers (20% × 20%) + 2,016 Operators (70% × 80%). Directors and Team Leaders are out of scope.</td></tr>
+      <tr><td><strong>% Applicable Case (Operators)</strong></td><td class="r">80%</td><td>Drives most of the value. If Operators don't take it up at this rate, total drops proportionally.</td></tr>
+      <tr><td><strong>Saved h/wk per applicable user</strong></td><td class="r">0.7 h</td><td>Drops to 0.63 h at V2 EoW (×6.52/7.30).</td></tr>
+      <tr><td><strong>£50/h fully-loaded</strong></td><td class="r">£50</td><td>GSK standard.</td></tr>
+      <tr><td><strong>Working weeks/year</strong></td><td class="r">47</td><td>Accounts for PTO.</td></tr>
+      <tr><td><strong>Charts integration &amp; BELTIX h-figures</strong></td><td class="r">TBC</td><td>+0.10 h Charts and +0.17 h BELTIX are estimates pending user-flow measurement.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+
+<div class="footer">
+  <div>Generated from <em>DMAIC (with New Requirement)</em> tab + Reinvented DMAIC Value Case + V2 feature plan</div>
+  <div>May 2026</div>
+</div>
+
+
+
+</div>
+
+<div class="footer">
+  <div>Generated from <em>DMAIC (with New Requirement)</em> tab + Reinvented DMAIC Value Case + V2 feature plan</div>
+  <div>May 2026</div>
+</div>
+
+</div>
+
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // Version block popup toggle
+  function togglePopup(id, event) {
+    event.stopPropagation();
+    const popup = document.getElementById(id);
+    const isOpen = popup.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.savings-popup').forEach(p => p.classList.remove('open'));
+    if (!isOpen) popup.classList.add('open');
+  }
+  document.addEventListener('click', function() {
+    document.querySelectorAll('.savings-popup').forEach(p => p.classList.remove('open'));
+  });
+
+  // Tab 3 filter
+  const chips = document.querySelectorAll('.filter-bar .chip');
+  const features = document.querySelectorAll('.feature');
+  const visibleCount = document.getElementById('visible-count');
+  const visibleValue = document.getElementById('visible-value');
+
+  function formatM(num) {
+    if (num >= 10) return `~£${num.toFixed(1)}M`;
+    return `~£${num.toFixed(2)}M`;
+  }
+
+  function applyFilter(filter) {
+    let count = 0;
+    let totalValue = 0;
+    features.forEach(feat => {
+      const statuses = (feat.dataset.status || '').split(' ');
+      const value = parseFloat(feat.dataset.value) || 0;
+      const show = filter === 'all' || statuses.includes(filter);
+      if (show) {
+        feat.classList.remove('hidden');
+        count++;
+        totalValue += value;
+      } else {
+        feat.classList.add('hidden');
+      }
+    });
+    visibleCount.textContent = count;
+    visibleValue.textContent = formatM(totalValue);
+  }
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      applyFilter(chip.dataset.filter);
+    });
+  });
+
+  applyFilter('all');
+</script>
+
+
+</body>
+</html>

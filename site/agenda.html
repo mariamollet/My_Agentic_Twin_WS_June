@@ -1,0 +1,3336 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda — My Agentic Twin</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gsk-orange: #F36633;
+    --gsk-orange-dark: #D14E1F;
+    --gsk-orange-tint: #FEF2EC;
+    --charcoal: #1F2937;
+    --slate: #475569;
+    --muted: #94A3B8;
+    --line: #E5E7EB;
+    --bg: #FFF8F4;
+    --white: #FFFFFF;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    color: var(--charcoal);
+    background: var(--bg) url('site/fondo%20agenda.png') center top / cover no-repeat fixed;
+    line-height: 1.55;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* ===== HEADER ===== */
+  .site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding-top: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .site-header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    border-radius: 24px;
+    padding: 18px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    background: rgba(255,248,244,0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .site-header.scrolled .site-header-inner {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    padding: 12px 48px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-logo {
+    width: 34px; height: 34px;
+    background: var(--gsk-orange);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--white);
+    font-weight: 700; font-size: 13px; letter-spacing: 0.5px;
+  }
+
+  .brand-name {
+    font-size: 14px; font-weight: 500;
+    color: var(--charcoal);
+  }
+
+  .brand-name span { opacity: 0.6; font-weight: 400; margin-left: 6px; }
+
+  .nav {
+    display: flex; gap: 36px; align-items: center;
+  }
+
+  .nav a {
+    font-size: 14px;
+    color: var(--slate);
+    font-weight: 400;
+    padding: 6px 0;
+    transition: color 0.2s;
+    position: relative;
+  }
+
+  .nav a:hover { color: var(--charcoal); }
+
+  .nav a.active {
+    color: var(--gsk-orange);
+    font-weight: 500;
+  }
+
+  .nav a.active::after {
+    content: "";
+    position: absolute;
+    bottom: -2px; left: 0; right: 0;
+    height: 2px;
+    background: var(--gsk-orange);
+    border-radius: 2px;
+  }
+
+  /* ===== PAGE ===== */
+  .page {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 110px 48px 80px;
+    position: relative;
+  }
+
+  /* Decorative top-right element */
+  .page::before {
+    content: "";
+    position: fixed;
+    top: 0; right: 0;
+    width: 340px; height: 340px;
+    background:
+      radial-gradient(ellipse at 80% 20%, rgba(243,102,51,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse at 100% 0%, rgba(243,102,51,0.10) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== HERO HEADER ===== */
+  .agenda-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 48px;
+    align-items: start;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .agenda-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: var(--gsk-orange-tint);
+    border: 1px solid rgba(243,102,51,0.25);
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gsk-orange);
+    margin-bottom: 20px;
+  }
+
+  .agenda-eyebrow .dot {
+    width: 6px; height: 6px;
+    background: var(--gsk-orange);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  .agenda-title {
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -1.5px;
+    color: var(--charcoal);
+    margin-bottom: 14px;
+  }
+
+  .agenda-subtitle {
+    font-size: 17px;
+    color: var(--slate);
+    line-height: 1.55;
+    max-width: 420px;
+  }
+
+  /* Feature icons */
+  .agenda-features {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 8px;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-align: left;
+  }
+
+  .feature-icon {
+    width: 52px; height: 52px;
+    background: var(--white);
+    border: 1px solid rgba(243,102,51,0.2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(243,102,51,0.08);
+  }
+
+  .feature-icon svg {
+    width: 22px; height: 22px;
+    color: var(--gsk-orange);
+  }
+
+  .feature-label {
+    font-size: 13px;
+    color: var(--slate);
+    line-height: 1.4;
+    max-width: 140px;
+  }
+
+  /* Meta bar */
+  .agenda-meta {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 18px 24px;
+    background: var(--white);
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--charcoal);
+  }
+
+  .meta-item svg {
+    width: 18px; height: 18px;
+    color: var(--gsk-orange);
+    flex-shrink: 0;
+  }
+
+  .meta-divider {
+    width: 1px; height: 20px;
+    background: var(--line);
+  }
+
+  /* ===== TABLE ===== */
+  .agenda-table-wrap {
+    position: relative;
+    z-index: 1;
+    background: var(--white);
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    margin-bottom: 24px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead tr {
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+
+  thead th {
+    padding: 14px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--gsk-orange);
+    text-align: center;
+  }
+
+  thead th:first-child { text-align: left; }
+
+  tbody td:nth-child(2) { text-align: left; }
+
+  /* Input y Expected Output alineados a la izquierda */
+  tbody td:nth-child(3),
+  tbody td:nth-child(4) { text-align: left; }
+
+  thead th:first-child { padding-left: 24px; width: 130px; }
+  thead th:last-child { padding-right: 24px; width: 100px; }
+  thead th:nth-child(2) { width: 300px; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--line);
+    transition: background 0.15s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+
+  tbody tr:hover { background: #FFFAF7; }
+
+  tbody tr.break-row {
+    background: #FAFAF9;
+  }
+
+  tbody tr.break-row:hover { background: #F5F5F4; }
+
+  tbody td {
+    padding: 16px 16px;
+    font-size: 14px;
+    color: var(--charcoal);
+    vertical-align: middle;
+    text-align: center;
+  }
+
+  tbody td:first-child {
+    padding-left: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gsk-orange);
+    white-space: nowrap;
+    text-align: left;
+  }
+
+  tbody td:last-child { padding-right: 24px; }
+
+  .topic-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+  }
+
+  .topic-icon {
+    width: 34px; height: 34px;
+    background: var(--gsk-orange-tint);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .topic-icon svg {
+    width: 16px; height: 16px;
+    color: var(--gsk-orange);
+  }
+
+  .topic-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--charcoal);
+    line-height: 1.35;
+  }
+
+  .break-row .topic-name {
+    font-weight: 500;
+    color: var(--slate);
+  }
+
+  .output-list {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+  }
+
+  .output-list li {
+    position: relative;
+    padding-left: 14px;
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: var(--slate);
+    line-height: 1.4;
+  }
+
+  .output-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--gsk-orange);
+    font-weight: 700;
+  }
+
+  .output-sublist {
+    list-style: none;
+    padding: 0;
+    margin: 5px 0 0 14px;
+    border-left: 1.5px dashed rgba(243,102,51,0.35);
+    padding-left: 10px;
+  }
+  .output-sublist li {
+    position: relative;
+    padding-left: 12px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    color: var(--slate);
+    line-height: 1.4;
+  }
+  .output-sublist li::before {
+    content: "◦";
+    position: absolute;
+    left: 0;
+    color: var(--gsk-orange);
+    font-weight: 700;
+  }
+  .output-sublist li:last-child { margin-bottom: 0; }
+
+  .lead-cell {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--slate);
+    white-space: nowrap;
+  }
+
+  .lead-cell svg {
+    width: 14px; height: 14px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .dash {
+    color: var(--muted);
+    font-size: 18px;
+    font-weight: 300;
+  }
+
+  .input-text {
+    font-size: 13px;
+    color: var(--slate);
+    line-height: 1.45;
+  }
+
+  /* Footer note */
+  .agenda-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    padding: 0 4px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .agenda-note svg {
+    width: 14px; height: 14px;
+    flex-shrink: 0;
+    color: var(--muted);
+  }
+
+  /* ===== ROW ENTRANCE ANIMATION ===== */
+  @keyframes rowIn {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  tbody tr {
+    opacity: 0;
+  }
+
+  tbody tr.visible {
+    animation: rowIn 0.35s ease forwards;
+  }
+
+  @media (max-width: 900px) {
+    .page { padding: 96px 20px 60px; }
+    .agenda-header { grid-template-columns: 1fr; }
+    .agenda-features { flex-direction: row; flex-wrap: wrap; }
+    thead th:nth-child(3), thead th:nth-child(4), tbody td:nth-child(3), tbody td:nth-child(4) { display: none; }
+    .site-header-inner { padding: 14px 20px; }
+  }
+
+  /* ===== DMAIC iframe modal ===== */
+  .dmaic-modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(17,17,17,0.55);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999; padding: 24px;
+  }
+  .dmaic-modal {
+    background: #fff;
+    border-radius: 16px;
+    width: 100%; max-width: 1280px;
+    height: 92vh;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.35);
+    position: relative;
+    overflow: hidden;
+  }
+  .dmaic-modal-close {
+    position: absolute; top: 14px; right: 18px;
+    background: #f4f4f4; border: none;
+    font-size: 22px; color: var(--charcoal);
+    cursor: pointer; line-height: 1;
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10;
+  }
+  .dmaic-modal-close:hover { background: var(--gsk-orange-tint); color: var(--gsk-orange-dark); }
+  .dmaic-modal iframe {
+    width: 100%; height: 100%; border: 0;
+    display: block;
+  }
+
+  /* ===== ADOPTION PLAN GANTT MODAL ===== */
+  .om-modal-overlay { position:fixed; inset:0; background:rgba(17,17,17,0.55); display:flex; align-items:center; justify-content:center; z-index:9999; padding:24px; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    --ns-accent:#F26A3D; --ns-accent-dark:#C84A22; --ns-accent-soft:#FDE7DE;
+    --ns-text:#111111; --ns-muted:#666666; --ns-border:#E8E3E0;
+  }
+  .om-modal { background:#fff; border-radius:16px; max-width:1280px; width:100%; max-height:92vh; overflow:auto; padding:28px 32px 32px; box-shadow:0 24px 70px rgba(0,0,0,0.35); position:relative; }
+  .om-close { position:absolute; top:14px; right:18px; background:#f4f4f4; border:none; font-size:22px; color:var(--ns-text); cursor:pointer; line-height:1; padding:0; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .om-close:hover { background:var(--ns-accent-soft); color:var(--ns-accent-dark); }
+  .ap-header { text-align:left; margin-bottom:18px; }
+  .ap-title { font-size:18px; font-weight:800; color:var(--ns-text); margin-bottom:4px; }
+  .ap-title .accent { color:var(--ns-accent-dark); }
+  .ap-gantt {
+    --apg-week-w: 60px;
+    --apg-label-w: 42px;
+    border:1px solid var(--ns-border);
+    border-radius:10px;
+    background:#fff;
+    overflow-x:auto;
+    box-shadow:0 1px 4px rgba(0,0,0,0.03);
+  }
+  .ap-gantt-inner { min-width: calc(var(--apg-label-w) + 18 * var(--apg-week-w)); }
+  .ap-gantt-header { display:flex; background:#FAFAF9; border-bottom:1px solid var(--ns-border); }
+  .ap-gantt-corner { flex: 0 0 var(--apg-label-w); }
+  .ap-week-cell { flex:0 0 var(--apg-week-w); width:var(--apg-week-w); padding:8px 2px; text-align:center; font-size:10.5px; font-weight:700; color:var(--ns-text); border-left:1px solid var(--ns-border); letter-spacing:0.2px; }
+  .ap-lane { display:flex; align-items:stretch; border-bottom:1px solid var(--ns-border); }
+  .ap-lane:last-child { border-bottom:none; }
+  .ap-lane-label {
+    flex:0 0 var(--apg-label-w);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    display:flex; align-items:center; justify-content:center;
+    padding:6px 2px;
+    font-weight:700; font-size:10px; text-transform:uppercase; letter-spacing:1px;
+    text-align:center; line-height:1.3;
+    background: var(--ns-accent-soft); color: var(--ns-accent-dark);
+  }
+  .ap-lane-grid {
+    flex: 0 0 calc(18 * var(--apg-week-w));
+    display:grid;
+    grid-template-columns: repeat(18, var(--apg-week-w));
+    grid-auto-rows: minmax(30px, auto);
+    row-gap:4px;
+    padding:6px 0;
+    position:relative;
+  }
+  .ap-lane-grid::before {
+    content:"";
+    position:absolute; inset:0;
+    background-image: repeating-linear-gradient(
+      to right,
+      transparent 0,
+      transparent calc(var(--apg-week-w) - 1px),
+      var(--ns-border) calc(var(--apg-week-w) - 1px),
+      var(--ns-border) var(--apg-week-w)
+    );
+    pointer-events:none; opacity:0.5;
+  }
+  .ap-activity {
+    color:#fff; padding:4px 6px; border-radius:4px;
+    font-size:9.5px; line-height:1.25; font-weight:500;
+    display:flex; align-items:center; margin:0 2px;
+    overflow-wrap: anywhere; word-break: break-word; white-space: normal;
+    position:relative; z-index:2;
+    background: var(--ns-accent);
+  }
+  .ap-activity.ap-milestone {
+    background: transparent !important;
+    color: var(--ns-accent-dark);
+    font-weight: 800;
+    padding: 2px 0;
+    white-space: nowrap;
+    overflow: visible;
+    width: auto;
+    font-size: 10px;
+  }
+  .ap-activity.ap-ghost { opacity: 0.45; }
+  .ap-wrapper {
+    position: relative;
+    z-index: 0;
+    border: 1.5px dashed var(--ns-accent);
+    border-radius: 8px;
+    background: rgba(243,102,51,0.05);
+    margin: -4px -6px;
+  }
+  .ap-wrapper-label {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    color: var(--ns-accent);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    z-index: 1;
+    white-space: nowrap;
+  }
+
+  /* ===== UAT RESULTS MODAL (Leadership Coach) ===== */
+  .uat-card {
+    background: var(--gsk-orange-tint);
+    border-radius: 22px;
+    padding: 40px 48px 36px;
+    max-width: 1200px; width: 100%;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.35);
+    position: relative;
+    font-family: 'Inter', sans-serif;
+    color: var(--charcoal);
+  }
+  .uat-card .uat-close {
+    position: absolute; top: 16px; right: 18px;
+    background: rgba(255,255,255,0.5); border: none;
+    font-size: 22px; color: var(--charcoal);
+    cursor: pointer; line-height: 1;
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .uat-card .uat-detail-btn {
+    position: absolute; top: 32px; right: 64px;
+    background: var(--gsk-orange-tint);
+    color: var(--gsk-orange-dark);
+    border: 1.5px solid var(--gsk-orange-dark);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px; font-weight: 600;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: background 0.15s;
+  }
+  .uat-card .uat-detail-btn:hover { background: #fde0d0; }
+  .uat-title {
+    font-size: 32px; font-weight: 700; color: var(--charcoal);
+    margin-bottom: 4px; letter-spacing: -0.3px;
+  }
+  .uat-subtitle {
+    font-size: 15px; color: var(--gsk-orange-dark);
+    margin-bottom: 22px;
+  }
+  .uat-divider { height: 1px; background: rgba(202,90,40,0.25); margin: 0 0 28px; }
+  .uat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 36px;
+    margin-bottom: 32px;
+  }
+  .uat-overall-label {
+    font-size: 12px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--gsk-orange-dark);
+    margin-bottom: 6px;
+  }
+  .uat-overall-pct {
+    font-size: 130px; line-height: 1; font-weight: 400;
+    color: var(--gsk-orange);
+    letter-spacing: -4px;
+    border-bottom: 3px solid var(--gsk-orange);
+    display: inline-block;
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+  }
+  .uat-overall-note { font-size: 22px; color: var(--charcoal); font-weight: 400; }
+  .uat-status-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  .uat-stat {
+    border-radius: 14px;
+    padding: 18px 22px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto 1fr;
+    column-gap: 8px;
+    min-height: 110px;
+    align-items: end;
+  }
+  .uat-stat .uat-stat-label {
+    grid-column: 1 / 3;
+    font-size: 12px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; align-self: start;
+  }
+  .uat-stat .uat-stat-num {
+    font-size: 50px; font-weight: 400; line-height: 1;
+    align-self: end;
+  }
+  .uat-stat .uat-stat-pct {
+    font-size: 13px; align-self: end; padding-bottom: 4px;
+  }
+  .uat-stat--pass     { background: #b6db82; color: #2a4d12; }
+  .uat-stat--partial  { background: #d8eccc; color: #2a4d12; }
+  .uat-stat--fail     { background: #f4dada; color: #6b1a1a; }
+  .uat-stat--nottested{ background: #e2e1d8; color: #3a3a36; }
+
+  .uat-cap-label {
+    font-size: 12px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--gsk-orange-dark);
+    margin-bottom: 14px;
+  }
+  .uat-cap-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    margin-bottom: 26px;
+  }
+  .uat-cap {
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  }
+  .uat-cap-name { font-size: 13px; font-weight: 600; color: var(--charcoal); margin-bottom: 10px; }
+  .uat-cap-bar {
+    height: 6px; border-radius: 3px; background: #e5e4d8;
+    overflow: hidden; display: flex; margin-bottom: 10px;
+  }
+  .uat-cap-bar > span { display: block; height: 100%; }
+  .uat-cap-bar .seg-pass    { background: #5a8a2a; }
+  .uat-cap-bar .seg-partial { background: #9ec85c; }
+  .uat-cap-bar .seg-fail    { background: #c84a4a; }
+  .uat-cap-bar .seg-nt      { background: #c5c2b3; }
+  .uat-cap-legend .fail { color: #6b1a1a; }
+  /* 3-stat variant (no partial) */
+  .uat-status-grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 110px;
+    align-content: center;
+  }
+  .uat-cap-legend { font-size: 11px; color: #6a6a64; display: flex; flex-wrap: wrap; gap: 4px 10px; }
+  .uat-cap-legend .pass { color: #2a4d12; font-weight: 600; }
+  .uat-cap-legend .partial { color: #4a6a18; }
+  .uat-cap-legend .nt { color: #888; }
+
+  .uat-why {
+    background: rgba(255,255,255,0.55);
+    border-left: 4px solid var(--gsk-orange);
+    padding: 14px 18px;
+    border-radius: 4px;
+  }
+  .uat-why-label {
+    font-size: 12px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--gsk-orange-dark);
+    margin-bottom: 6px;
+  }
+  .uat-why-text { font-size: 14px; color: var(--charcoal); line-height: 1.5; }
+
+  /* ===== SURVEY DASHBOARD MODAL ===== */
+  .sv-card {
+    background: var(--gsk-orange-tint);
+    border-radius: 22px;
+    padding: 40px 48px 36px;
+    max-width: 1200px; width: 100%;
+    max-height: 92vh; overflow-y: auto;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.35);
+    position: relative;
+    font-family: 'Inter', sans-serif;
+    color: var(--charcoal);
+  }
+  .sv-card .sv-close {
+    position: absolute; top: 16px; right: 18px;
+    background: rgba(255,255,255,0.5); border: none;
+    font-size: 22px; color: var(--charcoal);
+    cursor: pointer; line-height: 1;
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sv-title { font-size: 28px; font-weight: 700; color: var(--charcoal); letter-spacing: -0.3px; margin-bottom: 4px; }
+  .sv-subtitle { font-size: 14px; color: var(--gsk-orange-dark); margin-bottom: 22px; }
+  .sv-divider { height: 1px; background: rgba(202,90,40,0.25); margin: 0 0 24px; }
+
+  .sv-kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+  .sv-kpi {
+    background: #fff; border-radius: 14px; padding: 16px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .sv-kpi-label { font-size: 10.5px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: var(--gsk-orange-dark); margin-bottom: 8px; }
+  .sv-kpi-value { font-size: 30px; font-weight: 400; color: var(--charcoal); line-height: 1.1; }
+  .sv-kpi-sub { font-size: 12px; color: var(--slate); margin-top: 4px; }
+
+  .sv-section-label { font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--gsk-orange-dark); margin: 22px 0 12px; }
+
+  .sv-qa-grid {
+    display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 0;
+    background: #fff; border-radius: 12px; overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .sv-qa-grid > div { padding: 10px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 12.5px; line-height: 1.4; }
+  .sv-qa-grid > div:nth-last-child(-n+3) { border-bottom: none; }
+  .sv-qa-grid .sv-qa-head { background: var(--gsk-orange-tint); font-weight: 600; font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: var(--gsk-orange-dark); }
+  .sv-qa-grid .sv-qa-q { font-weight: 600; color: var(--charcoal); font-size: 12px; }
+  .sv-qa-grid .sv-qa-a { color: var(--slate); }
+
+  /* ===== SURVEY DASHBOARD CHARTS (Forms-style) ===== */
+  .dash-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .dash-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 22px 26px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .dash-card > .dash-card-body,
+  .dash-card > .dash-rating-body,
+  .dash-card > .dash-aligned-bars,
+  .dash-card > .dash-quotes {
+    flex: 1;
+    align-content: center;
+  }
+  .dash-card-body {
+    grid-template-columns: 1fr 1fr;
+  }
+  .dash-card-q {
+    font-size: 14px; color: var(--charcoal); font-weight: 400;
+    margin-bottom: 18px;
+  }
+  .dash-card-q .num { font-weight: 600; margin-right: 4px; }
+  .dash-card-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+  .dash-legend { display: flex; flex-direction: column; gap: 10px; font-size: 13px; }
+  .dash-legend-item {
+    display: grid;
+    grid-template-columns: 14px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    line-height: 1.35;
+  }
+  .dash-legend-dot { width: 8px; height: 8px; border-radius: 50%; margin-left: 3px; }
+  .dash-legend-label { color: #4a4a4a; }
+  .dash-legend-count { color: #4a4a4a; font-weight: 400; padding-right: 6px; }
+
+  /* Donut SVG */
+  .dash-donut-wrap {
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    min-height: 180px;
+  }
+  .dash-donut { width: 170px; height: 170px; transform: rotate(-90deg); }
+  .dash-donut circle { fill: none; stroke-width: 22; }
+  .dash-donut-bg { stroke: #f0f0f0; }
+  .dash-donut-pct-l, .dash-donut-pct-r {
+    position: absolute;
+    font-size: 14px; color: #4a4a4a; font-weight: 500;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .dash-donut-pct-l { left: calc(50% - 130px); }
+  .dash-donut-pct-r { right: calc(50% - 130px); }
+
+  /* Horizontal bars chart */
+  .dash-bars {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 6px 0;
+  }
+  .dash-bar-row {
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    align-items: center;
+    gap: 10px;
+  }
+  .dash-bar-row .bar-count { font-size: 12px; color: #4a4a4a; text-align: right; }
+  .dash-bar-track { background: transparent; height: 14px; position: relative; }
+  .dash-bar-fill { height: 100%; border-radius: 2px; }
+  .dash-bar-axis {
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    gap: 10px;
+    font-size: 11px; color: #888;
+    margin-top: 6px;
+  }
+  .dash-bar-axis-ticks { display: flex; justify-content: space-between; }
+
+  /* Aligned bars: dot + label + count + bar in one row */
+  .dash-aligned-bars {
+    display: grid;
+    grid-template-columns: 14px 1fr auto 1.2fr;
+    column-gap: 12px;
+    row-gap: 10px;
+    align-items: center;
+    font-size: 13px;
+  }
+  .dash-aligned-bars .ab-dot { width: 8px; height: 8px; border-radius: 50%; justify-self: center; }
+  .dash-aligned-bars .ab-label { color: #4a4a4a; line-height: 1.35; }
+  .dash-aligned-bars .ab-count { color: #4a4a4a; padding-right: 6px; }
+  .dash-aligned-bars .ab-bar { height: 14px; }
+  .dash-aligned-bars .ab-bar .ab-fill { height: 100%; border-radius: 2px; }
+
+  /* Rating with stars */
+  .dash-rating-body { display: grid; grid-template-columns: 1fr 1.5fr; gap: 18px; align-items: center; }
+  .dash-rating-avg-wrap { text-align: center; }
+  .dash-rating-avg { font-size: 32px; color: var(--charcoal); font-weight: 500; line-height: 1.1; }
+  .dash-rating-label { font-size: 13px; color: #4a4a4a; margin-top: 4px; }
+  .dash-rating-stars { font-size: 18px; color: #D14E1F; letter-spacing: 2px; margin-top: 10px; }
+  .dash-rating-stars .empty { color: #d0d0d0; }
+  .dash-rating-levels { display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
+  .dash-level-row { display: grid; grid-template-columns: 50px 1fr 24px; gap: 8px; align-items: center; color: #4a4a4a; }
+  .dash-level-bar { height: 10px; background: transparent; }
+  .dash-level-fill { height: 100%; background: #D14E1F; border-radius: 1px; }
+
+  /* Free-text quotes */
+  .dash-quotes { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .dash-quote {
+    background: var(--gsk-orange-tint);
+    border-left: 3px solid var(--gsk-orange);
+    border-radius: 6px;
+    padding: 12px 14px;
+  }
+  .dash-quote-label { font-size: 10.5px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; color: var(--gsk-orange-dark); margin-bottom: 6px; }
+  .dash-quote-text { font-size: 13px; color: var(--charcoal); line-height: 1.5; font-style: italic; }
+
+  /* ===== TWINNY MODAL — Navigator + Accelerator (two columns) ===== */
+  .twinny-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px 32px 32px;
+    max-width: 1080px; width: 100%;
+    max-height: 92vh; overflow-y: auto;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.35);
+    position: relative;
+    font-family: 'Inter', sans-serif;
+    color: var(--charcoal);
+  }
+  .twinny-card .twinny-close {
+    position: absolute; top: 14px; right: 18px;
+    background: #f4f4f4; border: none;
+    font-size: 22px; color: var(--charcoal);
+    cursor: pointer; line-height: 1;
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 5;
+  }
+  .tw-blocks { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 8px; }
+  .tw-block {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #e8e8ee;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.07);
+    background: #fff;
+  }
+  .tw-block-header {
+    background: linear-gradient(135deg, var(--gsk-orange) 0%, #ff9148 100%);
+    padding: 16px 20px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .tw-header-icon {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: rgba(255,255,255,0.22);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .tw-header-icon svg { width: 21px; height: 21px; }
+  .tw-block-title { font-size: 13.5px; font-weight: 700; color: #fff; margin: 0; line-height: 1.25; }
+  .tw-block-body { padding: 6px 20px 18px; background: #fff; }
+  .tw-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid #f0f0f2;
+  }
+  .tw-item:last-child { border-bottom: none; }
+  .tw-icon-wrap {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(243,102,51,0.10);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .tw-icon-wrap svg {
+    width: 20px; height: 20px;
+    stroke: var(--gsk-orange);
+    fill: none; stroke-width: 1.75;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .tw-num {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--gsk-orange); color: #fff;
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .tw-name { font-weight: 700; color: var(--charcoal); font-size: 13px; line-height: 1.25; }
+  .tw-name span { font-weight: 400; color: var(--gsk-orange-dark); font-size: 11.5px; }
+  .tw-desc { font-size: 12px; color: var(--slate); line-height: 1.5; margin-top: 3px; }
+  /* ===== Twinny Flow Modal (from from_ambition_to_delivery) ===== */
+  /* ===== Twinny Flow Modal (Discover More) ===== */
+  .tflow-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 20, 35, 0.6);
+    backdrop-filter: blur(3px);
+    z-index: 1100;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 20px;
+    overflow-y: auto;
+  }
+  .tflow-overlay[hidden] { display: none; }
+
+  .tflow-close-btn {
+    background: rgba(255,255,255,0.22);
+    border: none;
+    border-radius: 50%;
+    width: 32px; height: 32px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .tflow-close-btn:hover { background: rgba(255,255,255,0.38); }
+
+  /* ——— Accelerator Section modal ——— */
+  #tflow-modal {
+    --orange: #ff5a1f;
+    --orange-soft: #fff0e8;
+    --orange-line: #ffbda6;
+    --ink: #172033;
+    --muted: #5a667c;
+    --cream: #fffaf7;
+    --card: #ffffff;
+    --complex: var(--orange);
+    --complex-soft: var(--orange-soft);
+    --complex-line: var(--orange-line);
+    --shadow: 0 18px 45px rgba(23, 32, 51, 0.08);
+  }
+
+  #tflow-modal .accelerator-flow {
+    max-width: 1260px;
+    width: 100%;
+    margin: auto;
+    position: relative;
+    padding: 44px;
+    border-radius: 32px;
+    background:
+      radial-gradient(circle at 92% 0%, rgba(255, 90, 31, 0.10), transparent 36%),
+      linear-gradient(180deg, #fffaf7 0%, #ffffff 100%);
+    font-family: inherit;
+    color: var(--ink);
+    animation: wn-pop 0.3s cubic-bezier(0.22,1,0.36,1);
+  }
+
+  #tflow-modal .accelerator-flow > .tflow-close-btn {
+    position: absolute;
+    top: 20px; right: 20px;
+    background: rgba(255,90,31,0.12);
+    color: #ff5a1f;
+  }
+  #tflow-modal .accelerator-flow > .tflow-close-btn:hover { background: rgba(255,90,31,0.22); }
+
+  #tflow-modal .flow-heading { margin-bottom: 28px; }
+
+  #tflow-modal .eyebrow {
+    display: inline-flex;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: var(--orange-soft);
+    color: var(--orange);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  #tflow-modal .flow-heading h2 {
+    margin: 14px 0 0;
+    font-size: clamp(24px, 2.6vw, 36px);
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+
+  /* ── 3-zone grid ── */
+  #tflow-modal .flow-grid {
+    display: grid;
+    grid-template-columns: 240px 68px 1fr;
+    align-items: center;
+    padding: 24px;
+    border: 1px solid #f1ddd4;
+    border-radius: 24px;
+    background: #ffffff;
+    box-shadow: var(--shadow);
+  }
+
+  /* Zone 1 — entry steps */
+  #tflow-modal .col-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-self: stretch;
+    justify-content: center;
+  }
+
+  #tflow-modal .entry-arrow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 36px;
+    color: var(--orange-line);
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  /* Zone 2 — routing fork */
+  #tflow-modal .col-split {
+    align-self: stretch;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #tflow-modal .split-v-line {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 2px;
+    background: var(--orange-line);
+    transform: translateX(-50%);
+  }
+
+  #tflow-modal .split-h-line {
+    position: absolute;
+    left: 50%; right: 0;
+    height: 2px;
+    background: var(--orange-line);
+  }
+  #tflow-modal .split-h-line.top    { top: 25%; }
+  #tflow-modal .split-h-line.bottom { bottom: 25%; }
+  #tflow-modal .split-h-line.bottom { background: var(--complex-line); }
+
+  #tflow-modal .split-badge {
+    position: relative;
+    z-index: 2;
+    background: white;
+    border: 1px solid var(--orange-line);
+    border-radius: 999px;
+    padding: 6px 9px;
+    text-align: center;
+    font-size: 9.5px;
+    font-weight: 900;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* Zone 3 — two route lanes */
+  #tflow-modal .col-routes {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-left: 0;
+  }
+
+  #tflow-modal .route {
+    display: flex;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  #tflow-modal .route-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    padding: 10px 7px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  #tflow-modal .route-simple .route-pill {
+    background: var(--orange-soft);
+    color: var(--orange);
+    border: 1px solid var(--orange-line);
+  }
+
+  #tflow-modal .route-complex .route-pill {
+    background: var(--complex-soft);
+    color: var(--complex);
+    border: 1px solid var(--complex-line);
+  }
+
+  #tflow-modal .route-cards {
+    display: flex;
+    align-items: stretch;
+    gap: 12px;
+    flex: 1;
+  }
+
+  #tflow-modal .route-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--complex-line);
+    font-size: 20px;
+    flex-shrink: 0;
+    padding: 0 2px;
+  }
+
+  /* Flow cards */
+  #tflow-modal .fc {
+    flex: 1;
+    padding: 18px;
+    border-radius: 18px;
+    background: var(--card);
+    border: 1px solid var(--orange-line);
+    box-shadow: 0 6px 20px rgba(23, 32, 51, 0.06);
+  }
+
+  #tflow-modal .fc-simple {
+    background: linear-gradient(160deg, #ffffff 0%, #fff7f2 100%);
+  }
+
+  #tflow-modal .fc-complex {
+    border-color: var(--complex-line);
+    background: linear-gradient(160deg, #ffffff 0%, var(--complex-soft) 100%);
+  }
+
+  #tflow-modal .fc-pipeline {
+    border: 2px solid var(--complex);
+    background: linear-gradient(160deg, #ffffff 0%, #fff8f0 100%);
+    flex: 0 0 200px;
+  }
+
+  /* Card internals */
+  #tflow-modal .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  #tflow-modal .step {
+    width: 36px; height: 36px;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--orange);
+    color: white;
+    font-size: 15px;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+
+  #tflow-modal .tag {
+    display: inline-flex;
+    min-width: 36px; height: 26px;
+    padding: 0 9px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #f2f4f7;
+    color: var(--ink);
+    font-size: 11px;
+    font-weight: 900;
+  }
+
+  #tflow-modal .fc h3 {
+    margin: 0 0 8px;
+    font-size: 14.5px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  #tflow-modal .fc p,
+  #tflow-modal .fc li,
+  #tflow-modal .publish span {
+    color: var(--muted);
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+
+  #tflow-modal .fc p  { margin: 0; }
+  #tflow-modal .fc ul { margin: 0; padding-left: 16px; }
+
+  /* Publish box inside Training Buddy card */
+  #tflow-modal .publish {
+    margin-top: 14px;
+    padding: 13px;
+    border-radius: 14px;
+    border: 1px dashed var(--orange-line);
+    background: rgba(255,255,255,0.75);
+  }
+
+  #tflow-modal .publish h4 {
+    margin: 0 0 10px;
+    font-size: 12.5px;
+    color: var(--ink);
+  }
+
+  #tflow-modal .publish-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  #tflow-modal .publish-options div {
+    padding: 9px;
+    border-radius: 11px;
+    background: var(--orange-soft);
+  }
+
+  #tflow-modal .publish strong {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--orange);
+    font-size: 12px;
+  }
+
+  /* Legend */
+  #tflow-modal .legend {
+    margin-top: 18px;
+    padding: 11px 20px;
+    border-radius: 999px;
+    border: 1px solid #f0ddd5;
+    background: white;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  #tflow-modal .legend strong { color: var(--ink); }
+  #tflow-modal .legend .bolt  { color: var(--orange); }
+
+  @media (max-width: 960px) {
+    #tflow-modal .flow-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    #tflow-modal .col-split { display: none; }
+    #tflow-modal .col-routes { padding-left: 0; }
+    #tflow-modal .route { flex-wrap: wrap; }
+    #tflow-modal .route-pill { writing-mode: initial; transform: none; padding: 5px 14px; }
+    #tflow-modal .route-cards { flex-direction: column; }
+    #tflow-modal .route-arrow { transform: rotate(90deg); justify-content: flex-start; padding-left: 20px; }
+    #tflow-modal .fc-pipeline { flex: 1; }
+    #tflow-modal .legend { border-radius: 18px; justify-content: flex-start; }
+  }
+
+  /* Clickable fc cards */
+  #tflow-modal .fc[data-detail] {
+    cursor: pointer;
+    transition: box-shadow 0.18s, transform 0.18s, border-color 0.18s;
+  }
+  #tflow-modal .fc[data-detail]:hover {
+    box-shadow: 0 14px 36px rgba(23,32,51,0.14);
+    transform: translateY(-2px);
+  }
+  #tflow-modal .fc-expand {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--orange);
+    letter-spacing: 0.02em;
+  }
+  #tflow-modal .fc-pipeline .fc-expand { color: var(--complex); }
+
+  /* ——— Detail sub-modal ——— */
+  #tflow-detail-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(23,32,51,0.55);
+    backdrop-filter: blur(4px);
+    overflow-y: auto;
+  }
+  #tflow-detail-modal[hidden] { display: none; }
+
+  #tflow-detail-modal .td-card {
+    position: relative;
+    width: 100%;
+    max-width: 820px;
+    border-radius: 28px;
+    background: white;
+    padding: 40px 44px;
+    box-shadow: 0 32px 80px rgba(23,32,51,0.18);
+    animation: tdPop 0.25s cubic-bezier(0.22,1,0.36,1);
+  }
+  @keyframes tdPop { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  /* === Development Pipeline modal — clean wide layout === */
+  #tflow-detail-modal .td-card--wide {
+    max-width: min(1320px, 95vw);
+    padding: 26px 24px;
+  }
+  #tflow-detail-modal .td-card--wide .pip-layout {
+    grid-template-columns: 140px 18px minmax(0, 1fr) 18px 140px;
+    align-items: stretch;
+  }
+  #tflow-detail-modal .td-card--wide .pip-ctx-title { font-size: 11px; }
+  #tflow-detail-modal .td-card--wide .pip-ctx-text { font-size: 10.5px; line-height: 1.4; }
+  #tflow-detail-modal .td-card--wide .pip-bullets { font-size: 13px; margin-bottom: 14px; }
+
+  /* Table fits inside its grid cell — fixed layout with explicit column widths */
+  #tflow-detail-modal .td-card--wide .pip-wrap { overflow: hidden; min-width: 0; }
+  #tflow-detail-modal .td-card--wide table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+  }
+  #tflow-detail-modal .td-card--wide table colgroup col:nth-child(1) { width: 19%; }
+  #tflow-detail-modal .td-card--wide table colgroup col:nth-child(2) { width: 15%; }
+  #tflow-detail-modal .td-card--wide table colgroup col:nth-child(3) { width: 10%; }
+  #tflow-detail-modal .td-card--wide table colgroup col:nth-child(4) { width: 10%; }
+  #tflow-detail-modal .td-card--wide table colgroup col:nth-child(5) { width: 10%; }
+  #tflow-detail-modal .td-card--wide table colgroup col:nth-child(6) { width: 11%; }
+  #tflow-detail-modal .td-card--wide table colgroup col:nth-child(7) { width: 12%; }
+  #tflow-detail-modal .td-card--wide table colgroup col:nth-child(8) { width: 13%; }
+  #tflow-detail-modal .td-card--wide table th {
+    padding: 8px 6px;
+    font-size: 9.5px;
+    white-space: normal;
+    line-height: 1.25;
+    text-align: center;
+  }
+  #tflow-detail-modal .td-card--wide table td {
+    padding: 8px 6px;
+    font-size: 11px;
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    line-height: 1.4;
+  }
+  #tflow-detail-modal .td-card--wide .cpill,
+  #tflow-detail-modal .td-card--wide .spill {
+    font-size: 9px;
+    padding: 2px 6px;
+    white-space: nowrap;
+  }
+  #tflow-detail-modal .td-card--wide .vdot { width: 7px; height: 7px; }
+
+  #tflow-detail-modal #td-panel-pipeline tbody tr { opacity: 1; }
+
+  #tflow-detail-modal .td-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background: #f2f4f7;
+    color: #5a667c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #tflow-detail-modal .td-close:hover { background: #e4e7ed; }
+
+  #tflow-detail-modal .td-heading {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #f1e4da;
+  }
+  #tflow-detail-modal .td-step {
+    width: 44px; height: 44px;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #ff5a1f;
+    color: white;
+    font-size: 19px;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+  #tflow-detail-modal .td-step.purple { background: #ff5a1f; }
+  #tflow-detail-modal .td-heading h2 {
+    margin: 0;
+    font-size: 19px;
+    letter-spacing: -0.03em;
+    color: #172033;
+  }
+
+  @keyframes tdRowIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  #tflow-detail-modal .dim-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  #tflow-detail-modal .dim-item {
+    padding: 13px 16px;
+    border-radius: 13px;
+    border: 1px solid #f0e8e3;
+    opacity: 0;
+  }
+  #tflow-detail-modal .dim-item.td-vis {
+    animation: tdRowIn 0.32s ease forwards;
+  }
+  #tflow-detail-modal .td-output {
+    opacity: 0;
+  }
+  #tflow-detail-modal .td-output.td-vis {
+    animation: tdRowIn 0.32s ease forwards;
+  }
+  #tflow-detail-modal .dim-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #ff5a1f;
+    margin-right: 7px;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+  #tflow-detail-modal .dim-title {
+    font-weight: 700;
+    color: #172033;
+    font-size: 13.5px;
+  }
+  #tflow-detail-modal .dim-q {
+    color: #5a667c;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  #tflow-detail-modal .dim-scale {
+    color: #7a8899;
+    font-size: 11.5px;
+    font-weight: 400;
+    line-height: 1.45;
+    margin-top: 5px;
+  }
+  #tflow-detail-modal .dim-scale-label {
+    font-weight: 600;
+    color: #5a667c;
+  }
+
+  #tflow-detail-modal .td-output {
+    padding: 16px 18px;
+    border-radius: 14px;
+    border: 2px solid #ffbda6;
+    background: #fff8f5;
+    font-size: 13px;
+    line-height: 1.55;
+    color: #5a667c;
+  }
+  #tflow-detail-modal .td-output strong { color: #ff5a1f; }
+  #tflow-detail-modal .td-output.purple-out { border-color: #ffbda6; background: #fff0e8; }
+  #tflow-detail-modal .td-output.purple-out strong { color: #ff5a1f; }
+
+  #tflow-detail-modal .check-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px 16px;
+    margin-top: 8px;
+  }
+  #tflow-detail-modal .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 12.5px;
+    color: #5a667c;
+  }
+  #tflow-detail-modal .check-icon { font-weight: 900; flex-shrink: 0; }
+
+  #tflow-detail-modal .pip-wrap { overflow-x: auto; margin-bottom: 14px; }
+  #tflow-detail-modal table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+  #tflow-detail-modal thead th {
+    background: #ff5a1f;
+    color: white;
+    padding: 7px 8px;
+    text-align: center;
+    font-size: 10.5px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  #tflow-detail-modal tbody td:nth-child(7) { text-align: left; }
+  #tflow-detail-modal thead th:first-child { border-radius: 10px 0 0 0; }
+  #tflow-detail-modal thead th:last-child  { border-radius: 0 10px 0 0; }
+  #tflow-detail-modal tbody td {
+    padding: 6px 8px;
+    border-bottom: 1px solid #f4ede9;
+    color: #172033;
+    vertical-align: middle;
+  }
+  #tflow-detail-modal tbody tr:last-child td { border-bottom: none; }
+  #tflow-detail-modal tbody tr:nth-child(even) td { background: #fff9f7; }
+
+  #tflow-detail-modal .vdot {
+    display: inline-block;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+  #tflow-detail-modal .vhigh   { background: #22c55e; }
+  #tflow-detail-modal .vmedium { background: #f59e0b; }
+
+  #tflow-detail-modal .cpill {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    border: 1.5px solid;
+  }
+  #tflow-detail-modal .cpc { color: #ff5a1f; border-color: #ffbda6; background: #fff0e8; }
+  #tflow-detail-modal .cpm { color: #b45309; border-color: #fcd34d; background: #fffbeb; }
+  #tflow-detail-modal .cps { color: #059669; border-color: #6ee7b7; background: #ecfdf5; }
+
+  #tflow-detail-modal .spill {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  #tflow-detail-modal .s-new     { background: #dbeafe; color: #1d4ed8; }
+  #tflow-detail-modal .s-review  { background: #fef9c3; color: #92400e; }
+  #tflow-detail-modal .s-dev     { background: #dcfce7; color: #166534; }
+  #tflow-detail-modal .s-devrev  { background: #fff0e8; color: #ff5a1f; }
+  #tflow-detail-modal .s-deploy  { background: #d1fae5; color: #065f46; }
+
+  #tflow-detail-modal .pip-bullets {
+    list-style: none;
+    padding: 0;
+    margin: -6px 0 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  #tflow-detail-modal .pip-bullets li {
+    font-size: 12.5px;
+    color: #5a667c;
+    line-height: 1.5;
+  }
+  #tflow-detail-modal .pip-bullets li::before {
+    content: "●";
+    color: #ff5a1f;
+    margin-right: 7px;
+    font-size: 10px;
+    vertical-align: middle;
+  }
+
+  #tflow-detail-modal .pip-layout {
+    display: grid;
+    grid-template-columns: 148px 28px 1fr 28px 148px;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  #tflow-detail-modal .pip-side-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+    padding: 14px 10px;
+    border-radius: 14px;
+    border: 1.5px solid #ff5a1f;
+    gap: 10px;
+  }
+
+  #tflow-detail-modal .pip-layout-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #ff5a1f;
+  }
+
+  #tflow-detail-modal .pip-ctx-title {
+    font-weight: 800;
+    font-size: 12.5px;
+    color: #ff5a1f;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e0e0e0;
+    width: 100%;
+  }
+
+  #tflow-detail-modal .pip-ctx-text {
+    font-size: 11.5px;
+    color: #5a667c;
+    line-height: 1.5;
+    margin: 0;
+    text-align: center;
+  }
+
+  #tflow-detail-modal .pip-right-divider {
+    width: 100%;
+    height: 2px;
+    background: #ff5a1f;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  #tflow-detail-modal .pip-review-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-self: stretch;
+    text-align: left;
+  }
+
+  #tflow-detail-modal .pip-review-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+    color: #172033;
+    line-height: 1.4;
+    text-align: left;
+  }
+
+  #tflow-detail-modal .pip-review-icon {
+    flex-shrink: 0;
+    color: #172033;
+    margin-top: 1px;
+  }
+
+</style>
+</head>
+<body>
+
+<header class="site-header" id="header">
+  <div class="site-header-inner">
+    <div class="brand">
+      <div class="brand-logo">GSK</div>
+      <div class="brand-name">My Agentic Twin <span>· GSC Programme</span></div>
+    </div>
+    <nav class="nav">
+      <a href="../index.html">Home</a>
+      <a href="agenda.html" class="active">Agenda</a>
+      <a href="Programme%20Summary.html">Programme Summary</a>
+      <a href="Executive%20Summary.html">Executive Briefing</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+
+  <!-- Header section -->
+  <div class="agenda-header">
+    <div>
+      <div class="agenda-eyebrow"><span class="dot"></span> Agenda</div>
+      <h1 class="agenda-title">Workshop agenda</h1>
+    </div>
+  </div>
+
+  <!-- Meta bar -->
+  <div class="agenda-meta">
+    <div class="meta-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+      </svg>
+      2nd June 2026
+    </div>
+    <div class="meta-divider"></div>
+    <div class="meta-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+      </svg>
+      09:00 – 18:00 (UK)
+    </div>
+  </div>
+
+  <!-- Agenda table -->
+  <div class="agenda-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Time (UK)</th>
+          <th>Topic</th>
+          <th>Input</th>
+          <th>Expected Output</th>
+          <th>Lead</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr>
+          <td>09:00 – 09:10</td>
+          <td>
+            <div class="topic-cell">
+              <div class="topic-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M3 21v-1a9 9 0 0 1 18 0v1"/></svg>
+              </div>
+              <span class="topic-name">Welcome &amp; objectives</span>
+            </div>
+          </td>
+          <td><span class="input-text">Set the scene and expectations</span></td>
+          <td>
+            <ul class="output-list">
+              <li>Day framing and alignment on main goal (ADP roles)</li>
+            </ul>
+          </td>
+          <td><div class="lead-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg> Sara</div></td>
+        </tr>
+
+        <tr>
+          <td>09:10 – 09:40</td>
+          <td>
+            <div class="topic-cell">
+              <div class="topic-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <span class="topic-name">Voice of the end user</span>
+            </div>
+          </td>
+          <td>
+            <span class="input-text">Core team feedback (EM, Wavre, Worthing)<br>Feedback from surveys</span>
+          </td>
+          <td>
+            <ul class="output-list">
+              <li>Share feedback from early users
+                <ul class="output-sublist">
+                  <li><a href="#" onclick="event.preventDefault();document.getElementById('mentorCheckin2Modal').style.display='flex';" style="color:var(--gsk-orange);text-decoration:underline;cursor:pointer;">My Mentor Twin 2-week Check-in</a></li>
+                  <li><a href="#" onclick="event.preventDefault();document.getElementById('mentorCheckin4Modal').style.display='flex';" style="color:var(--gsk-orange);text-decoration:underline;cursor:pointer;">My Mentor Twin 4-week check-in</a></li>
+                </ul>
+              </li>
+            </ul>
+          </td>
+          <td><div class="lead-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg> Sumit</div></td>
+        </tr>
+
+        <tr>
+          <td>09:40 – 10:15</td>
+          <td>
+            <div class="topic-cell">
+              <div class="topic-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v4M8.5 17.5 12 11l3.5 6.5"/></svg>
+              </div>
+              <span class="topic-name">Agents – Release 1.0 &amp; 2.0</span>
+            </div>
+          </td>
+          <td><span class="input-text">UAT feedback report (Excel)</span></td>
+          <td>
+            <ul class="output-list">
+              <li>Approve R1.0 UAT (<a href="#" onclick="event.preventDefault();document.getElementById('mentorUatModal').style.display='flex';" style="color:var(--gsk-orange);text-decoration:underline;cursor:pointer;">My Mentor Twin</a>), prepare <a href="#" onclick="event.preventDefault();document.getElementById('rapidUatModal').style.display='flex';" style="color:var(--gsk-orange);text-decoration:underline;cursor:pointer;">R2.0 UAT for rapid feedback</a> (<a href="#" onclick="event.preventDefault();document.getElementById('psUatModal').style.display='flex';" style="color:var(--gsk-orange);text-decoration:underline;cursor:pointer;">My Problem Solving Twin</a> &amp; My Meeting Twin), approved <a href="#" onclick="event.preventDefault();document.getElementById('twinnyModal').style.display='flex';" style="color:var(--gsk-orange);text-decoration:underline;cursor:pointer;">Twinny's functionalities</a></li>
+            </ul>
+          </td>
+          <td><div class="lead-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg> Ana</div></td>
+        </tr>
+
+        <tr class="break-row">
+          <td>10:15 – 10:30</td>
+          <td colspan="4" style="text-align:center;">
+            <div class="topic-cell" style="justify-content:center;">
+              <div class="topic-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>
+              </div>
+              <span class="topic-name">Break</span>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>10:30 – 11:15</td>
+          <td>
+            <div class="topic-cell">
+              <div class="topic-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              </div>
+              <span class="topic-name">Release 2.0 demos (Problem Solving &amp; Meetings)</span>
+            </div>
+          </td>
+          <td><span class="input-text">Demo videos; value case update of <a href="#" onclick="event.preventDefault();document.getElementById('dmaicModal').style.display='flex';" style="color:var(--gsk-orange);text-decoration:underline;cursor:pointer;">My Problem Solving Twin</a> and My Meeting Twin</span></td>
+          <td>
+            <ul class="output-list">
+              <li>Clarity on the covered requirements and the new processes enabled with R2.0 agents</li>
+            </ul>
+          </td>
+          <td><div class="lead-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg> Antonino &amp;<br>Dilawar</div></td>
+        </tr>
+
+        <tr>
+          <td>11:15 – 12:30</td>
+          <td>
+            <div class="topic-cell">
+              <div class="topic-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              </div>
+              <span class="topic-name">Release 3.0 functionality</span>
+            </div>
+          </td>
+          <td><span class="input-text">R3.0 requirements, value impact, proposals &amp; timeline</span></td>
+          <td>
+            <ul class="output-list">
+              <li>Decision on R3.0 based on hour impact and development options per gap</li>
+            </ul>
+          </td>
+          <td><div class="lead-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg> Peter</div></td>
+        </tr>
+
+        <tr class="break-row">
+          <td>12:30 – 13:30</td>
+          <td colspan="4" style="text-align:center;">
+            <div class="topic-cell" style="justify-content:center;">
+              <div class="topic-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18a9 9 0 0 1-18 0z"/><path d="M6 12c0-2 1-3 3-3s2 1 3 0 2-2 4-1 2 2 2 4"/><circle cx="15" cy="8" r="1" fill="currentColor"/></svg>
+              </div>
+              <span class="topic-name">Lunch</span>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>13:00 – 13:30</td>
+          <td>
+            <div class="topic-cell">
+              <div class="topic-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+              </div>
+              <span class="topic-name">Business requirements sign-off</span>
+            </div>
+          </td>
+          <td><span class="input-text"><a href="https://myteams.gsk.com/:x:/r/sites/CSI-AgenticTwin/Shared%20Documents/General/Core%20team%20folder/00_PMO/01_Development_Status_Updates/Master_Requirements%26Estimates.xlsx?d=w4b561ca9949941dab9fd4ca6589e9036&amp;csf=1&amp;web=1&amp;e=Iqe33S" target="_blank" style="color:var(--gsk-orange);text-decoration:underline;">Requirements list (Excel)</a></span></td>
+          <td>
+            <ul class="output-list">
+              <li>V1/V2 requirements closed and signed off</li>
+            </ul>
+          </td>
+          <td><div class="lead-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg> Sumit</div></td>
+        </tr>
+
+        <tr>
+          <td>13:30 – 14:45</td>
+          <td>
+            <div class="topic-cell">
+              <div class="topic-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              </div>
+              <span class="topic-name">Adoption &amp; Change Management Framework</span>
+            </div>
+          </td>
+          <td><span class="input-text"><a href="#" onclick="event.preventDefault();document.getElementById('adoptionPlanModal').style.display='flex';" style="color:var(--gsk-orange);text-decoration:underline;cursor:pointer;">Adoption Plan</a>; Demo Videos; <a href="https://my-agentic-twin-2026.figma.site/" target="_blank" style="color:var(--gsk-orange);text-decoration:underline;">Microsite Figma</a>; <a href="Video%20WILO%20FINAL.mp4" target="_blank" style="color:var(--gsk-orange);text-decoration:underline;">Video WILO</a><br><span style="color:#888;font-style:italic;font-size:12px;">Password: MyAgenticTwin2026</span></span></td>
+          <td>
+            <ul class="output-list">
+              <li>Socialisation materials reviewed and approved</li>
+              <li>Operational ADKAR plan confirmed</li>
+              <li>New Copilot Licenses confirmed</li>
+              <li>Surveys launch timing and target audience defined</li>
+            </ul>
+          </td>
+          <td><div class="lead-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg> Maria</div></td>
+        </tr>
+
+        <tr>
+          <td>14:45 – 15:15</td>
+          <td>
+            <div class="topic-cell">
+              <div class="topic-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              </div>
+              <span class="topic-name">Value monitoring framework</span>
+            </div>
+          </td>
+          <td><span class="input-text">Role value case (Excel); value framework; surveys; usage tracker</span></td>
+          <td>
+            <ul class="output-list">
+              <li>Decision on the value framework and Agent Usage Tracker</li>
+            </ul>
+          </td>
+          <td><div class="lead-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg> Sara</div></td>
+        </tr>
+
+        <tr class="break-row">
+          <td>15:15 – 15:30</td>
+          <td colspan="4" style="text-align:center;">
+            <div class="topic-cell" style="justify-content:center;">
+              <div class="topic-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>
+              </div>
+              <span class="topic-name">Break</span>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>15:30 – 16:15</td>
+          <td>
+            <div class="topic-cell">
+              <div class="topic-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+              </div>
+              <span class="topic-name">Go / No Go (My Agentic Twin)</span>
+            </div>
+          </td>
+          <td><span class="input-text">Production deployment timeline; Adoption and Change Plan</span></td>
+          <td>
+            <ul class="output-list">
+              <li>Launch readiness and production deployment confirmed per agent</li>
+              <li>Decision to socialise with R1.0 &amp; R2.0 or wait for R3.0</li>
+            </ul>
+          </td>
+          <td><div class="lead-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg> Sara</div></td>
+        </tr>
+
+        <tr>
+          <td>16:15 – 17:00</td>
+          <td>
+            <div class="topic-cell">
+              <div class="topic-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+              </div>
+              <span class="topic-name">Next Steps</span>
+            </div>
+          </td>
+          <td><span class="input-text"><a href="#" onclick="event.preventDefault();document.getElementById('roadmapModal').style.display='flex';" style="color:var(--gsk-orange);text-decoration:underline;cursor:pointer;">Development timelines &amp; team proposal</a></span></td>
+          <td>
+            <ul class="output-list">
+              <li>Review outputs, verify decisions made, next steps defined including plan for stakeholder engagement</li>
+              <li>June plan locked and post-30 June priorities agreed</li>
+            </ul>
+          </td>
+          <td><div class="lead-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg> Sara</div></td>
+        </tr>
+
+        <tr>
+          <td>17:00 – 18:00</td>
+          <td>
+            <div class="topic-cell">
+              <div class="topic-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <span class="topic-name">Senior Stakeholder participation</span>
+            </div>
+          </td>
+          <td><span class="input-text">Value generated, proposed rollout plan and resource needs</span></td>
+          <td>
+            <ul class="output-list">
+              <li>Endorsement on launch direction, alignment on resource requirements to scale and on project next phase (R3.0, NPI,...)</li>
+            </ul>
+          </td>
+          <td><div class="lead-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg> Stephen</div></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <p class="agenda-note">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    All times are shown in UK time (BST). Timings and agenda may be subject to change.
+  </p>
+
+</main>
+
+<script>
+  const header = document.getElementById('header');
+  window.addEventListener('scroll', function() {
+    header.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+
+  // Filas de la tabla aparecen una a una al cargar
+  window.addEventListener('DOMContentLoaded', function () {
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach(function (row, i) {
+      setTimeout(function () {
+        row.classList.add('visible');
+      }, 120 + i * 90); // 90ms entre cada fila, empieza a los 120ms
+    });
+  });
+
+  // Close modals with Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      ['dmaicModal','adoptionPlanModal','mentorUatModal','psUatModal','mentorCheckin4Modal','mentorCheckin2Modal','twinnyModal','roadmapModal','rapidUatModal'].forEach(function(id){
+        var m = document.getElementById(id);
+        if (m) m.style.display = 'none';
+      });
+    }
+  });
+
+  // ===== Twinny flow modal (Discover More) =====
+  document.addEventListener('DOMContentLoaded', function() {
+    const tflowModal = document.getElementById('tflow-modal');
+    const tflowCloseBtn = document.getElementById('tflow-close-btn');
+    if (!tflowModal) return;
+
+    window.openTwinnyFlow = function() {
+      tflowModal.removeAttribute('hidden');
+      document.body.style.overflow = 'hidden';
+      if (tflowCloseBtn) tflowCloseBtn.focus();
+    };
+
+    function closeTwinnyFlow() {
+      tflowModal.setAttribute('hidden', '');
+      document.body.style.overflow = '';
+    }
+
+    if (tflowCloseBtn) tflowCloseBtn.addEventListener('click', closeTwinnyFlow);
+    tflowModal.addEventListener('click', function(e) { if (e.target === tflowModal) closeTwinnyFlow(); });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && !tflowModal.hasAttribute('hidden')) {
+        const subM = document.getElementById('tflow-detail-modal');
+        if (!subM || subM.hasAttribute('hidden')) closeTwinnyFlow();
+      }
+    });
+
+    // Detail sub-modal
+    const tdDetailModal = document.getElementById('tflow-detail-modal');
+    const tdCloseBtn    = document.getElementById('td-close-btn');
+
+    function openDetailPanel(panelId) {
+      tdDetailModal.querySelectorAll('[id^="td-panel-"]').forEach(function(p) { p.setAttribute('hidden', ''); });
+      const panel = document.getElementById(panelId);
+      if (!panel) return;
+      panel.removeAttribute('hidden');
+      const isWide = panelId === 'td-panel-pipeline';
+      tdDetailModal.querySelector('.td-card').classList.toggle('td-card--wide', isWide);
+      tdDetailModal.removeAttribute('hidden');
+      if (tdCloseBtn) tdCloseBtn.focus();
+      if (panelId === 'td-panel-screening' || panelId === 'td-panel-value') {
+        const items = Array.from(panel.querySelectorAll('.dim-item, .td-output'));
+        items.forEach(function(el) { el.classList.remove('td-vis'); });
+        items.forEach(function(el, i) { setTimeout(function() { el.classList.add('td-vis'); }, 60 + i * 90); });
+      }
+      /* pipeline rows are visible from the start now */
+    }
+
+    function closeDetailPanel() {
+      tdDetailModal.querySelectorAll('.td-vis').forEach(function(el) { el.classList.remove('td-vis'); });
+      tdDetailModal.setAttribute('hidden', '');
+    }
+
+    if (tdCloseBtn) tdCloseBtn.addEventListener('click', closeDetailPanel);
+    if (tdDetailModal) tdDetailModal.addEventListener('click', function(e) { if (e.target === tdDetailModal) closeDetailPanel(); });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && tdDetailModal && !tdDetailModal.hasAttribute('hidden')) closeDetailPanel();
+    });
+
+    document.querySelectorAll('#tflow-modal .fc[data-detail]').forEach(function(fc) {
+      fc.addEventListener('click', function() { openDetailPanel('td-panel-' + fc.dataset.detail); });
+      fc.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDetailPanel('td-panel-' + fc.dataset.detail); }
+      });
+    });
+  });
+</script>
+
+<!-- ===== ADOPTION PLAN MODAL ===== -->
+<div id="adoptionPlanModal" class="om-modal-overlay" style="display:none;" onclick="if(event.target===this)this.style.display='none'">
+  <div class="om-modal" style="max-width:1280px;">
+    <button class="om-close" onclick="document.getElementById('adoptionPlanModal').style.display='none'" aria-label="Close">×</button>
+    <div class="ap-header">
+      <div class="ap-title">My Agentic Twin - <span class="accent">Adoption Plan Execution</span></div>
+    </div>
+    <div class="ap-gantt">
+      <div class="ap-gantt-inner">
+        <div class="ap-gantt-header">
+          <div class="ap-gantt-corner"></div>
+          <div class="ap-week-cell">W1</div><div class="ap-week-cell">W2</div><div class="ap-week-cell">W3</div><div class="ap-week-cell">W4</div><div class="ap-week-cell">W5</div><div class="ap-week-cell">Jul 6</div><div class="ap-week-cell">Jul 13</div><div class="ap-week-cell">Jul 20</div><div class="ap-week-cell">Jul 27</div><div class="ap-week-cell">Aug 3</div><div class="ap-week-cell">Aug 10</div><div class="ap-week-cell">Aug 17</div><div class="ap-week-cell">Aug 24</div><div class="ap-week-cell">Aug 31</div><div class="ap-week-cell">Sep 7</div><div class="ap-week-cell">Sep 14</div><div class="ap-week-cell">Sep 21</div><div class="ap-week-cell">Sep 28+</div>
+        </div>
+        <div class="ap-lane" data-lane="1">
+          <div class="ap-lane-label">Foundations</div>
+          <div class="ap-lane-grid">
+            <div class="ap-activity" style="grid-column:1/2;grid-row:1">Preparation</div>
+            <div class="ap-activity" style="grid-column:2/3;grid-row:1">Training session</div>
+            <div class="ap-activity" style="grid-column:2/4;grid-row:2">Post-training survey</div>
+            <div class="ap-activity" style="grid-column:2/5;grid-row:3">Office hours window</div>
+          </div>
+        </div>
+        <div class="ap-lane" data-lane="2">
+          <div class="ap-lane-label">Agent Testing</div>
+          <div class="ap-lane-grid">
+            <div class="ap-activity" style="grid-column:2/3;grid-row:1">Preparation</div>
+            <div class="ap-activity" style="grid-column:3/4;grid-row:1">Agent-specific training</div>
+            <div class="ap-activity" style="grid-column:4/5;grid-row:1">Survey 1</div>
+            <div class="ap-activity" style="grid-column:5/6;grid-row:1">Refined version re-test</div>
+            <div class="ap-activity" style="grid-column:3/5;grid-row:2">Real-case usage &amp; UAT</div>
+            <div class="ap-activity" style="grid-column:3/6;grid-row:3">Teams Channel engagement</div>
+            <div class="ap-activity" style="grid-column:3/6;grid-row:4">Continuous feedback capture</div>
+            <div class="ap-activity" style="grid-column:4/6;grid-row:5">Agent iteration</div>
+            <div class="ap-activity ap-milestone" style="grid-column:7/8;grid-row:6;justify-content:center;">◆ v1 operational release</div>
+          </div>
+        </div>
+        <div class="ap-lane" data-lane="3">
+          <div class="ap-lane-label">Ambassador Rollout</div>
+          <div class="ap-lane-grid">
+            <div class="ap-wrapper" style="grid-column:6/11;grid-row:1/7;"><div class="ap-wrapper-label">Pilot Launch</div></div>
+            <div class="ap-activity" style="grid-column:6/7;grid-row:1">Preparation</div>
+            <div class="ap-activity" style="grid-column:6/7;grid-row:2">Agent-specific training</div>
+            <div class="ap-activity" style="grid-column:7/8;grid-row:2">Survey 1</div>
+            <div class="ap-activity" style="grid-column:9/10;grid-row:2">Survey 2</div>
+            <div class="ap-activity" style="grid-column:6/10;grid-row:3">Real-case usage</div>
+            <div class="ap-activity" style="grid-column:6/10;grid-row:4">Teams Channel engagement</div>
+            <div class="ap-activity" style="grid-column:7/10;grid-row:5">Early success stories</div>
+            <div class="ap-activity" style="grid-column:9/11;grid-row:6">Continuous adjustments based on feedback</div>
+            <div class="ap-activity ap-ghost" style="grid-column:13/14;grid-row:2">Agent-specific training</div>
+            <div class="ap-activity ap-ghost" style="grid-column:14/15;grid-row:2">Survey 1</div>
+            <div class="ap-activity ap-ghost" style="grid-column:16/17;grid-row:2">Survey 2</div>
+            <div class="ap-activity ap-ghost" style="grid-column:13/17;grid-row:3">Real-case usage</div>
+            <div class="ap-activity ap-ghost" style="grid-column:16/18;grid-row:6">Continuous adjustments based on feedback</div>
+          </div>
+        </div>
+        <div class="ap-lane" data-lane="4">
+          <div class="ap-lane-label">Community</div>
+          <div class="ap-lane-grid">
+            <div class="ap-activity" style="grid-column:14/15;grid-row:1">Channel decommissioned</div>
+            <div class="ap-activity" style="grid-column:15/16;grid-row:1">Lessons learned retrospective</div>
+            <div class="ap-activity" style="grid-column:9/19;grid-row:2">Weekly Ambassador sync</div>
+            <div class="ap-activity" style="grid-column:9/19;grid-row:3">Monthly site sessions</div>
+            <div class="ap-activity" style="grid-column:9/19;grid-row:4">Ad-hoc question resolution</div>
+            <div class="ap-activity" style="grid-column:9/19;grid-row:5">Teams Channel feedback</div>
+            <div class="ap-activity" style="grid-column:9/19;grid-row:6">Success stories &amp; best-practice sharing</div>
+            <div class="ap-activity" style="grid-column:9/19;grid-row:7">Copilot Analytics Monitoring (Twinny Value Tracker)</div>
+            <div class="ap-activity" style="grid-column:9/19;grid-row:8">Ambassador recognition</div>
+            <div class="ap-activity" style="grid-column:9/19;grid-row:9">Usage of Twinny</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MY MENTOR TWIN — UAT RESULTS MODAL ===== -->
+<div id="mentorUatModal" class="dmaic-modal-overlay" style="display:none;" onclick="if(event.target===this)this.style.display='none'">
+  <div class="uat-card">
+    <button class="uat-close" onclick="document.getElementById('mentorUatModal').style.display='none'" aria-label="Close">×</button>
+    <a class="uat-detail-btn" href="https://myteams.gsk.com/:x:/r/sites/CSI-AgenticTwin/Shared%20Documents/General/Core%20team%20folder/13_Agents_UATs/Leadership%20Coach/My_Mentor_Twin_UAT_Template.xlsx?d=w94fb09197d4142b898b168491fc2dda6&amp;csf=1&amp;web=1&amp;e=MVbK2v" target="_blank">View detailed results →</a>
+    <div class="uat-title">My Mentor Twin - UAT results</div>
+    <div class="uat-subtitle">16 requirements tested across 5 capability areas</div>
+    <div class="uat-divider"></div>
+
+    <div class="uat-grid">
+      <div>
+        <div class="uat-overall-label">Overall result</div>
+        <div class="uat-overall-pct">75%</div>
+        <div class="uat-overall-note">Considered a pass</div>
+      </div>
+      <div class="uat-status-grid">
+        <div class="uat-stat uat-stat--pass">
+          <div class="uat-stat-label">Pass</div>
+          <div class="uat-stat-num">12</div>
+          <div class="uat-stat-pct">75%</div>
+        </div>
+        <div class="uat-stat uat-stat--partial">
+          <div class="uat-stat-label">Partial</div>
+          <div class="uat-stat-num">3</div>
+          <div class="uat-stat-pct">19%</div>
+        </div>
+        <div class="uat-stat uat-stat--fail">
+          <div class="uat-stat-label">Fail</div>
+          <div class="uat-stat-num">0</div>
+          <div class="uat-stat-pct">0%</div>
+        </div>
+        <div class="uat-stat uat-stat--nottested">
+          <div class="uat-stat-label">Not Tested</div>
+          <div class="uat-stat-num">1</div>
+          <div class="uat-stat-pct">6%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="uat-cap-label">By capability area</div>
+    <div class="uat-cap-grid">
+      <div class="uat-cap">
+        <div class="uat-cap-name">Focus &amp; Execution</div>
+        <div class="uat-cap-bar"><span class="seg-pass" style="width:80%"></span><span class="seg-partial" style="width:20%"></span></div>
+        <div class="uat-cap-legend"><span class="pass">4 pass</span><span class="partial">· 1 partial</span></div>
+      </div>
+      <div class="uat-cap">
+        <div class="uat-cap-name">Performance</div>
+        <div class="uat-cap-bar"><span class="seg-pass" style="width:75%"></span><span class="seg-partial" style="width:25%"></span></div>
+        <div class="uat-cap-legend"><span class="pass">3 pass</span><span class="partial">· 1 partial</span></div>
+      </div>
+      <div class="uat-cap">
+        <div class="uat-cap-name">Communication</div>
+        <div class="uat-cap-bar"><span class="seg-pass" style="width:100%"></span></div>
+        <div class="uat-cap-legend"><span class="pass">2 pass · 100%</span></div>
+      </div>
+      <div class="uat-cap">
+        <div class="uat-cap-name">Team Growth</div>
+        <div class="uat-cap-bar"><span class="seg-pass" style="width:100%"></span></div>
+        <div class="uat-cap-legend"><span class="pass">2 pass · 100%</span></div>
+      </div>
+      <div class="uat-cap">
+        <div class="uat-cap-name">Other capabilities</div>
+        <div class="uat-cap-bar"><span class="seg-pass" style="width:33%"></span><span class="seg-partial" style="width:33%"></span><span class="seg-nt" style="width:34%"></span></div>
+        <div class="uat-cap-legend"><span class="pass">1 pass</span><span class="partial">· 1 partial</span><span class="nt">· 1 not tested</span></div>
+      </div>
+    </div>
+
+    <div class="uat-why">
+      <div class="uat-why-label">Why the partials?</div>
+      <div class="uat-why-text">The 3 partial requirements requested integrations with Workday and Planner — capabilities Microsoft Copilot Agent Builder does not support today, not gaps in the Leadership Coach build.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MY PROBLEM SOLVING TWIN — UAT RESULTS MODAL ===== -->
+<div id="psUatModal" class="dmaic-modal-overlay" style="display:none;" onclick="if(event.target===this)this.style.display='none'">
+  <div class="uat-card">
+    <button class="uat-close" onclick="document.getElementById('psUatModal').style.display='none'" aria-label="Close">×</button>
+    <a class="uat-detail-btn" href="https://myteams.gsk.com/:x:/r/sites/CSI-AgenticTwin/Shared%20Documents/General/Core%20team%20folder/13_Agents_UATs/DMAIC/DMAIC_UAT_%20Red%20Training%20KPI%20DMAIC.xlsx?d=w3cbbfe0d45b547e7846b2a4bbf1aeae4&amp;csf=1&amp;web=1&amp;e=duejyC" target="_blank">View detailed results →</a>
+    <div class="uat-title">My Problem Solving Twin — UAT results</div>
+    <div class="uat-subtitle">47 requirements tested across 10 sections</div>
+    <div class="uat-divider"></div>
+
+    <div class="uat-grid">
+      <div>
+        <div class="uat-overall-label">Overall result</div>
+        <div class="uat-overall-pct">60%</div>
+        <div class="uat-overall-note">Considered as partial</div>
+      </div>
+      <div class="uat-status-grid uat-status-grid--3">
+        <div class="uat-stat uat-stat--pass">
+          <div class="uat-stat-label">Pass</div>
+          <div class="uat-stat-num">28</div>
+          <div class="uat-stat-pct">60%</div>
+        </div>
+        <div class="uat-stat uat-stat--fail">
+          <div class="uat-stat-label">Fail</div>
+          <div class="uat-stat-num">2</div>
+          <div class="uat-stat-pct">4%</div>
+        </div>
+        <div class="uat-stat uat-stat--nottested">
+          <div class="uat-stat-label">Not Tested</div>
+          <div class="uat-stat-num">5</div>
+          <div class="uat-stat-pct">36%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="uat-cap-label">By section</div>
+    <div class="uat-cap-grid" style="grid-template-columns:repeat(5,1fr);">
+      <div class="uat-cap">
+        <div class="uat-cap-name">Historical DMAICs Agent</div>
+        <div class="uat-cap-bar"><span class="seg-nt" style="width:100%"></span></div>
+        <div class="uat-cap-legend"><span class="nt">3 not tested</span></div>
+      </div>
+      <div class="uat-cap">
+        <div class="uat-cap-name">Getting Started</div>
+        <div class="uat-cap-bar"><span class="seg-pass" style="width:75%"></span><span class="seg-nt" style="width:25%"></span></div>
+        <div class="uat-cap-legend"><span class="pass">3 pass</span><span class="nt">· 1 not tested</span></div>
+      </div>
+      <div class="uat-cap">
+        <div class="uat-cap-name">Define Phase</div>
+        <div class="uat-cap-bar"><span class="seg-pass" style="width:78%"></span><span class="seg-fail" style="width:11%"></span><span class="seg-nt" style="width:11%"></span></div>
+        <div class="uat-cap-legend"><span class="pass">7 pass</span><span class="fail">· 1 fail</span><span class="nt">· 1 not tested</span></div>
+      </div>
+      <div class="uat-cap">
+        <div class="uat-cap-name">Measure Phase</div>
+        <div class="uat-cap-bar"><span class="seg-pass" style="width:100%"></span></div>
+        <div class="uat-cap-legend"><span class="pass">7 pass</span></div>
+      </div>
+      <div class="uat-cap">
+        <div class="uat-cap-name">Analyse Phase</div>
+        <div class="uat-cap-bar"><span class="seg-pass" style="width:100%"></span></div>
+        <div class="uat-cap-legend"><span class="pass">7 pass</span></div>
+      </div>
+      <div class="uat-cap">
+        <div class="uat-cap-name">Improve Phase</div>
+        <div class="uat-cap-bar"><span class="seg-pass" style="width:67%"></span><span class="seg-fail" style="width:33%"></span></div>
+        <div class="uat-cap-legend"><span class="pass">2 pass</span><span class="fail">· 1 fail</span></div>
+      </div>
+      <div class="uat-cap">
+        <div class="uat-cap-name">Control Phase</div>
+        <div class="uat-cap-bar"><span class="seg-nt" style="width:100%"></span></div>
+        <div class="uat-cap-legend"><span class="nt">3 not tested</span></div>
+      </div>
+      <div class="uat-cap">
+        <div class="uat-cap-name">Process Map Agent</div>
+        <div class="uat-cap-bar"><span class="seg-nt" style="width:100%"></span></div>
+        <div class="uat-cap-legend"><span class="nt">3 not tested</span></div>
+      </div>
+      <div class="uat-cap">
+        <div class="uat-cap-name">Charts Generator Agent</div>
+        <div class="uat-cap-bar"><span class="seg-pass" style="width:33%"></span><span class="seg-nt" style="width:67%"></span></div>
+        <div class="uat-cap-legend"><span class="pass">1 pass</span><span class="nt">· 2 not tested</span></div>
+      </div>
+      <div class="uat-cap">
+        <div class="uat-cap-name">General Behaviours</div>
+        <div class="uat-cap-bar"><span class="seg-pass" style="width:20%"></span><span class="seg-nt" style="width:80%"></span></div>
+        <div class="uat-cap-legend"><span class="pass">1 pass</span><span class="nt">· 4 not tested</span></div>
+      </div>
+    </div>
+
+    <div class="uat-why">
+      <div class="uat-why-label">Why the fails?</div>
+      <div class="uat-why-text">The 2 failed requirements — populating the Team field and root cause confirmation — relate to v1 behaviours on Microsoft Copilot Agent Builder that have been reinforced in the v2 build on Microsoft Copilot Studio, where both now trigger reliably in 100% of runs.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TWINNY FUNCTIONALITIES MODAL ===== -->
+<div id="twinnyModal" class="dmaic-modal-overlay" style="display:none;" onclick="if(event.target===this)this.style.display='none'">
+  <div class="twinny-card">
+    <button class="twinny-close" onclick="document.getElementById('twinnyModal').style.display='none'" aria-label="Close">×</button>
+    <div class="tw-blocks">
+      <!-- LEFT: Twinny as Navigator -->
+      <div class="tw-block">
+        <div class="tw-block-header">
+          <div class="tw-header-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+            </svg>
+          </div>
+          <h3 class="tw-block-title">Twinny as My Agentic Twin Navigator</h3>
+        </div>
+        <div class="tw-block-body">
+          <div class="tw-item">
+            <div class="tw-icon-wrap">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+            </div>
+            <div>
+              <div class="tw-name">Router Agent</div>
+              <div class="tw-desc">Routes users to the right agent based on their needs</div>
+            </div>
+          </div>
+          <div class="tw-item">
+            <div class="tw-icon-wrap">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            </div>
+            <div>
+              <div class="tw-name">Agent Marketplace</div>
+              <div class="tw-desc">Browse My Agentic Twin agents, demos, guidebooks, and training materials</div>
+            </div>
+          </div>
+          <div class="tw-item">
+            <div class="tw-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
+            </div>
+            <div>
+              <div class="tw-name">Programme Guide</div>
+              <div class="tw-desc">Vision, scope, adoption journey, and key contacts</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Twinny as Agent Accelerator -->
+      <div class="tw-block">
+        <div class="tw-block-header">
+          <div class="tw-header-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1" fill="white" stroke="none"/>
+            </svg>
+          </div>
+          <h3 class="tw-block-title">Twinny as Agent Accelerator</h3>
+        </div>
+        <div class="tw-block-body">
+          <div class="tw-item">
+            <div class="tw-num">1</div>
+            <div>
+              <div class="tw-name">Idea Receival</div>
+              <div class="tw-desc">Submit and capture your agent idea</div>
+            </div>
+          </div>
+          <div class="tw-item">
+            <div class="tw-num">2</div>
+            <div>
+              <div class="tw-name">Complexity Screening</div>
+              <div class="tw-desc">Assess complexity and determine the build route</div>
+            </div>
+          </div>
+          <div class="tw-item">
+            <div class="tw-num">3</div>
+            <div>
+              <div class="tw-name">Training Buddy <span>(Simple)</span></div>
+              <div class="tw-desc">Guided self-build with training support</div>
+            </div>
+          </div>
+          <div class="tw-item">
+            <div class="tw-num">4</div>
+            <div>
+              <div class="tw-name">Routed to Organisation Model <span>(Medium / Complex)</span></div>
+              <div class="tw-desc">Handed off for a full guided build</div>
+            </div>
+          </div>
+          <div style="padding:14px 0 4px;display:flex;justify-content:flex-end;">
+            <button type="button" onclick="document.getElementById('twinnyModal').style.display='none';openTwinnyFlow();" style="border:1.5px solid var(--gsk-orange);background:#fff;color:var(--gsk-orange);font-size:13px;font-weight:600;border-radius:20px;padding:8px 18px;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;">
+              Discover more
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MY MENTOR TWIN — 2-WEEK CHECK-IN DASHBOARD ===== -->
+<div id="mentorCheckin2Modal" class="dmaic-modal-overlay" style="display:none;" onclick="if(event.target===this)this.style.display='none'">
+  <div class="sv-card">
+    <button class="sv-close" onclick="document.getElementById('mentorCheckin2Modal').style.display='none'" aria-label="Close">×</button>
+    <div class="sv-title">My Mentor Twin — 2-week Check-in</div>
+    <div class="sv-subtitle">4 responses</div>
+    <div class="sv-divider"></div>
+
+    <div class="dash-grid">
+
+    <!-- Q1: Used in past two weeks (donut) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">1.</span> Have you used the Leadership Coach in the past two weeks?</div>
+      <div class="dash-card-body">
+        <div class="dash-legend">
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, multiple times</span><span class="dash-legend-count">3</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Yes, once or twice</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">No, I haven't tried it yet</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">No, I tried but couldn't get it to work</span><span class="dash-legend-count">0</span></div>
+        </div>
+        <div class="dash-donut-wrap">
+          <span class="dash-donut-pct-l">75%</span>
+          <span class="dash-donut-pct-r">25%</span>
+          <svg class="dash-donut" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" stroke="#D14E1F" stroke-dasharray="226.2 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="75.4 301.6" stroke-dashoffset="-226.2"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2: Capabilities tried (bars) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">2.</span> Which Leadership Coach capabilities have you tried? (Select all that apply)</div>
+      <div class="dash-aligned-bars">
+        <span class="ab-dot" style="background:#D14E1F"></span><span class="ab-label">Task Prioritisation (sorting tasks by impact, urgency and strategic alignment)</span><span class="ab-count">3</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#D14E1F"></div></div>
+        <span class="ab-dot" style="background:#F36633"></span><span class="ab-label">Communication Insights (adapting communication style per stakeholder)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:33%;background:#F36633"></div></div>
+        <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">1:1 Prep (preparing agendas and question banks for 1:1 conversations)</span><span class="ab-count">3</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F49B6E"></div></div>
+        <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">Pulse Report (post-1:1 reflection on how you led the conversation)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:33%;background:#B85829"></div></div>
+        <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Weekly Insights (summary of your week's activity and themes)</span><span class="ab-count">3</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#8B5A3C"></div></div>
+        <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">Time Allocation (analysis of how you spend your time)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:67%;background:#C9A07C"></div></div>
+        <span class="ab-dot" style="background:#4A5568"></span><span class="ab-label">Ahead Together Objectives (drafting your IPTC objectives)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:33%;background:#4A5568"></div></div>
+        <span class="ab-dot" style="background:#6E8B8E"></span><span class="ab-label">Interview Guide (pre and post interview support)</span><span class="ab-count">0</span><div class="ab-bar"></div>
+      </div>
+    </div>
+
+    <!-- Q3: How easy to start (rating) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">3.</span> How easy was it to start using the Leadership Coach?</div>
+      <div class="dash-rating-body">
+        <div class="dash-rating-avg-wrap">
+          <div class="dash-rating-avg">4.25</div>
+          <div class="dash-rating-label">Average Rating</div>
+          <div class="dash-rating-stars">★★★★<span class="empty">☆</span></div>
+        </div>
+        <div class="dash-rating-levels">
+          <div class="dash-level-row"><span>Level 5</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:100%"></div></div><span>2</span></div>
+          <div class="dash-level-row"><span>Level 4</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:50%"></div></div><span>1</span></div>
+          <div class="dash-level-row"><span>Level 3</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:50%"></div></div><span>1</span></div>
+          <div class="dash-level-row"><span>Level 2</span><div class="dash-level-bar"></div><span></span></div>
+          <div class="dash-level-row"><span>Level 1</span><div class="dash-level-bar"></div><span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4: Biggest barrier (free-text) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">4.</span> What is the single biggest barrier (if any) to using the Leadership Coach?</div>
+      <div class="dash-quotes" style="grid-template-columns:1fr 1fr;">
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 1</div>
+          <div class="dash-quote-text">too many choices- co-pilot, more discipline</div>
+        </div>
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 2</div>
+          <div class="dash-quote-text">I need to allocate more time to use it</div>
+        </div>
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 3</div>
+          <div class="dash-quote-text">discipline</div>
+        </div>
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 4</div>
+          <div class="dash-quote-text">It feels clunky having to access and remember which chat you need to return to where there is no links between conversations.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q5: Any other comments (free-text) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">5.</span> Any other comments?</div>
+      <div class="dash-quotes" style="grid-template-columns:1fr 1fr;">
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 1</div>
+          <div class="dash-quote-text">there is an opportunity to build our leader standard work to engage with these agents as part of daily / weekly drum beat</div>
+        </div>
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 2</div>
+          <div class="dash-quote-text">Great initiative which may educate our newcomers in the future (in addition to the N+1 mentoring)</div>
+        </div>
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 3</div>
+          <div class="dash-quote-text">good thus far</div>
+        </div>
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 4</div>
+          <div class="dash-quote-text">Think it will require some pre work to adapt ways of working to facilitate optimal use in a site setting as lots of interactions are face to face not virtual.</div>
+        </div>
+      </div>
+    </div>
+
+    </div><!-- /dash-grid -->
+  </div>
+</div>
+
+<!-- ===== MY MENTOR TWIN — 4-WEEK CHECK-IN DASHBOARD ===== -->
+<div id="mentorCheckin4Modal" class="dmaic-modal-overlay" style="display:none;" onclick="if(event.target===this)this.style.display='none'">
+  <div class="sv-card">
+    <button class="sv-close" onclick="document.getElementById('mentorCheckin4Modal').style.display='none'" aria-label="Close">×</button>
+    <div class="sv-title">My Mentor Twin — 4-week Check-in</div>
+    <div class="sv-subtitle">2 responses</div>
+    <div class="sv-divider"></div>
+
+    <div class="dash-grid">
+    <!-- Q1: Usage frequency (donut) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">1.</span> How often are you using the Leadership Coach now?</div>
+      <div class="dash-card-body">
+        <div class="dash-legend">
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Daily or almost daily</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">A few times per week</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">Weekly</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">Occasionally</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#8B5A3C"></span><span class="dash-legend-label">Rarely or never</span><span class="dash-legend-count">0</span></div>
+        </div>
+        <div class="dash-donut-wrap">
+          <span class="dash-donut-pct-l">50%</span>
+          <span class="dash-donut-pct-r">50%</span>
+          <svg class="dash-donut" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="150.8 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="150.8 301.6" stroke-dashoffset="-150.8"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2: Capabilities (bar chart) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">2.</span> Which capabilities are you using regularly (at least weekly)?</div>
+      <div class="dash-aligned-bars">
+        <span class="ab-dot" style="background:#D14E1F"></span><span class="ab-label">Task Prioritisation (sorting tasks by impact, urgency and strategic alignment)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#D14E1F"></div></div>
+        <span class="ab-dot" style="background:#F36633"></span><span class="ab-label">Communication Insights (adapting communication style per stakeholder)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:50%;background:#F36633"></div></div>
+        <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">1:1 Prep (preparing agendas and question banks for 1:1 conversations)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F49B6E"></div></div>
+        <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">Pulse Report (post-1:1 reflection on how you led the conversation)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:50%;background:#B85829"></div></div>
+        <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Weekly Insights (summary of your week's activity and themes)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#8B5A3C"></div></div>
+        <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">Time Allocation (analysis of how you spend your time)</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#C9A07C"></div></div>
+        <span class="ab-dot" style="background:#4A5568"></span><span class="ab-label">Ahead Together Objectives (drafting your IPTC objectives)</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#6E8B8E"></span><span class="ab-label">Interview Guide (pre and post interview support)</span><span class="ab-count">0</span><div class="ab-bar"></div>
+      </div>
+    </div>
+
+    <!-- Q3: Leadership quality (rating) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">3.</span> Has the agent improved the quality of your leadership?</div>
+      <div class="dash-rating-body">
+        <div class="dash-rating-avg-wrap">
+          <div class="dash-rating-avg">3.50</div>
+          <div class="dash-rating-label">Average Rating</div>
+          <div class="dash-rating-stars">★★★<span style="opacity:0.6">★</span><span class="empty">☆</span></div>
+        </div>
+        <div class="dash-rating-levels">
+          <div class="dash-level-row"><span>Level 5</span><div class="dash-level-bar"></div><span></span></div>
+          <div class="dash-level-row"><span>Level 4</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:100%"></div></div><span>1</span></div>
+          <div class="dash-level-row"><span>Level 3</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:100%"></div></div><span>1</span></div>
+          <div class="dash-level-row"><span>Level 2</span><div class="dash-level-bar"></div><span></span></div>
+          <div class="dash-level-row"><span>Level 1</span><div class="dash-level-bar"></div><span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4: 1:1 quality (donut) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">4.</span> Has the quality of your 1:1s improved since using the agent?</div>
+      <div class="dash-card-body">
+        <div class="dash-legend">
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, significantly — they are more structured and meaningful</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">About the same</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">Worsened</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#8B5A3C"></span><span class="dash-legend-label">I don't run regular 1:1s</span><span class="dash-legend-count">0</span></div>
+        </div>
+        <div class="dash-donut-wrap">
+          <span class="dash-donut-pct-l">50%</span>
+          <span class="dash-donut-pct-r">50%</span>
+          <svg class="dash-donut" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" stroke="#D14E1F" stroke-dasharray="150.8 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="150.8 301.6" stroke-dashoffset="-150.8"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q5: Awareness (donut) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">5.</span> Are you more aware of how your leadership style is showing up week to week (FMDC, Insights Discovery)?</div>
+      <div class="dash-card-body">
+        <div class="dash-legend">
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, considerably</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">Not really</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">I haven't used the relevant features</span><span class="dash-legend-count">0</span></div>
+        </div>
+        <div class="dash-donut-wrap">
+          <span class="dash-donut-pct-l">50%</span>
+          <span class="dash-donut-pct-r">50%</span>
+          <svg class="dash-donut" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" stroke="#D14E1F" stroke-dasharray="150.8 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="150.8 301.6" stroke-dashoffset="-150.8"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q6: Communication (donut) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">6.</span> Has your communication with your team and stakeholders become clearer or more impactful?</div>
+      <div class="dash-card-body">
+        <div class="dash-legend">
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, noticeably</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">About the same</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">Not sure</span><span class="dash-legend-count">0</span></div>
+        </div>
+        <div class="dash-donut-wrap">
+          <span class="dash-donut-pct-l">50%</span>
+          <span class="dash-donut-pct-r">50%</span>
+          <svg class="dash-donut" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="150.8 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="150.8 301.6" stroke-dashoffset="-150.8"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q7: Interviews quality (single segment) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">7.</span> Have your interviews improved in quality, structure and consistency since using the agent?</div>
+      <div class="dash-card-body">
+        <div class="dash-legend">
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, significantly — they are more structured and consistent</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">About the same</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">I haven't conducted interviews in this period</span><span class="dash-legend-count">2</span></div>
+        </div>
+        <div class="dash-donut-wrap">
+          <span class="dash-donut-pct-l" style="left:50%;transform:translate(-50%,calc(-50% + 100px));">100%</span>
+          <svg class="dash-donut" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" stroke="#B85829" stroke-dasharray="301.6 0"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q8: Planning week (donut) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">8.</span> Has the agent changed how you plan and prioritise your week?</div>
+      <div class="dash-card-body">
+        <div class="dash-legend">
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, significantly — I work differently now</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat — I have adopted some new habits</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">Not really</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">I haven't used it enough to say</span><span class="dash-legend-count">0</span></div>
+        </div>
+        <div class="dash-donut-wrap">
+          <span class="dash-donut-pct-l">50%</span>
+          <span class="dash-donut-pct-r">50%</span>
+          <svg class="dash-donut" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" stroke="#F36633" stroke-dasharray="150.8 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="150.8 301.6" stroke-dashoffset="-150.8"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q9: Follow-ups (donut) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">9.</span> Are you following up more consistently on actions and improvement areas between 1:1s?</div>
+      <div class="dash-card-body">
+        <div class="dash-legend">
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes, noticeably</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Somewhat</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">About the same</span><span class="dash-legend-count">1</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">Not sure</span><span class="dash-legend-count">0</span></div>
+        </div>
+        <div class="dash-donut-wrap">
+          <span class="dash-donut-pct-l">50%</span>
+          <span class="dash-donut-pct-r">50%</span>
+          <svg class="dash-donut" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" stroke="#D14E1F" stroke-dasharray="150.8 301.6" stroke-dashoffset="0"></circle>
+            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="150.8 301.6" stroke-dashoffset="-150.8"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q10: Team signals (single segment) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">10.</span> Have you noticed any early signals of improved team focus, engagement or wellbeing since using the agent?</div>
+      <div class="dash-card-body">
+        <div class="dash-legend">
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#D14E1F"></span><span class="dash-legend-label">Yes — clear signals</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F36633"></span><span class="dash-legend-label">Some signals</span><span class="dash-legend-count">0</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#F49B6E"></span><span class="dash-legend-label">Too early to say</span><span class="dash-legend-count">2</span></div>
+          <div class="dash-legend-item"><span class="dash-legend-dot" style="background:#B85829"></span><span class="dash-legend-label">No signals</span><span class="dash-legend-count">0</span></div>
+        </div>
+        <div class="dash-donut-wrap">
+          <span class="dash-donut-pct-l" style="left:50%;transform:translate(-50%,calc(-50% + 100px));">100%</span>
+          <svg class="dash-donut" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" stroke="#F49B6E" stroke-dasharray="301.6 0"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q11: Time preparing week (bars) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">11.</span> Compared to before the agent, time spent preparing your week (priorities, focus, calendar):</div>
+      <div class="dash-aligned-bars">
+        <span class="ab-dot" style="background:#D14E1F"></span><span class="ab-label">Reduced significantly (more than 50%)</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#F36633"></span><span class="ab-label">Reduced moderately (25-50%)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F36633"></div></div>
+        <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">Reduced slightly (less than 25%)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F49B6E"></div></div>
+        <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">About the same</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Increased</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">I haven't used the agent for this</span><span class="ab-count">0</span><div class="ab-bar"></div>
+      </div>
+    </div>
+
+    <!-- Q12: Time preparing 1:1s (bars) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">12.</span> Time spent preparing for 1:1s:</div>
+      <div class="dash-aligned-bars">
+        <span class="ab-dot" style="background:#D14E1F"></span><span class="ab-label">Reduced significantly (more than 50%)</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#F36633"></span><span class="ab-label">Reduced moderately (25-50%)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F36633"></div></div>
+        <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">Reduced slightly (less than 25%)</span><span class="ab-count">1</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#F49B6E"></div></div>
+        <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">About the same</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Increased</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">I haven't used the agent for this</span><span class="ab-count">0</span><div class="ab-bar"></div>
+      </div>
+    </div>
+
+    <!-- Q13: Time preparing interviews (bars) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">13.</span> Time spent preparing for interviews (question planning, candidate prep, post-interview write-up):</div>
+      <div class="dash-aligned-bars">
+        <span class="ab-dot" style="background:#D14E1F"></span><span class="ab-label">Reduced significantly (more than 50%)</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#F36633"></span><span class="ab-label">Reduced moderately (25-50%)</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#F49B6E"></span><span class="ab-label">Reduced slightly (less than 25%)</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#B85829"></span><span class="ab-label">About the same</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#8B5A3C"></span><span class="ab-label">Increased</span><span class="ab-count">0</span><div class="ab-bar"></div>
+        <span class="ab-dot" style="background:#C9A07C"></span><span class="ab-label">I haven't used the agent for this</span><span class="ab-count">2</span><div class="ab-bar"><div class="ab-fill" style="width:100%;background:#C9A07C"></div></div>
+      </div>
+    </div>
+
+    <!-- Q14: Recommendation (rating) -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">14.</span> Would you recommend the Leadership Coach to a colleague?</div>
+      <div class="dash-rating-body">
+        <div class="dash-rating-avg-wrap">
+          <div class="dash-rating-avg">4.00</div>
+          <div class="dash-rating-label">Average Rating</div>
+          <div class="dash-rating-stars">★★★★<span class="empty">☆</span></div>
+        </div>
+        <div class="dash-rating-levels">
+          <div class="dash-level-row"><span>Level 5</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:100%"></div></div><span>1</span></div>
+          <div class="dash-level-row"><span>Level 4</span><div class="dash-level-bar"></div><span></span></div>
+          <div class="dash-level-row"><span>Level 3</span><div class="dash-level-bar"><div class="dash-level-fill" style="width:100%"></div></div><span>1</span></div>
+          <div class="dash-level-row"><span>Level 2</span><div class="dash-level-bar"></div><span></span></div>
+          <div class="dash-level-row"><span>Level 1</span><div class="dash-level-bar"></div><span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q15 & Q16: Free-text responses -->
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">15.</span> What is the single most useful aspect of the Leadership Coach for you?</div>
+      <div class="dash-quotes">
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 1</div>
+          <div class="dash-quote-text">prioritization matrix</div>
+        </div>
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 2</div>
+          <div class="dash-quote-text">As a tool for self reflection to pull out blind spots and give focus to my leadership capability.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-card-q"><span class="num">16.</span> What would you change or add?</div>
+      <div class="dash-quotes">
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 1</div>
+          <div class="dash-quote-text">too early to tell</div>
+        </div>
+        <div class="dash-quote">
+          <div class="dash-quote-label">Respondent 2</div>
+          <div class="dash-quote-text">Have the agent constantly alongside as opposed to accessing.</div>
+        </div>
+      </div>
+    </div>
+    </div><!-- /dash-grid -->
+  </div>
+</div>
+
+<!-- ===== R2.0 RAPID UAT MODAL ===== -->
+<div id="rapidUatModal" class="dmaic-modal-overlay" style="display:none;" onclick="if(event.target===this)this.style.display='none'">
+  <div class="uat-card" style="max-width:780px;">
+    <button class="uat-close" onclick="document.getElementById('rapidUatModal').style.display='none'" aria-label="Close">×</button>
+    <div class="uat-title">R2.0 UAT — Rapid Feedback</div>
+    <div class="uat-subtitle">Two sessions scheduled on Thursday, 4 June to validate the v2 releases.</div>
+    <div class="uat-divider"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+      <div style="background:#fff;border-radius:12px;padding:16px 20px;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--gsk-orange-dark);margin-bottom:6px;">My Meeting Twin</div>
+        <div style="font-size:14px;color:var(--charcoal);line-height:1.45;">Session with <strong>Morgan</strong></div>
+        <div style="font-size:12.5px;color:var(--slate);line-height:1.45;margin-top:2px;">Thursday, 4 June · 1.5h</div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:16px 20px;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--gsk-orange-dark);margin-bottom:6px;">My Problem Solving Twin</div>
+        <div style="font-size:14px;color:var(--charcoal);line-height:1.45;">Session with <strong>Toni</strong></div>
+        <div style="font-size:12.5px;color:var(--slate);line-height:1.45;margin-top:2px;">Thursday, 4 June · 1.5h</div>
+      </div>
+    </div>
+
+    <div class="uat-why" style="background:rgba(255,255,255,0.55);border-left:4px solid var(--gsk-orange);padding:14px 18px;border-radius:4px;">
+      <div class="uat-why-label">UAT deadline</div>
+      <div class="uat-why-text"><strong>5 June 2026</strong> — feedback consolidated by this date so both twins are ready for the wider rollout.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ROADMAP MODAL (iframe of Programme Summary, roadmap section) ===== -->
+<div id="roadmapModal" class="dmaic-modal-overlay" style="display:none;padding:12px;" onclick="if(event.target===this)this.style.display='none'">
+  <div class="dmaic-modal" style="max-width:1500px;width:92vw;height:90vh;">
+    <button class="dmaic-modal-close" onclick="document.getElementById('roadmapModal').style.display='none'" aria-label="Close">×</button>
+    <iframe src="Programme%20Summary.html?view=roadmap" title="High-level Roadmap"></iframe>
+  </div>
+</div>
+
+<!-- ===== MY PROBLEM SOLVING TWIN MODAL (iframe of DMAIC page) ===== -->
+<div id="dmaicModal" class="dmaic-modal-overlay" style="display:none;" onclick="if(event.target===this)this.style.display='none'">
+  <div class="dmaic-modal">
+    <button class="dmaic-modal-close" onclick="document.getElementById('dmaicModal').style.display='none'" aria-label="Close">×</button>
+    <iframe src="sara_dmaic_summary_14%201.html" title="My Problem Solving Twin"></iframe>
+  </div>
+</div>
+
+
+<!-- TFLOW MODAL -->
+    <div id="tflow-modal" class="tflow-overlay" hidden role="dialog" aria-modal="true" aria-label="Twinny as Agent Accelerator">
+      <section class="accelerator-flow">
+        <button class="tflow-close-btn" id="tflow-close-btn" type="button" aria-label="Close">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18"/></svg>
+        </button>
+
+        <div class="flow-heading">
+          <span class="eyebrow">Twinny as Agent Accelerator</span>
+          <h2>From idea to the right build path</h2>
+        </div>
+
+        <div class="flow-grid">
+
+          <!-- Zone 1: Entry steps (left column) -->
+          <div class="col-entry">
+            <article class="fc">
+              <div class="card-top">
+                <span class="step">1</span>
+                <span class="tag">AB</span>
+              </div>
+              <h3>Idea Receival</h3>
+              <p>Receives ideas conversationally. Checks the Development Pipeline and Marketplace for duplicates. If match found, provides the link to the agent or directs to the development point of contact. If new, screening continues.</p>
+            </article>
+
+            <div class="entry-arrow">↓</div>
+
+            <article class="fc" data-detail="screening" role="button" tabindex="0" aria-label="1st Complexity Screening — ver detalle">
+              <div class="card-top">
+                <span class="step">2</span>
+                <span class="tag">AB</span>
+              </div>
+              <h3>1st Complexity Screening</h3>
+              <p>Evaluates the idea across five dimensions. Classifies as Simple, Medium, or Complex.</p>
+              <div class="fc-expand">Ver detalle →</div>
+            </article>
+          </div>
+
+          <!-- Zone 2: Routing fork (middle column) -->
+          <div class="col-split">
+            <div class="split-v-line"></div>
+            <div class="split-h-line top"></div>
+            <div class="split-h-line bottom"></div>
+            <div class="split-badge">Route</div>
+          </div>
+
+          <!-- Zone 3: Two lanes (right column) -->
+          <div class="col-routes">
+
+            <!-- Simple lane -->
+            <div class="route route-simple">
+              <span class="route-pill">Simple</span>
+              <div class="route-cards">
+                <article class="fc fc-simple">
+                  <div class="card-top">
+                    <span class="step">3</span>
+                    <span class="tag">AB</span>
+                  </div>
+                  <h3>Training Buddy</h3>
+                  <p>Simple Training Buddy guides simple-path users through training content and helps them build it themselves.</p>
+                  <div class="publish">
+                    <h4>User wants to publish?</h4>
+                    <div class="publish-options">
+                      <div>
+                        <strong>No</strong>
+                        <span>Keep for personal use.</span>
+                      </div>
+                      <div>
+                        <strong>Yes</strong>
+                        <span>Medium/complex</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <!-- Medium/Complex lane -->
+            <div class="route route-complex">
+              <span class="route-pill">Med/Complex</span>
+              <div class="route-cards">
+                <article class="fc fc-complex" data-detail="value" role="button" tabindex="0" aria-label="Detailed Value Assessment — ver detalle">
+                  <div class="card-top">
+                    <span class="step">3</span>
+                    <span class="tag">AB</span>
+                  </div>
+                  <h3>Detailed Value Assessment</h3>
+                  <ul>
+                    <li>Process and business area</li>
+                    <li>Users and headcount</li>
+                    <li>Frequency and current effort</li>
+                    <li>Automation potential</li>
+                    <li>Value dimensions: errors, speed, quality, scalability, compliance</li>
+                  </ul>
+                  <div class="fc-expand">Ver detalle →</div>
+                </article>
+                <div class="route-arrow">→</div>
+                <article class="fc fc-pipeline" data-detail="pipeline" role="button" tabindex="0" aria-label="Development Pipeline — ver detalle">
+                  <div class="card-top">
+                    <span class="step">4</span>
+                    <span class="tag">CS</span>
+                  </div>
+                  <h3>Development Pipeline</h3>
+                  <p>Centralised dashboard for Medium/Complex ideas and already-developed simple agents. AI&amp;Data team reviews weekly to prioritise.</p>
+                  <div class="fc-expand">Ver detalle →</div>
+                </article>
+              </div>
+            </div>
+
+          </div><!-- /.col-routes -->
+
+        </div><!-- /.flow-grid -->
+
+        <div class="legend">
+          <span><strong>AB</strong> Agent Builder</span>
+          <span><strong>CS</strong> Copilot Studio</span>
+        </div>
+      </section>
+    </div>
+
+<!-- TFLOW DETAIL MODAL -->
+    <div id="tflow-detail-modal" hidden role="dialog" aria-modal="true" aria-label="Detail panel">
+      <div class="td-card">
+        <button class="td-close" id="td-close-btn" type="button" aria-label="Close">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6 L18 18 M18 6 L6 18"/></svg>
+        </button>
+
+        <!-- Panel: 1st Complexity Screening -->
+        <div id="td-panel-screening" hidden>
+          <div class="td-heading">
+            <span class="td-step">2</span>
+            <h2>1st Complexity Screening</h2>
+          </div>
+          <div class="dim-list">
+            <div class="dim-item">
+              <div><span class="dim-dot"></span><span class="dim-title">Tools &amp; Systems</span> <span class="dim-q">How many different apps, data sources, or systems would this agent need to connect to?</span></div>
+              <div class="dim-scale"><span class="dim-scale-label">Scale:</span> Low: 1–2 (e.g. just SharePoint, or just Outlook) &nbsp;|&nbsp; Medium: 3–5 &nbsp;|&nbsp; High: 6+</div>
+            </div>
+            <div class="dim-item">
+              <div><span class="dim-dot"></span><span class="dim-title">Data Types</span> <span class="dim-q">What kind of data would the agent work with?</span></div>
+              <div class="dim-scale"><span class="dim-scale-label">Scale:</span> Low: Structured (SharePoint lists, Excel tables, forms) &nbsp;|&nbsp; Medium: Mixed (some structured, some documents or emails) &nbsp;|&nbsp; High: Mostly unstructured (PDFs, free text, emails, Teams chats)</div>
+            </div>
+            <div class="dim-item">
+              <div><span class="dim-dot"></span><span class="dim-title">Logic &amp; Reasoning</span> <span class="dim-q">Would the agent follow a clear set of rules, or would it need to interpret context and make decisions?</span></div>
+              <div class="dim-scale"><span class="dim-scale-label">Scale:</span> Low: Rule-based (if X then Y) &nbsp;|&nbsp; Medium: Some interpretation needed &nbsp;|&nbsp; High: Requires contextual reasoning across multiple inputs</div>
+            </div>
+            <div class="dim-item">
+              <div><span class="dim-dot"></span><span class="dim-title">Human Oversight</span> <span class="dim-q">Would someone always review the agent's output before it's used or sent?</span></div>
+              <div class="dim-scale"><span class="dim-scale-label">Scale:</span> Low: Always reviewed before action &nbsp;|&nbsp; Medium: Reviewed for sensitive tasks, autonomous for routine &nbsp;|&nbsp; High: Needs to act independently with minimal supervision</div>
+            </div>
+            <div class="dim-item">
+              <div><span class="dim-dot"></span><span class="dim-title">Regulatory &amp; Compliance</span> <span class="dim-q">Does this process sit within a regulated or auditable environment?</span></div>
+              <div class="dim-scale"><span class="dim-scale-label">Scale:</span> Low: No regulatory constraints &nbsp;|&nbsp; Medium: Some governance or approval requirements &nbsp;|&nbsp; High: Subject to GxP, audit trails, or regulatory reporting</div>
+            </div>
+          </div>
+          <div class="td-output">
+            <strong>Output: Complexity classification.</strong><br>
+            Simple = user can build it themselves in Agent Builder.<br>
+            Medium = co-build with a site Ambassador using Copilot Studio or Agent Builder.<br>
+            Complex = requires the AI&amp;Data team (pro-code, multi-agent, or cross-system integration).
+          </div>
+        </div>
+
+        <!-- Panel: Detailed Value Assessment -->
+        <div id="td-panel-value" hidden>
+          <div class="td-heading">
+            <span class="td-step purple">3</span>
+            <h2>Detailed Value Assessment</h2>
+          </div>
+          <div class="dim-list">
+            <div class="dim-item">
+              <div><span class="dim-dot" style="background:#ff5a1f"></span><span class="dim-title">Process</span> <span class="dim-q">What process or task would this agent improve?</span></div>
+            </div>
+            <div class="dim-item">
+              <div><span class="dim-dot" style="background:#ff5a1f"></span><span class="dim-title">Business Area</span> <span class="dim-q">Which part of the business does this sit in?</span></div>
+            </div>
+            <div class="dim-item">
+              <div><span class="dim-dot" style="background:#ff5a1f"></span><span class="dim-title">Users</span> <span class="dim-q">Who would use it, and roughly how many people?</span></div>
+            </div>
+            <div class="dim-item">
+              <div><span class="dim-dot" style="background:#ff5a1f"></span><span class="dim-title">Frequency</span> <span class="dim-q">How often is this task performed: daily, weekly, monthly?</span></div>
+            </div>
+            <div class="dim-item">
+              <div><span class="dim-dot" style="background:#ff5a1f"></span><span class="dim-title">Current Effort</span> <span class="dim-q">How long does it take per person per run?</span></div>
+            </div>
+            <div class="dim-item">
+              <div><span class="dim-dot" style="background:#ff5a1f"></span><span class="dim-title">Automation Potential</span> <span class="dim-q">How much of this work do you think an agent could handle: most of it, about half, or just a small part?</span></div>
+            </div>
+            <div class="dim-item">
+              <div><span class="dim-dot" style="background:#ff5a1f"></span><span class="dim-title">Value Dimensions</span> <span class="dim-q">Beyond time savings, would this also help with any of these?</span></div>
+              <div class="check-grid">
+                <div class="check-item"><span class="check-icon" style="color:#ff5a1f">✓</span> Fewer errors or less rework</div>
+                <div class="check-item"><span class="check-icon" style="color:#ff5a1f">✓</span> Easier to scale</div>
+                <div class="check-item"><span class="check-icon" style="color:#ff5a1f">✓</span> Lower throughput time</div>
+                <div class="check-item"><span class="check-icon" style="color:#ff5a1f">✓</span> Better user experience</div>
+                <div class="check-item"><span class="check-icon" style="color:#ff5a1f">✓</span> Better consistency or quality</div>
+                <div class="check-item"><span class="check-icon" style="color:#ff5a1f">✓</span> Enables better decisions from data</div>
+                <div class="check-item"><span class="check-icon" style="color:#ff5a1f">✓</span> Supports compliance or audit requirements</div>
+              </div>
+            </div>
+          </div>
+          <div class="td-output purple-out">
+            <strong>Output:</strong> Screening summary shared with the programme team for go/no-go decision.
+          </div>
+        </div>
+
+        <!-- Panel: Development Pipeline -->
+        <div id="td-panel-pipeline" hidden>
+          <div class="td-heading">
+            <span class="td-step purple">4</span>
+            <h2>Development Pipeline Backlog</h2>
+          </div>
+          <ul class="pip-bullets">
+            <li>Simple-path agents enter the pipeline only when the user decides to publish.</li>
+            <li>Medium and Complex ideas enter automatically after the Detailed Value Assessment.</li>
+          </ul>
+
+          <div class="pip-layout">
+
+            <!-- Left: Screening Output -->
+            <div class="pip-side-box">
+              <div class="pip-ctx-title">Screening Output</div>
+              <p class="pip-ctx-text">Detailed value and complexity summary. From Medium/Complex flow or from Simple-path users who want to publish their agent.</p>
+            </div>
+
+            <!-- Arrow → table -->
+            <div class="pip-layout-arrow">→</div>
+
+            <!-- Center: Table -->
+            <div class="pip-wrap">
+              <table>
+                <colgroup>
+                  <col><col><col><col><col><col><col><col>
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>Idea Name</th>
+                    <th>Business Area</th>
+                    <th>Value Signal</th>
+                    <th>Complexity</th>
+                    <th>Proposer</th>
+                    <th>Date Submitted</th>
+                    <th>Status</th>
+                    <th>Point of Contact</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Batch Record Review Assistant</td>
+                    <td>Internal Manufacturing</td>
+                    <td><span class="vdot vhigh"></span>High</td>
+                    <td><span class="cpill cpc">Complex</span></td>
+                    <td>Abi W.</td>
+                    <td>14 May 2026</td>
+                    <td><span class="spill s-new">New</span></td>
+                    <td>Dipendra S.</td>
+                  </tr>
+                  <tr>
+                    <td>CMO Onboarding Tracker</td>
+                    <td>External Manufacturing</td>
+                    <td><span class="vdot vmedium"></span>Medium</td>
+                    <td><span class="cpill cpm">Medium</span></td>
+                    <td>Priya P.</td>
+                    <td>10 May 2026</td>
+                    <td><span class="spill s-review">Under Review</span></td>
+                    <td>Morgan K.</td>
+                  </tr>
+                  <tr>
+                    <td>SOP Change Notifier</td>
+                    <td>Digital Team</td>
+                    <td><span class="vdot vhigh"></span>High</td>
+                    <td><span class="cpill cpm">Medium</span></td>
+                    <td>James L.</td>
+                    <td>7 May 2026</td>
+                    <td><span class="spill s-dev">In Development</span></td>
+                    <td>Dipendra S.</td>
+                  </tr>
+                  <tr>
+                    <td>Deviation Report Drafter</td>
+                    <td>Logistics &amp; Scheduling</td>
+                    <td><span class="vdot vmedium"></span>Medium</td>
+                    <td><span class="cpill cps">Simple</span></td>
+                    <td>Maria G.</td>
+                    <td>5 May 2026</td>
+                    <td><span class="spill s-devrev">Developed</span></td>
+                    <td>Morgan K.</td>
+                  </tr>
+                  <tr>
+                    <td>RAID Log Summariser</td>
+                    <td>External Manufacturing</td>
+                    <td><span class="vdot vhigh"></span>High</td>
+                    <td><span class="cpill cps">Simple</span></td>
+                    <td>Sarah K.</td>
+                    <td>28 Apr 2026</td>
+                    <td><span class="spill s-deploy">Deployed</span></td>
+                    <td>Dipendra S.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Arrow table → right -->
+            <div class="pip-layout-arrow">→</div>
+
+            <!-- Right: Weekly AI&Data Review -->
+            <div class="pip-side-box">
+              <div class="pip-ctx-title">Weekly AI&amp;Data Review</div>
+              <div class="pip-review-items">
+                <div class="pip-review-item">
+                  <span class="pip-review-icon">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+                    </svg>
+                  </span>
+                  Prioritise by value
+                </div>
+                <div class="pip-review-item">
+                  <span class="pip-review-icon">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M18 9a9 9 0 01-9 9"/>
+                    </svg>
+                  </span>
+                  Check delivery complexity
+                </div>
+                <div class="pip-review-item">
+                  <span class="pip-review-icon">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+                    </svg>
+                  </span>
+                  Select next builds
+                </div>
+                <div class="pip-review-item">
+                  <span class="pip-review-icon">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14l2 2 4-4"/>
+                    </svg>
+                  </span>
+                  Review Simple agents tagged as 'Developed'
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /.pip-layout -->
+        </div>
+
+      </div>
+    </div>
+
+</body>
+</html>
