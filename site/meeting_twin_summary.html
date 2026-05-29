@@ -1,0 +1,1110 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Meeting Twin</title>
+<style>
+  :root {
+    --ink: #1F2937;
+    --paper: #FAFAF9;
+    --paper-2: #F4F1ED;
+    --muted: #475569;
+    --line: #E5E7EB;
+    --green: #F36633;
+    --amber: #F36633;
+    --red:   #475569;
+    --blue:  #F36633;
+    --accent: #F36633;
+    --accent-soft: #FEF2EC;
+    --gsk-orange: #F36633;
+    --gsk-orange-dark: #D14E1F;
+    --gsk-orange-tint: #FEF2EC;
+    --charcoal: #1F2937;
+    --slate: #475569;
+    --white: #FFFFFF;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size: 15.5px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    padding: 48px 72px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  header {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 22px;
+    margin-bottom: 0;
+  }
+  .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gsk-orange);
+    font-weight: 600;
+    margin-bottom: 22px;
+  }
+  h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--charcoal);
+    line-height: 1.2;
+    letter-spacing: -0.3px;
+    margin-bottom: 14px;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 15px;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin: 32px 0 0;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  .tab {
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 14px 24px 12px;
+    font-family: "Charter", Georgia, serif;
+    font-size: 15.5px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    margin-bottom: -1px;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active {
+    color: var(--ink);
+    border-bottom-color: var(--accent);
+  }
+  .tab .tab-num {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-right: 8px;
+    letter-spacing: 0.1em;
+  }
+  .tab-panel { display: none; padding-top: 12px; }
+  .tab-panel.active { display: block; }
+
+  /* Shared */
+  .toc-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin: 0 0 40px;
+    border: 1px solid var(--line);
+  }
+  .toc-cell {
+    padding: 18px 20px;
+    border-right: 1px solid var(--line);
+    background: #fff;
+  }
+  .toc-cell:last-child { border-right: none; }
+  .toc-cell .label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .toc-cell .count {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    font-family: "Charter", Georgia, serif;
+  }
+  .toc-cell .of {
+    font-size: 14px;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+  .toc-cell .caption {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+  .toc-cell.cat1 .count { color: var(--green); }
+  .toc-cell.cat2 .count { color: var(--blue); }
+  .toc-cell.cat3 .count { color: var(--red); }
+  .toc-cell.cat4 .count { color: var(--amber); }
+  .section { margin-bottom: 56px; }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+  }
+  .section-num {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+  h2 {
+    font-family: "Charter", Georgia, serif;
+    font-size: 22px;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .pill {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-left: auto;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .pill.green { background: #FEF2EC; color: var(--green); }
+  .pill.blue  { background: #e3ecf3; color: var(--blue); }
+  .pill.red   { background: #e5e7eb; color: var(--red); }
+  .pill.amber { background: #FEF2EC; color: var(--amber); }
+  .lede { font-size: 15.5px; margin: 0 0 20px; color: #2a2a2a; }
+  .lede strong { font-weight: 700; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    background: #fff;
+    border: 1px solid var(--line);
+  }
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    background: #f0efea;
+    border-bottom: 1px solid var(--line);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #4a4a4a;
+    font-weight: 600;
+  }
+  td {
+    padding: 11px 14px;
+    border-bottom: 1px solid #eeece5;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  td.id { font-family: "JetBrains Mono", monospace; font-size: 12px; color: #444; white-space: nowrap; width: 80px; }
+  td.group { color: var(--muted); font-size: 12.5px; white-space: nowrap; }
+  td.status { font-family: "JetBrains Mono", monospace; font-size: 11.5px; white-space: nowrap; }
+  td.status .dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .dot.cmp { background: var(--green); }
+  .dot.prog { background: var(--blue); }
+  .dot.ns { background: #999; }
+  .dot.blk { background: var(--red); }
+  .callout {
+    background: #FEF2EC;
+    border-left: 4px solid var(--amber);
+    padding: 16px 20px;
+    margin: 16px 0 20px;
+    font-size: 14.5px;
+    line-height: 1.6;
+  }
+  .callout.blue { background: #e3ecf3; border-left-color: var(--blue); }
+  .callout strong { font-weight: 700; }
+  .answer {
+    background: #fff;
+    border-left: 4px solid var(--ink);
+    padding: 14px 20px;
+    margin: 14px 0 20px;
+    font-size: 14.5px;
+  }
+  .answer .q { color: var(--muted); font-style: italic; font-size: 13px; margin-bottom: 6px; }
+  .compact-row { font-family: "JetBrains Mono", monospace; font-size: 12.5px; padding: 4px 0; color: var(--muted); }
+  .compact-row strong { color: var(--ink); font-weight: 600; }
+  .badge-v3 {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    background: #FEF2EC;
+    color: var(--amber);
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-left: 6px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .badge-blocked {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    background: #e5e7eb;
+    color: var(--red);
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-left: 6px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .badge-unify {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    background: #e3ecf3;
+    color: var(--blue);
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-left: 6px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  /* TAB 1 — Group bracket cells (visual feature-grouping in req tables) */
+  .group-cell {
+    width: 96px;
+    padding: 10px 12px;
+    background: transparent;
+    vertical-align: middle;
+    text-align: left;
+    border-right: 1px solid var(--line);
+  }
+  .group-cell.chart {
+    background: #e3ecf3;
+    border-left: 4px solid var(--blue);
+  }
+  .group-cell.beltix {
+    background: #e5e7eb;
+    border-left: 4px solid var(--red);
+  }
+  .group-cell.empty {
+    background: transparent;
+    border-left: none;
+  }
+  .group-cell .glabel {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .group-cell.chart .glabel { color: var(--blue); }
+  .group-cell.beltix .glabel { color: var(--red); }
+  .group-cell .gcount {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+  th.group-th {
+    width: 96px;
+    background: transparent;
+    border-bottom: none;
+  }
+
+  /* ===== NEW STYLES ===== */
+  .phases-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin-bottom: 36px;
+  }
+  .phase-tile {
+    background: #1f4a73;
+    border-radius: 12px;
+    padding: 20px 16px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .phase-tile-name {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    font-weight: 600;
+  }
+  .phase-tile-hours {
+    font-family: "Charter", Georgia, serif;
+    font-size: 15px;
+    font-weight: 700;
+    opacity: 0.9;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 10px;
+    margin-bottom: 2px;
+  }
+  .phase-tile-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+  }
+  .phase-tile-label { opacity: 0.6; }
+  .phase-tile-val { font-weight: 700; font-size: 14px; }
+  .phase-tile-val.v2 { color: #7dd4fc; }
+  .phase-tile-val.v3 { color: #fcd34d; }
+  .phase-tile-val.dash { opacity: 0.35; }
+  /* ===== PHASE GRID — white boxes (My Problem Solving Twin phases) ===== */
+  .phase-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-bottom: 36px;
+  }
+  .phase-box {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.25s ease;
+  }
+  .phase-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.05);
+    border-color: rgba(243,102,51,0.3);
+  }
+  .phase-box .phase-num-pill {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 2px 7px;
+    border-radius: 100px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+  .phase-box .phase-name {
+    font-family: "Charter", Georgia, serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0;
+  }
+  .phase-baseline {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .phase-baseline .bl-val {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .phase-baseline .bl-lbl {
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .phase-versions {
+    display: flex;
+    gap: 10px;
+  }
+  .phase-versions > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .phase-versions .ver-lbl {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .phase-versions .ver-pct {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .phase-versions .ver-v2 .ver-lbl,
+  .phase-versions .ver-v2 .ver-pct { color: var(--blue); }
+  .phase-versions .ver-v3 .ver-lbl,
+  .phase-versions .ver-v3 .ver-pct { color: var(--accent); }
+  @media (max-width: 1100px) {
+    .phase-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 700px) {
+    .phase-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .phase-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Version blocks */
+  .version-blocks {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+  .version-block {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--gsk-orange);
+    border-radius: 12px;
+    padding: 22px 24px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.25s ease;
+  }
+  .version-block:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.05);
+  }
+  .version-block .vb-eyebrow {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .version-block .vb-count {
+    font-family: "Charter", Georgia, serif;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .version-block .vb-of { font-size: 16px; color: var(--muted); margin-left: 4px; }
+  .version-block .vb-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+  .version-block .vb-pct {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 100px;
+    display: inline-block;
+    position: absolute;
+    top: 14px;
+    right: 14px;
+  }
+  .version-block .click-hint {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: var(--muted);
+    opacity: 0.6;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .vb-v1 .vb-count { color: var(--green); }
+  .vb-v1 .vb-pct { background: #FEF2EC; color: var(--green); }
+  .vb-v2 .vb-count { color: var(--blue); }
+  .vb-v2 .vb-pct { background: #FEF2EC; color: var(--accent); }
+  .vb-v3 .vb-count { color: var(--amber); }
+  .vb-v3 .vb-pct { background: #FEF2EC; color: var(--amber); }
+
+  /* Savings popup */
+  .savings-popup {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+    padding: 20px 22px;
+    border-radius: 4px;
+  }
+  .savings-popup.open { display: block; }
+  .savings-popup h4 {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 12px;
+  }
+  .savings-popup ul {
+    margin: 0; padding: 0; list-style: none;
+    font-family: "Inter", sans-serif;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--charcoal);
+  }
+  .savings-popup li {
+    padding: 5px 0;
+    border-bottom: 1px solid #f0efea;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .savings-popup li:last-child { border-bottom: none; }
+  .savings-popup .sp-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    flex-shrink: 0; margin-top: 6px;
+  }
+  .savings-popup .sp-h {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+    margin-left: auto;
+    padding-left: 12px;
+  }
+
+  /* Unified req table */
+  .req-section-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 14px;
+    background: #f7f6f0;
+    border-bottom: 1px solid var(--line);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .req-section-label svg { flex-shrink: 0; }
+  /* Agenda-style table look for unified reqs + V3 timeline */
+  .unified-reqs,
+  .v3-timeline-wrap {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .v3-timeline-section .tl-table { border: none; }
+  .unified-reqs tbody tr,
+  .v3-timeline-section .tl-table tbody tr {
+    transition: background 0.15s;
+  }
+  .unified-reqs tbody tr:hover,
+  .v3-timeline-section .tl-table tbody tr:hover {
+    background: #FFFAF7;
+  }
+  .unified-reqs tbody td { text-align: left !important; }
+  .unified-reqs table { table-layout: fixed; }
+  .v3-timeline-section .tl-table td strong {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--charcoal);
+    line-height: 1.35;
+  }
+  .unified-reqs th:nth-child(1), .unified-reqs td:nth-child(1) { width: 14%; }
+  .unified-reqs th:nth-child(2), .unified-reqs td:nth-child(2) { width: 10%; }
+  .unified-reqs th:nth-child(3), .unified-reqs td:nth-child(3) { width: 18%; }
+  .unified-reqs th:nth-child(4), .unified-reqs td:nth-child(4) { width: 38%; }
+  .unified-reqs th:nth-child(5), .unified-reqs td:nth-child(5) { width: 20%; }
+  .req-section-label.ip { color: var(--blue); background: #FEF2EC; }
+  .req-section-label.done { color: var(--green); background: #FEF2EC; }
+  .req-section-label.v3 { color: var(--amber); background: #FEF2EC; }
+  .feat-badge {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    padding: 0;
+    background: transparent;
+    color: #444;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .feat-badge.core,
+  .feat-badge.amber,
+  .feat-badge.red { background: transparent; color: #444; }
+
+  /* V3 timeline table */
+  .v3-timeline-section {
+    margin-top: 48px;
+  }
+  .v3-tl-head {
+    margin-bottom: 20px;
+  }
+  .v3-tl-head h3 {
+    font-family: "Charter", Georgia, serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .v3-tl-head p {
+    font-size: 14.5px;
+    color: var(--muted);
+    margin: 0;
+    font-family: "Inter", sans-serif;
+  }
+  .tl-table { width: 100%; border-collapse: collapse; font-family: "Inter", sans-serif; font-size: 12.5px; background: #fff; border: 1px solid var(--line); }
+  .tl-table th {
+    padding: 14px 16px;
+    background: #FFF8F4;
+    text-align: center;
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--gsk-orange);
+    font-weight: 600;
+    border-bottom: 1px solid var(--line);
+  }
+  .tl-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #eeece5;
+    vertical-align: top;
+    font-size: 12.5px;
+  }
+  .tl-table td span[style*="font-size:12.5px"] { font-size: 12px !important; }
+  .tl-table tr:last-child td { border-bottom: none; }
+  .tl-est {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    color: var(--blue);
+    white-space: nowrap;
+    font-size: 12.5px;
+  }
+  .blocker-tag {
+    display: inline-block;
+    background: #FEF2EC;
+    color: var(--accent);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .dep-tag {
+    display: inline-block;
+    background: #FEF2EC;
+    color: var(--amber);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  /* ===== SITE HEADER + NAV (matching other pages) ===== */
+  .site-header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 8px 0 0;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .site-header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 14px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-logo {
+    width: 34px; height: 34px;
+    background: var(--gsk-orange);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    font-family: 'Inter', sans-serif;
+  }
+  .brand-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--charcoal);
+    font-family: 'Inter', sans-serif;
+  }
+  .brand-name span { opacity: 0.6; font-weight: 400; margin-left: 6px; }
+  .nav { display: flex; gap: 28px; }
+  .nav a {
+    font-size: 13px;
+    color: var(--slate);
+    font-weight: 500;
+    padding: 6px 2px;
+    border-bottom: 2px solid transparent;
+    text-decoration: none;
+    transition: color 0.2s, border-color 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+  .nav a:hover { color: var(--gsk-orange); }
+  .nav a.active { color: var(--gsk-orange); border-bottom-color: var(--gsk-orange); }
+
+  /* Match container padding to other pages */
+  .wrap {
+    max-width: 1280px;
+    padding: 36px 48px 80px;
+  }
+
+  /* ===== UNIVERSAL FONT OVERRIDE: force Inter everywhere ===== */
+  .wrap, .wrap * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif !important; }
+
+  /* ===== Document title bar (eyebrow + h1 + subtitle) — match kirk-title-bar ===== */
+  .wrap > header {
+    border-bottom: none !important;
+    padding-bottom: 8px !important;
+    margin-bottom: 12px !important;
+  }
+  .eyebrow {
+    color: var(--gsk-orange) !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    letter-spacing: 2.5px !important;
+    text-transform: uppercase !important;
+    margin-bottom: 22px !important;
+  }
+  h1 {
+    color: var(--charcoal) !important;
+    font-size: 30px !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.3px !important;
+    line-height: 1.2 !important;
+    margin-bottom: 14px !important;
+    font-family: 'Inter', sans-serif !important;
+  }
+  .subtitle {
+    color: var(--slate) !important;
+    font-style: normal !important;
+    font-size: 14px !important;
+    margin-top: 4px !important;
+  }
+  h2, h3 { letter-spacing: -0.005em; }
+
+  /* ===== Tabs restyled in GSK look ===== */
+  .tabs {
+    border-bottom: 1px solid var(--line) !important;
+    margin-top: 28px !important;
+  }
+  .tab {
+    color: var(--slate) !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    padding: 12px 22px 10px !important;
+  }
+  .tab:hover { color: var(--gsk-orange) !important; }
+  .tab.active {
+    color: var(--gsk-orange) !important;
+    border-bottom-color: var(--gsk-orange) !important;
+  }
+  .tab .tab-num { color: var(--gsk-orange) !important; font-weight: 700 !important; }
+
+  /* Hide site nav when embedded in an iframe (e.g. agenda modal) */
+  .in-iframe .site-header { display: none !important; }
+  .in-iframe .wrap { padding-top: 24px !important; }
+</style>
+<script>if (window.self !== window.top) { document.documentElement.classList.add('in-iframe'); }</script>
+</head>
+<body>
+
+<header class="site-header" id="header">
+  <div class="site-header-inner">
+    <div class="brand">
+      <img src="Logo%20GSK.png" alt="GSK" style="height:34px;width:auto;display:block;">
+      <div class="brand-name">My Agentic Twin <span>· GSC Programme</span></div>
+    </div>
+    <nav class="nav">
+      <a href="../index.html">Home</a>
+      <a href="agenda.html">Agenda</a>
+      <a href="Programme%20Summary.html">Programme Summary</a>
+      <a href="Executive%20Summary.html">Executive Briefing</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Requirements and value assessment</div>
+  <h1>My Meeting Twin</h1>
+  <p style="font-family:'Inter',sans-serif;font-size:17px;color:var(--slate);line-height:1.55;max-width:780px;margin:0;font-style:normal;">Less prep, more presence: meetings handled end-to-end.</p>
+</header>
+
+
+<!-- ============================================================ -->
+<!-- ============== TAB 01 — STATUS BY CATEGORY ================= -->
+<!-- ============================================================ -->
+
+<!-- ============================================================ -->
+<!-- ============== TAB 01 — STATUS BY CATEGORY ================= -->
+<!-- ============================================================ -->
+<div class="tab-panel active" id="tab1">
+
+<!-- ====== SECTION A: MY MEETING TWIN PHASES ====== -->
+<div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:var(--gsk-orange);margin:0 0 8px;text-transform:none;letter-spacing:normal;">Phases</div>
+<div class="phase-grid">
+
+  <div class="phase-box">
+    <span class="phase-num-pill">PHASE 01</span>
+    <div class="phase-name">Pre-meeting activities</div>
+    <div class="phase-baseline"><span class="bl-val">1 h</span><span class="bl-lbl">baseline · per meeting</span></div>
+    <div class="phase-versions">
+      <div class="ver-v2"><span class="ver-lbl">V1</span><span class="ver-pct">8 %</span></div>
+      <div class="ver-v3"><span class="ver-lbl">V2</span><span class="ver-pct">10 %</span></div>
+    </div>
+  </div>
+
+  <div class="phase-box">
+    <span class="phase-num-pill">PHASE 02</span>
+    <div class="phase-name">DIA drafting</div>
+    <div class="phase-baseline"><span class="bl-val">1 h</span><span class="bl-lbl">baseline · per DIA</span></div>
+    <div class="phase-versions">
+      <div class="ver-v2"><span class="ver-lbl">V1</span><span class="ver-pct">18 %</span></div>
+      <div class="ver-v3"><span class="ver-lbl">V2</span><span class="ver-pct">50 %</span></div>
+    </div>
+  </div>
+
+  <div class="phase-box">
+    <span class="phase-num-pill">PHASE 03</span>
+    <div class="phase-name">During Meeting</div>
+    <div class="phase-baseline"><span class="bl-val">1 h</span><span class="bl-lbl">baseline · per meeting</span></div>
+    <div class="phase-versions">
+      <div class="ver-v2"><span class="ver-lbl">V1</span><span class="ver-pct">15 %</span></div>
+      <div class="ver-v3"><span class="ver-lbl">V2</span><span class="ver-pct">17 %</span></div>
+    </div>
+  </div>
+
+  <div class="phase-box">
+    <span class="phase-num-pill">PHASE 04</span>
+    <div class="phase-name">Post-meeting activities</div>
+    <div class="phase-baseline"><span class="bl-val">45 min</span><span class="bl-lbl">baseline · per meeting</span></div>
+    <div class="phase-versions">
+      <div class="ver-v2"><span class="ver-lbl">V1</span><span class="ver-pct">0 %</span></div>
+      <div class="ver-v3"><span class="ver-lbl">V2</span><span class="ver-pct">60 %</span></div>
+    </div>
+  </div>
+
+</div>
+<!-- ====== SECTION B: VERSION BLOCKS ====== -->
+<div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:var(--gsk-orange);margin:0 0 8px;text-transform:none;letter-spacing:normal;">Requirements coverage by version</div>
+<div class="version-blocks" id="version-blocks">
+
+  <!-- V1 block -->
+  <div class="version-block vb-v1">
+    <div class="vb-eyebrow">Covered in <span style="color:var(--gsk-orange);">V1</span></div>
+    <div><span class="vb-count">45</span><span class="vb-of">/68</span></div>
+  </div>
+
+  <!-- V2 block -->
+  <div class="version-block vb-v2">
+    <div class="vb-eyebrow">New in <span style="color:var(--gsk-orange);">V2</span></div>
+    <div><span class="vb-count">23</span><span class="vb-of">/68</span></div>
+  </div>
+
+</div>
+
+<!-- ====== SECTION C: UNIFIED REQUIREMENTS TABLE ====== -->
+<div style="margin-bottom:48px;">
+  <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:var(--gsk-orange);margin:0 0 8px;text-transform:none;letter-spacing:normal;">All requirements — V1 scope (unified view)</div>
+
+  <div class="unified-reqs" style="background:#fff;overflow:hidden;">
+
+    <!-- UNIFIED HEADER -->
+    <table style="width:100%;border-collapse:collapse;font-family:'Inter',sans-serif;table-layout:fixed;">
+      <colgroup>
+        <col style="width:20%">
+        <col style="width:22%">
+        <col style="width:42%">
+        <col style="width:16%">
+      </colgroup>
+      <thead>
+        <tr style="background:#FFF8F4;border-bottom:1px solid var(--line);">
+          <th style="background:#FFF8F4;padding:14px 16px;text-align:left;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:1.8px;text-transform:uppercase;color:var(--gsk-orange);font-weight:600;">Group</th>
+          <th style="background:#FFF8F4;padding:14px 16px;text-align:left;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:1.8px;text-transform:uppercase;color:var(--gsk-orange);font-weight:600;">Feature (# Reqs)</th>
+          <th style="background:#FFF8F4;padding:14px 16px;text-align:left;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:1.8px;text-transform:uppercase;color:var(--gsk-orange);font-weight:600;">Description</th>
+          <th style="background:#FFF8F4;padding:14px 16px;text-align:left;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:1.8px;text-transform:uppercase;color:var(--gsk-orange);font-weight:600;">V1 Status</th>
+        </tr>
+      </thead>
+    </table>
+
+    <!-- COMPLETED -->
+    <div class="req-section-label done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Completed — 41 reqs · 13 features</div>
+    <table style="width:100%;border-collapse:collapse;font-size:13.5px;font-family:'Inter',sans-serif;table-layout:fixed;">
+      <colgroup>
+        <col style="width:20%">
+        <col style="width:22%">
+        <col style="width:42%">
+        <col style="width:16%">
+      </colgroup>
+      <tbody>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;vertical-align:top;">Pre-configuration</td><td style="padding:10px 14px;vertical-align:top;"><strong>Workflow &amp; Triggers</strong> <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">(2)</span></td><td style="padding:10px 14px;vertical-align:top;font-size:13px;line-height:1.5;">Automated orchestration: the system triggers DIA evaluation and data retrieval based on stored configuration, powered by Power Automate flows tied to each meeting's schedule.</td><td style="padding:10px 14px;vertical-align:top;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Completed</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;vertical-align:top;">Pre-configuration</td><td style="padding:10px 14px;vertical-align:top;"><strong>Connectors &amp; Setup</strong> <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">(2)</span></td><td style="padding:10px 14px;vertical-align:top;font-size:13px;line-height:1.5;">Connectors to KPI Library, MS Projects, Smart Control Room and Teams, plus organiser-led setup to select recurring meetings and assign Tiers, KPIs and owners.</td><td style="padding:10px 14px;vertical-align:top;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Completed</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;vertical-align:top;">Pre-configuration</td><td style="padding:10px 14px;vertical-align:top;"><strong>Data Schemas &amp; Ownership</strong> <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">(3)</span></td><td style="padding:10px 14px;vertical-align:top;font-size:13px;line-height:1.5;">Documented JSON schemas for KPI Library, MS Projects and Teams data, with a global KPI → Owner mapping (with override).</td><td style="padding:10px 14px;vertical-align:top;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Completed</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;vertical-align:top;">DIA drafting</td><td style="padding:10px 14px;vertical-align:top;"><strong>DIA Submission</strong> <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">(1)</span></td><td style="padding:10px 14px;vertical-align:top;font-size:13px;line-height:1.5;">Fill and submit DIA form.</td><td style="padding:10px 14px;vertical-align:top;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Completed</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;vertical-align:top;">DIA drafting</td><td style="padding:10px 14px;vertical-align:top;"><strong>Store DIA data</strong> <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">(1)</span></td><td style="padding:10px 14px;vertical-align:top;font-size:13px;line-height:1.5;">Store in Dataverse the submitted DIA information [PA].</td><td style="padding:10px 14px;vertical-align:top;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Completed</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;vertical-align:top;">DIA drafting</td><td style="padding:10px 14px;vertical-align:top;"><strong>DIA Completed Task</strong> <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">(1)</span></td><td style="padding:10px 14px;vertical-align:top;font-size:13px;line-height:1.5;">Mark DIA task as completed [PA].</td><td style="padding:10px 14px;vertical-align:top;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Completed</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;vertical-align:top;">Pre-meeting activities</td><td style="padding:10px 14px;vertical-align:top;"><strong>Meeting &amp; KPI Identification</strong> <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">(2)</span></td><td style="padding:10px 14px;vertical-align:top;font-size:13px;line-height:1.5;">Agent detects the Teams meeting and surfaces relevant red KPIs to the organiser.</td><td style="padding:10px 14px;vertical-align:top;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Completed</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;vertical-align:top;">Pre-meeting activities</td><td style="padding:10px 14px;vertical-align:top;"><strong>Data Source Retrieval</strong> <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">(4)</span></td><td style="padding:10px 14px;vertical-align:top;font-size:13px;line-height:1.5;">Pulls red KPIs, projects in red status, and attendee data from KPI Library, MS Project/PowerBI, and meeting config; creates initial DIA tasks.</td><td style="padding:10px 14px;vertical-align:top;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Completed</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;vertical-align:top;">Pre-meeting activities</td><td style="padding:10px 14px;vertical-align:top;"><strong>Consolidation &amp; DIA Triage</strong> <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">(6)</span></td><td style="padding:10px 14px;vertical-align:top;font-size:13px;line-height:1.5;">Combines and deduplicates items across sources, classifies them as KPI/Task/Project, flags those needing a DIA, and presents the list for user confirmation.</td><td style="padding:10px 14px;vertical-align:top;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Completed</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;vertical-align:top;">Pre-meeting activities</td><td style="padding:10px 14px;vertical-align:top;"><strong>Attendee Management</strong> <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">(5)</span></td><td style="padding:10px 14px;vertical-align:top;font-size:13px;line-height:1.5;">Identifies required attendees by ownership, updates mandatory/optional status in Dataverse, and notifies them with context on why they're invited.</td><td style="padding:10px 14px;vertical-align:top;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Completed</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;vertical-align:top;">Pre-meeting activities</td><td style="padding:10px 14px;vertical-align:top;"><strong>DIA Assignment &amp; Outputs</strong> <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">(2)</span></td><td style="padding:10px 14px;vertical-align:top;font-size:13px;line-height:1.5;">Provides each attendee their assigned DIAs and stores completed outputs.</td><td style="padding:10px 14px;vertical-align:top;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Completed</span></td></tr>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;vertical-align:top;">Pre-meeting activities</td><td style="padding:10px 14px;vertical-align:top;"><strong>Planner Integration &amp; Sync</strong> <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">(10)</span></td><td style="padding:10px 14px;vertical-align:top;font-size:13px;line-height:1.5;">Links each DIA to a Microsoft Planner task: resolves Plan context, prevents duplicates, creates and maps tasks, stores IDs in Dataverse, and syncs completion status one-way from Dataverse to Planner.</td><td style="padding:10px 14px;vertical-align:top;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Completed</span></td></tr>
+        <tr><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;vertical-align:top;">Configuration</td><td style="padding:10px 14px;vertical-align:top;"><strong>Planner Context Resolution</strong> <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">(2)</span></td><td style="padding:10px 14px;vertical-align:top;font-size:13px;line-height:1.5;">Dynamically picks Team and Channel (allowing user selection when multiple Planners exist) and stores Team ID, Channel ID and Planner Plan ID.</td><td style="padding:10px 14px;vertical-align:top;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Completed</span></td></tr>
+      </tbody>
+    </table>
+
+    <!-- IN PROGRESS -->
+    <div class="req-section-label ip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 14"></polyline></svg>In Progress — 2 reqs · 2 features</div>
+    <table style="width:100%;border-collapse:collapse;font-size:13.5px;font-family:'Inter',sans-serif;table-layout:fixed;">
+      <colgroup>
+        <col style="width:20%">
+        <col style="width:22%">
+        <col style="width:42%">
+        <col style="width:16%">
+      </colgroup>
+      <tbody>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;vertical-align:top;">DIA drafting</td><td style="padding:10px 14px;vertical-align:top;"><strong>DIA Fulfillment</strong> <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">(1)</span></td><td style="padding:10px 14px;vertical-align:top;font-size:13px;line-height:1.5;">Agent provides a first draft of the DIA.</td><td style="padding:10px 14px;vertical-align:top;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#cbd5e1;margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">In Progress</span></td></tr>
+        <tr><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;vertical-align:top;">Governance</td><td style="padding:10px 14px;vertical-align:top;"><strong>Error Handling &amp; Logging</strong> <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">(1)</span></td><td style="padding:10px 14px;vertical-align:top;font-size:13px;line-height:1.5;">Handle failures in task creation/update and log errors.</td><td style="padding:10px 14px;vertical-align:top;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#cbd5e1;margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">In Progress</span></td></tr>
+      </tbody>
+    </table>
+
+    <!-- NOT STARTED -->
+    <div class="req-section-label v3"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle></svg>Not Started — 2 reqs · 2 features</div>
+    <table style="width:100%;border-collapse:collapse;font-size:13.5px;font-family:'Inter',sans-serif;table-layout:fixed;">
+      <colgroup>
+        <col style="width:20%">
+        <col style="width:22%">
+        <col style="width:42%">
+        <col style="width:16%">
+      </colgroup>
+      <tbody>
+        <tr style="border-bottom:1px solid #eeece5;"><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;vertical-align:top;">Pre-meeting activities</td><td style="padding:10px 14px;vertical-align:top;"><strong>Dedicated Planner per Meeting</strong> <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">(1)</span></td><td style="padding:10px 14px;vertical-align:top;font-size:13px;line-height:1.5;">Create or link a dedicated Planner Plan for each meeting during DIA pre-setup.</td><td style="padding:10px 14px;vertical-align:top;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#fff;border:1.5px solid #94a3b8;box-sizing:border-box;margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Not Started</span></td></tr>
+        <tr><td style="padding:10px 14px;color:var(--muted);font-size:12.5px;vertical-align:top;">Enhancement</td><td style="padding:10px 14px;vertical-align:top;"><strong>Task Update Sync</strong> <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">(1)</span></td><td style="padding:10px 14px;vertical-align:top;font-size:13px;line-height:1.5;">Sync Planner updates (comments/status) back to Dataverse (post-MVP).</td><td style="padding:10px 14px;vertical-align:top;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#fff;border:1.5px solid #94a3b8;box-sizing:border-box;margin-right:6px;vertical-align:middle;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;">Not Started</span></td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+</div>
+
+
+
+</div>
+
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // Version block popup toggle
+  function togglePopup(id, event) {
+    event.stopPropagation();
+    const popup = document.getElementById(id);
+    const isOpen = popup.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.savings-popup').forEach(p => p.classList.remove('open'));
+    if (!isOpen) popup.classList.add('open');
+  }
+  document.addEventListener('click', function() {
+    document.querySelectorAll('.savings-popup').forEach(p => p.classList.remove('open'));
+  });
+
+  // Tab 3 filter
+  const chips = document.querySelectorAll('.filter-bar .chip');
+  const features = document.querySelectorAll('.feature');
+  const visibleCount = document.getElementById('visible-count');
+  const visibleValue = document.getElementById('visible-value');
+
+  function formatM(num) {
+    if (num >= 10) return `~£${num.toFixed(1)}M`;
+    return `~£${num.toFixed(2)}M`;
+  }
+
+  function applyFilter(filter) {
+    let count = 0;
+    let totalValue = 0;
+    features.forEach(feat => {
+      const statuses = (feat.dataset.status || '').split(' ');
+      const value = parseFloat(feat.dataset.value) || 0;
+      const show = filter === 'all' || statuses.includes(filter);
+      if (show) {
+        feat.classList.remove('hidden');
+        count++;
+        totalValue += value;
+      } else {
+        feat.classList.add('hidden');
+      }
+    });
+    visibleCount.textContent = count;
+    visibleValue.textContent = formatM(totalValue);
+  }
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      applyFilter(chip.dataset.filter);
+    });
+  });
+
+  applyFilter('all');
+</script>
+
+
+</body>
+</html>

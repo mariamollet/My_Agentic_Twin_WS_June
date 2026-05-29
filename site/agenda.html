@@ -1909,7 +1909,7 @@
               <span class="topic-name">Release 2.0 demos (Problem Solving &amp; Meetings)</span>
             </div>
           </td>
-          <td><span class="input-text">Demo videos; value case update of <a href="#" onclick="event.preventDefault();document.getElementById('dmaicModal').style.display='flex';" style="color:var(--gsk-orange);text-decoration:underline;cursor:pointer;">My Problem Solving Twin</a> and My Meeting Twin</span></td>
+          <td><span class="input-text">Demo videos; value case update of <a href="#" onclick="event.preventDefault();document.getElementById('dmaicModal').style.display='flex';" style="color:var(--gsk-orange);text-decoration:underline;cursor:pointer;">My Problem Solving Twin</a> and <a href="#" onclick="event.preventDefault();document.getElementById('meetingValueModal').style.display='flex';" style="color:var(--gsk-orange);text-decoration:underline;cursor:pointer;">My Meeting Twin</a></span></td>
           <td>
             <ul class="output-list">
               <li>Clarity on the covered requirements and the new processes enabled with R2.0 agents</li>
@@ -2110,7 +2110,7 @@
   // Close modals with Escape
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
-      ['dmaicModal','adoptionPlanModal','mentorUatModal','psUatModal','mentorCheckin4Modal','mentorCheckin2Modal','psCheckin2Modal','psCheckin4Modal','twinnyModal','roadmapModal','rapidUatModal'].forEach(function(id){
+      ['dmaicModal','meetingValueModal','adoptionPlanModal','mentorUatModal','psUatModal','mentorCheckin4Modal','mentorCheckin2Modal','psCheckin2Modal','psCheckin4Modal','twinnyModal','roadmapModal','rapidUatModal'].forEach(function(id){
         var m = document.getElementById(id);
         if (m) m.style.display = 'none';
       });
@@ -3399,6 +3399,14 @@
   <div class="dmaic-modal">
     <button class="dmaic-modal-close" onclick="document.getElementById('dmaicModal').style.display='none'" aria-label="Close">×</button>
     <iframe src="sara_dmaic_summary_14%201.html" title="My Problem Solving Twin"></iframe>
+  </div>
+</div>
+
+<!-- ===== MY MEETING TWIN MODAL (iframe of Meeting Twin value case page) ===== -->
+<div id="meetingValueModal" class="dmaic-modal-overlay" style="display:none;" onclick="if(event.target===this)this.style.display='none'">
+  <div class="dmaic-modal">
+    <button class="dmaic-modal-close" onclick="document.getElementById('meetingValueModal').style.display='none'" aria-label="Close">×</button>
+    <iframe src="meeting_twin_summary.html" title="My Meeting Twin"></iframe>
   </div>
 </div>
 
